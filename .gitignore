@@ -10,3 +10,6 @@ compile_commands.json
 CTestTestfile.cmake
 _deps
 CMakeLists.txt
+cmake-build-debug
+cmake-build-release
+.idea
