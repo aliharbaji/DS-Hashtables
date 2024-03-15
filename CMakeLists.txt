@@ -4,4 +4,4 @@ project(Wet2_DS)
 set(CMAKE_CXX_STANDARD 14)
 
 add_executable(Wet2_DS
-        main.cpp)
+        main.cpp Hashtable.h)

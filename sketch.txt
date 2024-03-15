@@ -1,0 +1,15 @@
+ZOOM MEETING #1
+
+Teams will be implemented in the following manner:
+
+a hash table that holds roots of AVL trees
+might consider using a dynamic array for the hash table
+
+
+Players:
+will be implemented using 2 AVL trees
+one tree will be sorted by player's order of joining the game
+the other tree will be sorted by player's strength
+
+Olympics:
+
