@@ -1,14 +1,26 @@
 #include "Hashtable.h"
 #include <iostream>
 #include "Team.h"
+#include "Player.h"
 
 using namespace std;
 
 int main()
 {
-    cout << "Hello world!" << endl;
     Hashtable<Team> h;
+    Player p1(1, 1);
+    Team t1(1);
 
+    t1.addPlayer(1, 1);
+    t1.addPlayer(2, 2);
+    t1.addPlayer(3, 3);
+    t1.addPlayer(4, 4);
+
+    t1.printTeam();
+
+    cout << endl;
+    cout << "********************************************" << endl;
+    cout << "p1 strength: " << p1.getStrength() << endl;
     h.insert(0);
     h.insert(22);
     h.insert(33);

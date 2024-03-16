@@ -380,13 +380,13 @@ public:
 
     friend ostream& operator<<(ostream& os, const Tree& tree){
         if(tree.root == nullptr){
-            os << "X";
+            os << std::string("X");
             return os;
         }
 
-        os << "[";
+        os << std::string("[");
         tree.inorderPrint(tree.root, os);
-        os << "]";
+        os << std::string("]");
         return os;
     }
 };

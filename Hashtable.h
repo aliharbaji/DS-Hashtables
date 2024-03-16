@@ -8,7 +8,7 @@
 #include <iostream>
 #include <cmath>
 #include <memory>
-#include "tree.h"
+#include "Tree.h"
 
 
 using namespace std;

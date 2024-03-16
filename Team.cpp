@@ -16,55 +16,24 @@ int Team::getStrength() const {
 }
 
 
+bool Team::addPlayer(int playerID, int playerStrength) {
+    shared_ptr<Player> contestant = make_shared<Player>(playerID, playerStrength);
+    if(! players.insert(contestant)) return false;
+//    strength += playerStrength;
+    numberOfPlayers++;
+    return true;
+}
+
+void Team::removePlayer(int playerID) {
+    if(!players.remove(playerID)) return;
+    numberOfPlayers--;
+}
+
+int Team::getNumberOfPlayers() const {
+    return numberOfPlayers;
+}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-////Did a small change. Because before contestant removing himself from the team doesn't mean the team got updated. Seems fine.
-//void Tea m: :  uniteTeamsIntoThis(shared_ptr<Team> otherTeam){
-//
-//    int numOfContestants = otherTeam->getNumberOfContestants();
-//    shared_ptr<Contestant>* arr;
-//    try {
-//        arr = copyTeamIntoArrayAndUpdateContestants(otherTeam);
-//    } catch (exception& e) {
-//        throw e;
-//    }
-//    for (int i = 0; i < numOfContestants; i++) {
-//        if (arr[i]->isActiveInTeam(this->getID())) continue;
-//        addContestant(arr[i]);
-//    }
-//    delete[] arr;
-//    //contestant->addTeam(shared_from_this()); //argument is method which converts the "this" pointer into shared_ptr
-//}
-
-
-//void Team::print(){
-//    cout<<"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"<<endl;
-//    cout<<"Team ID: "<<getID()<<endl;
-//    cout<<"PreOrder: [";
-//    recursivePrintPreOrder(strengths->root);
-//    cout<<"]"<<endl;
-//    cout<<"InOrder: [";
-//    recursivePrintInOrder(strengths->root);
-//    cout<<"]"<<endl;
-//    cout<<"Team strength: "<<getStrength()<<endl;
-//    cout<<"Austerity measure(implemented now): "<<getAusMeasure()<<endl;
-//    cout<<"Team Size: "<<strengths->getSize()<<endl;
-//    cout<<"Sport: "<<(int)getSport()<<endl;
-//    cout<<"Country ID: "<<getCountryID()<<endl;
-//    cout<<"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"<<endl;
-//
-//
-//}
+void Team::printTeam() const {
+    players.inorderPrint(players.root, cout);
+}
