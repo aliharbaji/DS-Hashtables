@@ -6,7 +6,6 @@
 #include <math.h>
 #ifndef AVLTREES_TREE_H
 template <typename T>
-
 class Tree{
     template <typename U> friend class Node;
     friend class Team;
@@ -273,7 +272,15 @@ public:
     Tree() : root(nullptr), maximum(nullptr), minimum(nullptr), size(0){}
     //constructor for a tree based on an array and its size.
     Tree(const Tree&) = delete;
-    Tree& operator=(const Tree&)= delete;
+    Tree& operator=(const Tree& tree){
+        if(this == &tree) return *this;
+
+        root = tree.root;
+        size = tree.size;
+        minimum = tree.minimum;
+        maximum = tree.maximum;
+        return *this;
+    }
     ~Tree(){
         clearParents(root);
     }//Necessary to break cyclical pointers and appropriately deallocate memory.
@@ -362,6 +369,26 @@ public:
         return arr;
     }
 
+    void inorderPrint(shared_ptr<Node<T>> curr, ostream& os) const{
+        if(curr){
+            inorderPrint(curr->left, os);
+            os << curr->getID() << ", ";
+            inorderPrint(curr->right, os);
+        }
+    }
+
+
+    friend ostream& operator<<(ostream& os, const Tree& tree){
+        if(tree.root == nullptr){
+            os << "X";
+            return os;
+        }
+
+        os << "[";
+        tree.inorderPrint(tree.root, os);
+        os << "]";
+        return os;
+    }
 };
 #define AVLTREES_TREE_H
 

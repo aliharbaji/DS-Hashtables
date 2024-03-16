@@ -6,111 +6,98 @@
 #define WET2_DS_HASHTABLE_H
 
 #include <iostream>
-#include <math.h>
-
+#include <cmath>
 #include <memory>
+#include "tree.h"
+
 
 using namespace std;
 
-const int OPEN_FOR_INSERTION = -1;
 template <class T>
 class Hashtable {
 private:
-    shared_ptr<T[]> table;
+    unique_ptr<Tree<T>[]> table; // table of trees
     int size;
     int capacity;
-    int numOfOpenForInsertion; // maybe it is a good idea to increment this field when removing an element and counting
+    float load_factor; // maybe it is a good idea to increment this field when removing an element and counting
+    int total_elements_added; // this might be useful in the future when we want to give an id to each ID-less player
 public:
-    Hashtable(): size(0), capacity(10), table (shared_ptr<T[]>(new T[capacity]())){}
+    Hashtable(): size(0), capacity(11), table (new Tree<T>[capacity]()), load_factor(0.0f), total_elements_added(0){}
 
     ~Hashtable() = default;
 
-    int hash(T key){
+    int hash(int key){
         return key % capacity; // mod capacity hash function
     }
 
-    void insert(T key){
-        if(size >= capacity / 2) resize();
-
+    void insert(int key){
+        // TODO: resize up when needed (probably depending on the load factor?)
         int index = hash(key);
-        while(table[index] != 0 && table[index] != OPEN_FOR_INSERTION){
-            index = (index + 1) % capacity;
-        }
-        table[index] = key;
+        // make a T item with key and add to index
+
+        shared_ptr<T> item_ptr = shared_ptr<T>(new T(key));
+
+        // maybe add an if statement here to check if the item is already in the tree???
+        table[index].insert(item_ptr);
         size++;
+        total_elements_added++;
+        // update load factor
+        load_factor = size * 1.0f / capacity * 1.0f ;
     }
 
-
-    void resize(){
-
-        if(size >= capacity / 2){
-            capacity *= 2;
-            cout << "resizing up" << endl;
-        } else if(size <= capacity / 4) {
-            capacity /= 2;
-            cout << "resizing down" << endl;
-        }
-
-        shared_ptr<T[]> newTable;
-        newTable = shared_ptr<T[]>(new T[capacity]());
-        int j = 0;
-
-        for(int i = 0; i < size; i++){
-
-            if(table[i] != 0 && table[i] != OPEN_FOR_INSERTION){
-                newTable[j] = table[i];
-                j++;
-            }
-        }
-        table = newTable;
-    }
-
-    int indexOf(T key){
+    void remove(int key){
+        // TODO: resize up when needed (probably depending on the load factor?)
         int index = hash(key);
-        while(table[index] != key){
-            if(table[index] == 0) return -1;
-            index = (index + 1) % capacity;
+        if(table[index].remove(key)){
+            size--;
         }
-        return index;
+        load_factor = size * 1.0f / capacity * 1.0f ;
     }
 
-    void rehash() {
-        shared_ptr<T[]> newTable = shared_ptr<T[]>(new T[capacity]());
+    void resizeUp(){
+        int new_capacity = capacity * 2 + 1; // TODO: use math library to find next prime number instead
+        unique_ptr<Tree<T>[]> newTable(new Tree<T>[new_capacity]());
 
-        for (int i = 0; i < capacity; i++) {
-            if (table[i] == 0 || table[i] == OPEN_FOR_INSERTION) continue;
-
-            T key = table[i];
-            int index = hash(key);
-            while (table[index] != 0 && table[index] != OPEN_FOR_INSERTION) {
-                index = (index + 1) % capacity;
+        for(int i = 0; i < capacity; i++){
+            if(table[i].getSize() > 0){
+                newTable[i] = table[i];
             }
         }
+        table = std::move(newTable);
+        capacity = new_capacity;
+    }
 
-        table = newTable;
+    void resizeDown(){
+        int new_capacity = capacity / 2 + 1; // TODO: use math library to find next prime number instead
+
+        unique_ptr<Tree<T>[]> newTable(new Tree<T>[new_capacity]());
+
+        for(int i = 0; i < capacity; i++){
+            if(table[i].getSize() > 0){
+                newTable[i] = table[i];
+            }
+        }
+        table = std::move(newTable);
+        capacity = new_capacity;
     }
 
 
+    void rehash();
 
     int getSize(){
         return size;
     }
 
-    void remove(T key){
-        if(size == 0) return;
-        if(size <= capacity / 4) resize();
-        int index = hash(key);
-        while(table[index] != key){
-            index = (index + 1) % capacity;
-        }
-        table[index] = OPEN_FOR_INSERTION;
-        size--;
+    int getCapacity(){
+        return capacity;
     }
+
 
     void printHashTable(){
         for(int i = 0; i < capacity; i++) {
             cout << table[i] << " ";
         }
+        cout << "***: size: " << size << " capacity: " << capacity << " load factor: " << load_factor;
         cout << endl;
     }
 
