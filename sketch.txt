@@ -13,3 +13,8 @@ the other tree will be sorted by player's strength
 
 Olympics:
 
+NEEDED DATA STRUCTURES
+
+AVL Tree with extra field
+
+Dynamic Hashtable that holds trees as its elements
