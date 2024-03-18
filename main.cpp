@@ -2,11 +2,18 @@
 #include <iostream>
 #include "Team.h"
 #include "Player.h"
+#include "olympics24a2.h"
 
 using namespace std;
 
 int main()
 {
+    cout << "Hello, if you're reading this, there is an error with the code. "
+            "when you comment the olympics_t object, the code runs into a segmentation error of some kind"
+            "I am still working on finding the error."
+            "the code seems to be running properly with this line commented-out" << endl;
+//    olympics_t olympcs; // when I comment this I get an error for some reason!!!
+
     Hashtable<Team> h;
     Player p1(1, 1);
     Team t1(1);
@@ -21,7 +28,7 @@ int main()
     cout << endl;
     cout << "********************************************" << endl;
     cout << "p1 strength: " << p1.getStrength() << endl;
-    h.insert(0);
+    h.insert(1);
     h.insert(22);
     h.insert(33);
 

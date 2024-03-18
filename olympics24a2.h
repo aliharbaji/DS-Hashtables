@@ -28,7 +28,7 @@ private:
 	Hashtable<Team> teams;
     Tree<Player> playersByOrder;
     STree<Player> playersByStrength;
-
+    int idGenerator;
 public:
 	// <DO-NOT-MODIFY> {
 

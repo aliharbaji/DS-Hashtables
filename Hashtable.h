@@ -21,6 +21,7 @@ private:
     int capacity;
     float load_factor; // maybe it is a good idea to increment this field when removing an element and counting
     int total_elements_added; // this might be useful in the future when we want to give an id to each ID-less player
+    // maybe this should be a static field of the class, so that we can give an id to each player that is added to the table
 public:
     Hashtable(): size(0), capacity(11), table (new Tree<T>[capacity]()), load_factor(0.0f), total_elements_added(0){}
 
@@ -35,14 +36,17 @@ public:
         int index = hash(key);
         // make a T item with key and add to index
 
+        // might throw bad_alloc, so we need to catch it TODO: check if this is necessary
         shared_ptr<T> item_ptr = shared_ptr<T>(new T(key));
-
         // maybe add an if statement here to check if the item is already in the tree???
         table[index].insert(item_ptr);
         size++;
         total_elements_added++;
         // update load factor
         load_factor = size * 1.0f / capacity * 1.0f ;
+
+
+
     }
 
     void remove(int key){
@@ -55,7 +59,7 @@ public:
     }
 
     void resizeUp(){
-        int new_capacity = capacity * 2 + 1; // TODO: use math library to find next prime number instead
+        int new_capacity = capacity * 2 + 1; // TODO: use math library to find next prime number instead (now that I am looking at this I think that this is not necessary, but I will leave it here for now)
         unique_ptr<Tree<T>[]> newTable(new Tree<T>[new_capacity]());
 
         for(int i = 0; i < capacity; i++){
@@ -82,7 +86,7 @@ public:
     }
 
 
-    void rehash();
+    void rehash(); // this should be a private method
 
     int getSize(){
         return size;
@@ -101,7 +105,19 @@ public:
         cout << endl;
     }
 
+    bool contains(int key){
+        int index = hash(key);
+        return table[index].contains(key);
+    }
 
+    shared_ptr<T> find(int key){
+        int index = hash(key);
+        return table[index].find(key);
+    }
+
+    int getTotalElementsAdded(){
+        return total_elements_added;
+    }
 };
 
 #endif //WET2_DS_HASHTABLE_H
