@@ -1,6 +1,6 @@
 #include "olympics24a2.h"
 
-olympics_t::olympics_t(): teams(), playersByOrder(), playersByStrength(), idGenerator(0)
+olympics_t::olympics_t()
 {
     // default constructor
 }

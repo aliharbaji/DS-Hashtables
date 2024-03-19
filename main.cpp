@@ -12,11 +12,14 @@ int main()
             "when you comment the olympics_t object, the code runs into a segmentation error of some kind"
             "I am still working on finding the error."
             "the code seems to be running properly with this line commented-out" << endl;
-//    olympics_t olympcs; // when I comment this I get an error for some reason!!!
 
+//    olympics_t* olympics =  new olympics_t(); // when I uncomment this I get an error for some reason!!!
+    olympics_t olympics2;
     Hashtable<Team> h;
     Player p1(1, 1);
     Team t1(1);
+
+
 
     t1.addPlayer(1, 1);
     t1.addPlayer(2, 2);

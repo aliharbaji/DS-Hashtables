@@ -19,6 +19,7 @@
 #include "Hashtable.h"
 #include "Team.h"
 #include "strengthtree.h"
+#include "Tree.h"
 
 class olympics_t {
 private:
