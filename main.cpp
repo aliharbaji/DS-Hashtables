@@ -8,12 +8,7 @@ using namespace std;
 
 int main()
 {
-    cout << "Hello, if you're reading this, there is an error with the code. "
-            "when you comment the olympics_t object, the code runs into a segmentation error of some kind"
-            "I am still working on finding the error."
-            "the code seems to be running properly with this line commented-out" << endl;
 
-//    olympics_t* olympics =  new olympics_t(); // when I uncomment this I get an error for some reason!!!
     olympics_t olympics2;
     Hashtable<Team> h;
     Player p1(1, 1);
