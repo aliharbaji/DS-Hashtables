@@ -42,6 +42,8 @@ public:
     shared_ptr<Player> getStrengthPlayer();
 
     void addWin();
+
+    int getNumberOfWins() const;
 };
 
 

@@ -52,5 +52,9 @@ void Team::addWin() {
     numberOfWins++;
 }
 
+int Team::getNumberOfWins() const {
+    return numberOfWins;
+}
+
 
 

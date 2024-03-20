@@ -132,16 +132,28 @@ output_t<int> olympics_t::play_match(int teamId1, int teamId2)
 
     if(team1Strength > team2Strength) {
         team1->addWin();
+        if(team1->getNumberOfWins() == 1){
+            teamsByWins.insert(team1); // O(logn)
+        }
         return output_t<int>(team1->getID());
     }else if(team1Strength < team2Strength){
         team2->addWin();
+        if(team2->getNumberOfWins() == 1){
+            teamsByWins.insert(team2); // O(logn)
+        }
         return output_t<int>(team2->getID());
     }else{ // in case of a tie, the team with the lower ID wins
         if(team1->getID() < team2->getID()) {
             team1->addWin();
+            if(team1->getNumberOfWins() == 1){
+                teamsByWins.insert(team1); // O(logn)
+            }
             return output_t<int>(team1->getID());
         }else{
             team2->addWin();
+            if(team2->getNumberOfWins() == 1){
+                teamsByWins.insert(team2); // O(logn)
+            }
             return output_t<int>(team2->getID());
         }
     }

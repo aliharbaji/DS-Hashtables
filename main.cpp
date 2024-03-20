@@ -20,15 +20,26 @@ int main()
     olympics2.add_team(7);
 
     //    Team1's player strengths - (1,3,3,5,7,8)
-    olympics2.add_player(1, 1);
-    olympics2.add_player(1, 3);
-    olympics2.add_player(1, 3);
-    olympics2.add_player(1, 5);
-    olympics2.add_player(1, 7);
-    olympics2.add_player(1, 8);
+    olympics2.add_player(1, 1); // id 1
+    olympics2.add_player(1, 3); // id 2
+    olympics2.add_player(1, 3); // id 3
+    olympics2.add_player(1, 5); // id 4
+    olympics2.add_player(1, 7); // id 5
+    olympics2.add_player(1, 8); // id 6
 
 
     olympics2.printTeams();
+    olympics2.remove_team(5);
+    olympics2.printTeams();
+
+    cout << "Team 1 before removing the newest player: " << endl;
+    olympics2.printTeam(1);
+    olympics2.remove_newest_player(1);
+    cout << "Team 1 after removing the newest player: " << endl;
+    olympics2.printTeam(1);
+
+    olympics2.remove_newest_player(3); // this shouldn't do anything
+
     return 0;
     Hashtable<Team> h;
 //    cout << h[0].getNumberOfPlayers() << endl;
