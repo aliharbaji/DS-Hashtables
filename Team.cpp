@@ -24,7 +24,7 @@ bool Team::addPlayer(int playerID, int playerStrength) {
     // TODO I have a feeling that in a case of 1 or 2 players in the team, this will not work as expected,
     // I might be wrong though
     strengthPlayer = playersByStrength.getKthSmallest(numberOfPlayers/2 + 1); // O(logk)
-    cout << "strength is " << strengthPlayer->getStrength() << endl;
+//    cout << "strength is " << strengthPlayer->getStrength() << endl;
     return true;
 }
 
