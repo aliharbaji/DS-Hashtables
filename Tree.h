@@ -378,6 +378,7 @@ public:
     }
 
 
+
     friend ostream& operator<<(ostream& os, const Tree& tree){
         if(tree.root == nullptr){
             os << std::string("X");

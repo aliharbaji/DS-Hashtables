@@ -10,7 +10,28 @@ int main()
 {
 
     olympics_t olympics2;
+
+    olympics2.add_team(1);
+    olympics2.add_team(2);
+    olympics2.add_team(3);
+    olympics2.add_team(4);
+    olympics2.add_team(5);
+    olympics2.add_team(6);
+    olympics2.add_team(7);
+
+    //    Team1's player strengths - (1,3,3,5,7,8)
+    olympics2.add_player(1, 1);
+    olympics2.add_player(1, 3);
+    olympics2.add_player(1, 3);
+    olympics2.add_player(1, 5);
+    olympics2.add_player(1, 7);
+    olympics2.add_player(1, 8);
+
+
+    olympics2.printTeams();
+    return 0;
     Hashtable<Team> h;
+//    cout << h[0].getNumberOfPlayers() << endl;
     Player p1(1, 1);
     Team t1(1);
 

@@ -25,11 +25,22 @@ private:
     int total_elements_added; // this might be useful in the future when we want to give an id to each ID-less player
     // maybe this should be a static field of the class, so that we can give an id to each player that is added to the table
 public:
-    Hashtable(): size(0), capacity(DEFAULT_CAPACITY), table (new Tree<T>[DEFAULT_CAPACITY]()), load_factor(0.0f), total_elements_added(0){
-
+    Hashtable(): size(0), capacity(DEFAULT_CAPACITY), load_factor(0.0f), total_elements_added(0) {
+        table = std::make_unique<Tree<T>[]>(DEFAULT_CAPACITY);
     }
 
+
     ~Hashtable() = default;
+
+    // operator[] overload
+    const Tree<T>& operator[](int index) const{
+        // return the team at index
+        return table[index];
+    }
+    Tree<T>& operator[](int index){
+        // return the team at index
+        return table[index];
+    }
 
     int hash(int key){
         return key % capacity; // mod capacity hash function

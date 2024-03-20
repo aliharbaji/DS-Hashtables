@@ -32,6 +32,15 @@ private:
     Tree<Team> teamsByWins; // we will add teams to this tree NOT IN THE ADD_TEAM FUNCTION, but in the add_player function
     int idGenerator;
 public:
+
+    // TODO: delete later:
+    void printTeams(){
+        for(int i = 0; i < teams.getCapacity(); i++){
+            cout << "Teams at index " << i << ": ";
+            cout << teams[i] << endl;
+
+        }
+    }
 	// <DO-NOT-MODIFY> {
 
     olympics_t();
@@ -55,7 +64,8 @@ public:
     StatusType unite_teams(int teamId1, int teamId2);
 
     output_t<int> play_tournament(int lowPower, int highPower);
-	
+
+
 	// } </DO-NOT-MODIFY>
 };
 

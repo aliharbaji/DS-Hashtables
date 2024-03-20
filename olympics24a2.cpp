@@ -1,6 +1,6 @@
 #include "olympics24a2.h"
 
-olympics_t::olympics_t()
+olympics_t::olympics_t(): teams(), playersByOrder(), playersByStrength(), teamsByWins(), idGenerator(1)
 {
     // default constructor
 }
@@ -69,6 +69,7 @@ StatusType olympics_t::add_player(int teamId, int playerStrength)
         auto player_ptr = make_shared<Player>(idGenerator, playerStrength);
         playersByOrder.insert(player_ptr);
         playersByStrength.insert(player_ptr);
+
     }catch(exception& e){
         // if the player could not be added, roll back the changes
         // this does not sit right with me, TODO: check if this is necessary

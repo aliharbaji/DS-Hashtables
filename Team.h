@@ -37,7 +37,7 @@ public:
 
     int getNumberOfPlayers() const;
 
-    void printTeam() const ;
+    void printTeam() const;
 
     shared_ptr<Player> getStrengthPlayer();
 
