@@ -95,8 +95,8 @@ StatusType olympics_t::remove_newest_player(int teamId)
         // remove the player from the team and the trees
         int playerID = playersByOrder.getMax()->getID(); // O(logk)
         team->removePlayer(playerID); // O(logk)
-        playersByOrder.remove(playerID); // O(logk)
         auto player = playersByOrder.find(playerID); // O(logk)
+        playersByOrder.remove(playerID); // O(logk)
         playersByStrength.remove(playerID, player->getStrength()); // O(logn)
     }catch (exception& e){
         // if the player could not be removed, roll back the changes
