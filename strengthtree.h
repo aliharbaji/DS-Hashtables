@@ -9,6 +9,7 @@
 //
 #include "node.h"
 #include <stdexcept>
+#include <iostream>
 
 
 template <typename T>
@@ -316,7 +317,7 @@ public:
         return findRecursively(root, ID);
     }
 
-    //TODO: adapt contain and find to strength. Probably unecessary because we should check for duplication before insertion into STree.
+
     bool contains(const int ID) const{
         return containsRecursively(root, ID);
     }
@@ -339,9 +340,6 @@ public:
     bool remove(const int ID, const int strength){
         if (!size) return false;
         if (deleteRecursively(root, ID, strength)) {
-            // TODO: I think that we should add an if statement here to check whether or not the deletion was successful,
-            //  before updating the size and minimum and maximum.
-            //You're absolutely right.
             size--;
             minimum = getMinNode(root);
             maximum = getMaxNode(root);
@@ -379,7 +377,29 @@ public:
         return size;
     }
 
+    shared_ptr<T> getKthSmallest(int k) {
+        return findKthSmallest(root, k)->data;
+    }
 
+    void printRecursively(shared_ptr<Node<T>> node, int depth) const {
+        if (node == nullptr) return;
+        printRecursively(node->right, depth + 1);
+        std::cout << node->data->getID() << " " << node->data->getStrength() << std::endl;
+        printRecursively(node->left, depth + 1);
+    }
+    void printTree() const {
+        printRecursively(root, 0);
+    }
+
+    bool isBalancedRecursively(shared_ptr<Node<T>> node) const {
+        if (node == nullptr) return true;
+        int balance = getBalance(node);
+        if (balance > 1 || balance < -1) return false;
+        return isBalancedRecursively(node->left) && isBalancedRecursively(node->right);
+    }
+    bool isBalanced() const{
+        return isBalancedRecursively(root);
+    }
 };
 
 

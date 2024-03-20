@@ -9,17 +9,21 @@
 #include "item.h"
 #include "Tree.h"
 #include "Player.h"
+#include "strengthtree.h"
 
 #include <iostream>
 
 class Team : public Item {
     int strength;
     Tree<Player> players;
+    STree<Player> playersByStrength;
     int numberOfPlayers;
     int numberOfWins;
+    shared_ptr<Player> strengthPlayer; // this is the player with the median strength
 public:
     explicit Team(int teamID)
-            : Item(teamID), strength(0), players(), numberOfPlayers(0), numberOfWins(0)
+            : Item(teamID), strength(0), players(), numberOfPlayers(0),
+            numberOfWins(0), strengthPlayer(nullptr)
     {}
 
     Team(const Team&) = delete;
@@ -34,6 +38,10 @@ public:
     int getNumberOfPlayers() const;
 
     void printTeam() const ;
+
+    shared_ptr<Player> getStrengthPlayer();
+
+    void addWin();
 };
 
 
