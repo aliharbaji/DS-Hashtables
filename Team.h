@@ -47,6 +47,10 @@ public:
     int getNumberOfWins() const;
 
     int getRank() const;
+
+    void removeAllPlayers();
+
+    unique_ptr<Player[]> getPlayers() const;
 };
 
 

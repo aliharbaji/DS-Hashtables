@@ -29,6 +29,8 @@ private:
 	Hashtable<Team> teams;
     Tree<Player> playersByOrder; // this tree will be used to remove the newest player
     STree<Player> playersByStrength;
+//    STree<Team> teamsByRank; // maybe this is the way to go I am still not sure
+
     Tree<Team> teamsByWins; // we will add teams to this tree NOT IN THE ADD_TEAM FUNCTION, but in the add_player function
     int idGenerator;
     int highestRank;

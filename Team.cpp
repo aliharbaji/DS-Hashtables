@@ -61,4 +61,17 @@ int Team::getRank() const {
 }
 
 
+// TODO: ask Omar if this is the right way to remove all players from a team
+void Team::removeAllPlayers() {
+    //
+    players = Tree<Player>();
+    playersByStrength = STree<Player>();
+    numberOfPlayers = 0;
+    strengthPlayer = nullptr;
+    numberOfWins = 0;
+}
+
+
+
+
 

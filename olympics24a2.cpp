@@ -40,20 +40,22 @@ StatusType olympics_t::remove_team(int teamId)
 	if(teamId <= 0){
         return StatusType::INVALID_INPUT;
     }
-    if(!teams.contains(teamId)){
+    auto team = teams.find(teamId);
+    if(!team){
         return StatusType::FAILURE;
     }
+
     try{
+        team->removeAllPlayers(); // this removes all the players from the team
         teams.remove(teamId); // this removes the team from the table, and the team's destructor is called
         // remove the team from the teamsByWins tree
-        auto team = teamsByWins.find(teamId);
-        if(team != nullptr){
-            teamsByWins.remove(teamId);
-        }
-        // remove the players from the playersByOrder tree
+        teamsByWins.remove(teamId);
 
+        // remove the players from the playersByOrder and playersByStrength trees
+        // think of a way to do this in O(k) time complexity instead of O(klogk)
 
-        // remove the players from the playersByStrength tree
+        // update the highestRank in O(logn) time complexity?
+        // this may require us to add a new STree<Team> teamsByRank; and doing so we can update the highestRank in O(logn) time complexity
 
     }catch (exception& e) {
         return StatusType::ALLOCATION_ERROR;
@@ -61,6 +63,7 @@ StatusType olympics_t::remove_team(int teamId)
 	return StatusType::SUCCESS;
 }
 
+//  this works in O(logn + log(k)) time complexity
 StatusType olympics_t::add_player(int teamId, int playerStrength)
 {
     if(teamId <= 0 || playerStrength <= 0){
@@ -99,6 +102,7 @@ StatusType olympics_t::add_player(int teamId, int playerStrength)
 }
 
 // TODO: make sure to update the highestRank in case of removal of a player in the highest ranked team
+// this should run in O(logn + log(k)) time complexity
 StatusType olympics_t::remove_newest_player(int teamId)
 {
 	if(teamId <= 0){
@@ -156,11 +160,17 @@ output_t<int> olympics_t::play_match(int teamId1, int teamId2)
         if(team1->getNumberOfWins() == 1){
             teamsByWins.insert(team1); // O(logn)
         }
+        if(team1->getRank() > highestRank){
+            highestRank = team1->getRank();
+        }
         return output_t<int>(team1->getID());
     }else if(team1Strength < team2Strength){
         team2->addWin();
         if(team2->getNumberOfWins() == 1){
             teamsByWins.insert(team2); // O(logn)
+        }
+        if(team2->getRank() > highestRank){
+            highestRank = team2->getRank();
         }
         return output_t<int>(team2->getID());
     }else{ // in case of a tie, the team with the lower ID wins
@@ -169,11 +179,17 @@ output_t<int> olympics_t::play_match(int teamId1, int teamId2)
             if(team1->getNumberOfWins() == 1){
                 teamsByWins.insert(team1); // O(logn)
             }
+            if (team1->getRank() > highestRank) {
+                highestRank = team1->getRank();
+            }
             return output_t<int>(team1->getID());
         }else{
             team2->addWin();
             if(team2->getNumberOfWins() == 1){
                 teamsByWins.insert(team2); // O(logn)
+            }
+            if(team2->getRank() > highestRank){
+                highestRank = team2->getRank();
             }
             return output_t<int>(team2->getID());
         }

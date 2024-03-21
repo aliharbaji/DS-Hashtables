@@ -306,7 +306,7 @@ public:
 
     explicit STree(bool miniTree = true) : root(nullptr), size(0), miniTree(miniTree), maximum(nullptr), minimum(nullptr){}
     STree(const STree&) = delete;
-    STree& operator=(const STree&)= delete;
+    STree& operator=(const STree&) = default;
     ~STree(){
         clearParents(root);
     }
@@ -400,6 +400,8 @@ public:
     bool isBalanced() const{
         return isBalancedRecursively(root);
     }
+
+
 };
 
 
