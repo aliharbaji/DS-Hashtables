@@ -50,6 +50,8 @@ public:
 
     void removeAllPlayers();
 
+    shared_ptr<Player> getNewestPlayer() const;
+
     unique_ptr<Player[]> getPlayers() const;
 };
 

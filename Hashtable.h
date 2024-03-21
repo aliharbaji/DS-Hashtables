@@ -58,7 +58,7 @@ public:
         size++;
         total_elements_added++;
         // update load factor
-        load_factor = size * 1.0f / capacity * 1.0f ;
+        load_factor = size * 1.0f / capacity * 1.0f ; //
 
 
 

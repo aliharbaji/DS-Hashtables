@@ -1,14 +1,11 @@
 #include "olympics24a2.h"
 
-olympics_t::olympics_t(): teams(), playersByOrder(), playersByStrength(), teamsByWins(), idGenerator(1), teamsByRank()
+olympics_t::olympics_t(): teams(), teamsByWins(), idGenerator(1), teamsByRank(), teamsByStrength()
 {
     // default constructor
 }
 
-olympics_t::~olympics_t()
-{
-    // default destructor
-}
+olympics_t::~olympics_t() = default;
 
 
 StatusType olympics_t::add_team(int teamId)
@@ -84,13 +81,13 @@ StatusType olympics_t::add_player(int teamId, int playerStrength)
 
         // make a player and add it to the playersByOrder tree
         auto player_ptr = make_shared<Player>(idGenerator, playerStrength);
-        playersByOrder.insert(player_ptr);
-        playersByStrength.insert(player_ptr);
+//        playersByOrder.insert(player_ptr);
+//        playersByStrength.insert(player_ptr);
     }catch(exception& e){
         // if the player could not be added, roll back the changes
         // this does not sit right with me, TODO: check if this is necessary
         team->removePlayer(idGenerator);
-        playersByOrder.remove(idGenerator);
+//        playersByOrder.remove(idGenerator);
         return StatusType::ALLOCATION_ERROR;
     }
 
@@ -112,11 +109,12 @@ StatusType olympics_t::remove_newest_player(int teamId)
 
     try{
         // remove the player from the team and the trees
-        int playerID = playersByOrder.getMax()->getID(); // O(logk)
+        int playerID = team->getNewestPlayer()->getID(); // O(1)
         team->removePlayer(playerID); // O(logk)
-        auto player = playersByOrder.find(playerID); // O(logk)
-        playersByOrder.remove(playerID); // O(logk)
-        playersByStrength.remove(playerID, player->getStrength()); // O(logn)
+
+//        auto player = playersByOrder.find(playerID); // O(logk)
+//        playersByOrder.remove(playerID); // O(logk)
+//        playersByStrength.remove(playerID, player->getStrength()); // O(logn)
     }catch (exception& e){
         // if the player could not be removed, roll back the changes
         // TODO: check if rolling back the changes is necessary
@@ -127,6 +125,7 @@ StatusType olympics_t::remove_newest_player(int teamId)
 }
 
 // this runs in O(logn)
+// TODO: make sure to remove and reinsert the winning team in the teamsByWins tree
 output_t<int> olympics_t::play_match(int teamId1, int teamId2)
 {
     auto team1 = teams.find(teamId1);

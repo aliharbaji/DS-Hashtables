@@ -71,6 +71,11 @@ void Team::removeAllPlayers() {
     numberOfWins = 0;
 }
 
+shared_ptr<Player> Team::getNewestPlayer() const {
+    auto player = players.getMax();
+    return player;
+}
+
 
 
 
