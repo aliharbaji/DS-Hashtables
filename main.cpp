@@ -139,13 +139,14 @@ int main()
     s2.insert(p13_ptr);
     s2.insert(p14_ptr);
     s2.printTree();
-    cout << "median strength player in team with strengths (2, 4, 3, 3, 6) is " << s2.getKthSmallest(sTree.getSize() / 2 + 1)->getStrength() << endl;
+    cout << "median strength player in team with strengths (2, 4, 3, 3, 6) is " << s2.getKthSmallest(s2.getSize() / 2 + 1)->getStrength() << endl;
     cout << "the median strength should be 4 in team (2, 3, 3, 4, 6)" << endl;
     cout << "this seems to be a logic error regarding the median strength of a team with players of same strength" << endl;
     cout << "looks like we're going to change the way we calculate the rank of"
             "each node or maybe add a strength tree with no duplications?"  << endl;
     cout << "will work on this later" << endl;
-    cout << "********************************************" << endl;
+    cout << "*Just fixed this test, but will keep comments here for future reference*" << endl;
+    cout << "********************end of test2************************" << endl;
     return 0; // end of test2
 
 
