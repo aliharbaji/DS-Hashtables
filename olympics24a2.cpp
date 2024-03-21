@@ -126,10 +126,14 @@ output_t<int> olympics_t::play_match(int teamId1, int teamId2)
     // fixed it to work in O(1) time complexity
     auto playerStrongerThanHalf1 = team1->getStrengthPlayer();
     auto playerStrongerThanHalf2 = team2->getStrengthPlayer();
-
+    cout << endl;
+//    cout << "Team1's strength player is " << playerStrongerThanHalf1->getStrength() << endl;
+//    cout << "Team2's strength player is " << playerStrongerThanHalf2->getStrength() << endl;
     int team1Strength = playerStrongerThanHalf1->getStrength() * team1->getNumberOfPlayers();
     int team2Strength = playerStrongerThanHalf2->getStrength() * team2->getNumberOfPlayers();
-
+//    cout << endl;
+//    cout << "Team1's strength is " << team1Strength << endl;
+//    cout << "Team2's strength is " << team2Strength << endl;
     if(team1Strength > team2Strength) {
         team1->addWin();
         if(team1->getNumberOfWins() == 1){
@@ -161,9 +165,15 @@ output_t<int> olympics_t::play_match(int teamId1, int teamId2)
 
 output_t<int> olympics_t::num_wins_for_team(int teamId)
 {
-    // TODO: Your code goes here
-    static int i = 0;
-    return (i++==0) ? 11 : 2;
+    if(teamId <= 0){
+        return output_t<int>(StatusType::INVALID_INPUT);
+    }
+    auto team = teams.find(teamId);
+    if(team == nullptr){
+        return output_t<int>(StatusType::FAILURE);
+    }
+
+    return output_t<int>(team->getNumberOfWins());
 }
 
 output_t<int> olympics_t::get_highest_ranked_team()
