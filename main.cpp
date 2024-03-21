@@ -9,6 +9,9 @@ using namespace std;
 int main()
 {
     cout << "Just remember to resize and rehash the table when needed + check TODO" << endl;
+    cout << "We also still need to add an extra field in the Trees' nodes, for play_tournament" << endl;
+    cout << "We should also make sure that the way we are calculating the strength of each team is correct,"
+            "a I have a feeling that it is not" << endl;
     cout << "Testing the olympics_t class" << endl;
     olympics_t olympics2;
 
