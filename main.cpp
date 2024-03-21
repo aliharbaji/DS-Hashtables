@@ -73,7 +73,11 @@ int main()
     cout << "Team1 wins : " << olympics2.num_wins_for_team(1).ans() << endl;
     cout << "Team2 wins : " << olympics2.num_wins_for_team(2).ans() << endl;
 
-    return 0;
+
+    cout << "********************end of test************************" << endl;
+//    return 0; // end of test1
+
+    // start of test2
     Hashtable<Team> h;
 //    cout << h[0].getNumberOfPlayers() << endl;
     Player p1(1, 1);
@@ -142,7 +146,10 @@ int main()
             "each node or maybe add a strength tree with no duplications?"  << endl;
     cout << "will work on this later" << endl;
     cout << "********************************************" << endl;
-    return 0;
+    return 0; // end of test2
+
+
+
     cout << "********************************************" << endl;
     cout << "TEST FOR HASHTABLE" << endl;
     t1.addPlayer(1, 1);
