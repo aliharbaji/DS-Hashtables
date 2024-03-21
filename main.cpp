@@ -8,7 +8,7 @@ using namespace std;
 
 int main()
 {
-
+    cout << "Testing the olympics_t class" << endl;
     olympics_t olympics2;
 
     olympics2.add_team(1);
