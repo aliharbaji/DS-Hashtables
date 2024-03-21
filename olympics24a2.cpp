@@ -1,6 +1,6 @@
 #include "olympics24a2.h"
 
-olympics_t::olympics_t(): teams(), playersByOrder(), playersByStrength(), teamsByWins(), idGenerator(1), highestRank(0)
+olympics_t::olympics_t(): teams(), playersByOrder(), playersByStrength(), teamsByWins(), idGenerator(1), teamsByRank()
 {
     // default constructor
 }
@@ -82,9 +82,6 @@ StatusType olympics_t::add_player(int teamId, int playerStrength)
         // TODO: (probably unnecessary) maybe we should remove the team, update it and re-add it (but this sets the rank and the number of wins to 0 so be careful)
         team->addPlayer(idGenerator, playerStrength);
 
-        if(team->getRank() > highestRank){ // updates the highest rank
-            highestRank = team->getRank();
-        }
         // make a player and add it to the playersByOrder tree
         auto player_ptr = make_shared<Player>(idGenerator, playerStrength);
         playersByOrder.insert(player_ptr);
@@ -160,17 +157,11 @@ output_t<int> olympics_t::play_match(int teamId1, int teamId2)
         if(team1->getNumberOfWins() == 1){
             teamsByWins.insert(team1); // O(logn)
         }
-        if(team1->getRank() > highestRank){
-            highestRank = team1->getRank();
-        }
         return output_t<int>(team1->getID());
     }else if(team1Strength < team2Strength){
         team2->addWin();
         if(team2->getNumberOfWins() == 1){
             teamsByWins.insert(team2); // O(logn)
-        }
-        if(team2->getRank() > highestRank){
-            highestRank = team2->getRank();
         }
         return output_t<int>(team2->getID());
     }else{ // in case of a tie, the team with the lower ID wins
@@ -179,17 +170,11 @@ output_t<int> olympics_t::play_match(int teamId1, int teamId2)
             if(team1->getNumberOfWins() == 1){
                 teamsByWins.insert(team1); // O(logn)
             }
-            if (team1->getRank() > highestRank) {
-                highestRank = team1->getRank();
-            }
             return output_t<int>(team1->getID());
         }else{
             team2->addWin();
             if(team2->getNumberOfWins() == 1){
                 teamsByWins.insert(team2); // O(logn)
-            }
-            if(team2->getRank() > highestRank){
-                highestRank = team2->getRank();
             }
             return output_t<int>(team2->getID());
         }
@@ -212,7 +197,7 @@ output_t<int> olympics_t::num_wins_for_team(int teamId)
 output_t<int> olympics_t::get_highest_ranked_team()
 {
 	// TODO: Your code goes here
-    return 42;
+    return teamsByRank.getMax()->getID();
 }
 
 StatusType olympics_t::unite_teams(int teamId1, int teamId2)

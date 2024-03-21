@@ -349,22 +349,22 @@ public:
     }
 
     shared_ptr<T> getMax(){
-        if (size) return maximum->data;
+        if (size && maximum != nullptr) return maximum->data;
         else return nullptr;
     }
 
     int getMaxStrength(){
-        if (size) return maximum->data->getStrength();
+        if (size && maximum != nullptr) return maximum->data->getStrength();
         else return 0;
     }
 
     int getMinStrength(){
-        if (size) return maximum->data->getStrength();
+        if (size && minimum != nullptr) return minimum->data->getStrength();
         else return 0;
     }
 
     shared_ptr<T> getMin(){
-        if (size) return minimum->data;
+        if (size && minimum != nullptr) return minimum->data;
         else return nullptr;
     }
 

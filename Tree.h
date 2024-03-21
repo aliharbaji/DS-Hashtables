@@ -289,11 +289,11 @@ public:
         if (size) root = sortedArrayToAVL(arr, 0, size - 1);
         else root = nullptr;
         minimum = root;
-        while (minimum->left != nullptr) {
+        while (minimum != nullptr && minimum->left != nullptr) {
             minimum = minimum->left;
         }
         maximum = root;
-        while (maximum->right != nullptr) {
+        while (maximum != nullptr && maximum->right != nullptr) {
             maximum = maximum->right;
         }
     }
