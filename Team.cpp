@@ -12,7 +12,7 @@
 //}
 
 int Team::getStrength() const {
-    return strength;
+    return strengthPlayer->getStrength() * numberOfPlayers;
 }
 
 
@@ -54,6 +54,10 @@ void Team::addWin() {
 
 int Team::getNumberOfWins() const {
     return numberOfWins;
+}
+
+int Team::getRank() const {
+    return numberOfWins + this->getStrength();
 }
 
 

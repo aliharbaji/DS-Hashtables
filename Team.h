@@ -20,6 +20,7 @@ class Team : public Item {
     int numberOfPlayers;
     int numberOfWins;
     shared_ptr<Player> strengthPlayer; // this is the player with the median strength
+
 public:
     explicit Team(int teamID)
             : Item(teamID), strength(0), players(), numberOfPlayers(0),
@@ -44,6 +45,8 @@ public:
     void addWin();
 
     int getNumberOfWins() const;
+
+    int getRank() const;
 };
 
 

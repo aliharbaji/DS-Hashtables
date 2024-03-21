@@ -1,6 +1,6 @@
 #include "olympics24a2.h"
 
-olympics_t::olympics_t(): teams(), playersByOrder(), playersByStrength(), teamsByWins(), idGenerator(1)
+olympics_t::olympics_t(): teams(), playersByOrder(), playersByStrength(), teamsByWins(), idGenerator(1), highestRank(0)
 {
     // default constructor
 }
@@ -33,6 +33,8 @@ StatusType olympics_t::add_team(int teamId)
 }
 
 // TODO: make sure this works in O(logn + k) time complexity
+// TODO: make sure that the players are removed from the playersByOrder and playersByStrength trees
+// TODO: make sure to update the highestRank in case of removal of the team with the heighest rank
 StatusType olympics_t::remove_team(int teamId)
 {
 	if(teamId <= 0){
@@ -42,7 +44,17 @@ StatusType olympics_t::remove_team(int teamId)
         return StatusType::FAILURE;
     }
     try{
-        teams.remove(teamId); // this removes the team from the table, and the team's destructor is called with the destructor of each player
+        teams.remove(teamId); // this removes the team from the table, and the team's destructor is called
+        // remove the team from the teamsByWins tree
+        auto team = teamsByWins.find(teamId);
+        if(team != nullptr){
+            teamsByWins.remove(teamId);
+        }
+        // remove the players from the playersByOrder tree
+
+
+        // remove the players from the playersByStrength tree
+
     }catch (exception& e) {
         return StatusType::ALLOCATION_ERROR;
     }
@@ -57,19 +69,23 @@ StatusType olympics_t::add_player(int teamId, int playerStrength)
 
     // find the team
     auto team = teams.find(teamId);
-    // TODO: for the future, I think that we should remove the team, update it and re-add it
+
 
     if(team == nullptr){
         return StatusType::FAILURE;
     }
 
     try{
+        // TODO: (probably unnecessary) maybe we should remove the team, update it and re-add it (but this sets the rank and the number of wins to 0 so be careful)
         team->addPlayer(idGenerator, playerStrength);
+
+        if(team->getRank() > highestRank){ // updates the highest rank
+            highestRank = team->getRank();
+        }
         // make a player and add it to the playersByOrder tree
         auto player_ptr = make_shared<Player>(idGenerator, playerStrength);
         playersByOrder.insert(player_ptr);
         playersByStrength.insert(player_ptr);
-
     }catch(exception& e){
         // if the player could not be added, roll back the changes
         // this does not sit right with me, TODO: check if this is necessary

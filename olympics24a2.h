@@ -31,6 +31,7 @@ private:
     STree<Player> playersByStrength;
     Tree<Team> teamsByWins; // we will add teams to this tree NOT IN THE ADD_TEAM FUNCTION, but in the add_player function
     int idGenerator;
+    int highestRank;
 public:
 
     // TODO: delete later:
