@@ -98,6 +98,7 @@ StatusType olympics_t::add_player(int teamId, int playerStrength)
 	return StatusType::SUCCESS;
 }
 
+// TODO: make sure to update the highestRank in case of removal of a player in the highest ranked team
 StatusType olympics_t::remove_newest_player(int teamId)
 {
 	if(teamId <= 0){
