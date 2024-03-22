@@ -20,6 +20,7 @@
 #include "Team.h"
 #include "strengthtree.h"
 #include "Tree.h"
+#include "RTree.h"
 
 class olympics_t {
 private:
@@ -35,8 +36,8 @@ private:
 
     Tree<Team> teamsWithWinsOrStrength; // this holds all the teams sorted by their ID
     STree<Team> teamsByStrength;
-    STree<Team> teamsByRank; // maybe this is the way to go I am still not sure (set the field STree::strength to be the rank of the tree)
-    // TODO: I am certain that teamsByRank does not work as expected, I need to fix it
+    RTree<Team> teamsByRank; // TODO: I am certain that teamsByRank does not work as expected, we need to fix it
+
 
     // rank = median strength of team's players * number of players in the team + numOfWins (highest team by rank)
     int idGenerator;
