@@ -57,6 +57,11 @@ public:
 
         }
     }
+
+    void printStrengthTree(int teamId, int strength){
+//        auto teamS = teamsByStrength.find(teamId, strength);
+//        teamS->printTeam();
+    }
 	// <DO-NOT-MODIFY> {
 
     olympics_t();

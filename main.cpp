@@ -11,8 +11,67 @@ int main()
     cout << "Just remember to resize and rehash the table when needed + check TODO" << endl;
     cout << "We also still need to add an extra field in the Trees' nodes, for play_tournament" << endl;
     cout << "We should also make sure that the way we are calculating the strength of each team is correct,"
-            "a I have a feeling that it is not" << endl;
+            " I have a feeling that it is not" << endl;
     cout << "Testing the olympics_t class" << endl;
+
+    olympics_t olympics;
+
+    olympics.add_team(11);
+    olympics.add_team(22);
+    olympics.add_team(31);
+
+    olympics.add_team(69);
+    olympics.add_team(420);
+
+    // team 69 and 420 should have the strengths 30 and 20 respectively according to what the
+    // staff wrote in the description of play_match
+    olympics.add_player(69, 1);
+    olympics.add_player(69, 3);
+    olympics.add_player(69, 3);
+    olympics.add_player(69, 5);
+    olympics.add_player(69, 7);
+    olympics.add_player(69, 8);
+
+    olympics.add_player(420, 2);
+    olympics.add_player(420, 4);
+    olympics.add_player(420, 3);
+    olympics.add_player(420, 6);
+    olympics.add_player(420, 6);
+
+//    olympics.printTeams();
+
+    olympics.add_player(11, 11);
+    olympics.add_player(11, 33);
+    olympics.add_player(11, 33);
+
+    olympics.add_player(22, 22);
+    olympics.add_player(22, 44);
+    olympics.add_player(22, 66);
+
+    olympics.add_player(31, 31);
+    olympics.add_player(31, 31);
+
+    olympics.printTeams();
+    cout << endl;
+
+
+    cout << "Team11: ";
+    olympics.printTeam(11);
+    cout << endl;
+    cout << "Team22: ";
+    olympics.printTeam(22);
+    cout << endl;
+    cout << "Team31: ";
+    olympics.printTeam(31);
+    cout << endl;
+
+
+
+    cout << endl;
+    cout << endl;
+
+
+    return 0;
     olympics_t olympics2;
 
     olympics2.add_team(1);
@@ -147,6 +206,7 @@ int main()
     cout << "will work on this later" << endl;
     cout << "*Just fixed this test, but will keep comments here for future reference*" << endl;
     cout << "********************end of test2************************" << endl;
+
     return 0; // end of test2
 
 

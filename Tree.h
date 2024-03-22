@@ -372,7 +372,7 @@ public:
     void inorderPrint(shared_ptr<Node<T>> curr, ostream& os) const{
         if(curr){
             inorderPrint(curr->left, os);
-            os << curr->getID() << ", ";
+            os << string("(ID: ") << curr->getID() << string(" STR: ") << curr->getStrength() << "), ";
             inorderPrint(curr->right, os);
         }
     }

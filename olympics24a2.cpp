@@ -185,7 +185,8 @@ output_t<int> olympics_t::play_match(int teamId1, int teamId2)
         }
     }
 }
-// this works in O(logn)
+
+// this works in O(logn) (should also sum up the extra fields)
 output_t<int> olympics_t::num_wins_for_team(int teamId)
 {
     if(teamId <= 0){
