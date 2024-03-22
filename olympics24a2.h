@@ -18,7 +18,7 @@
 #include "wet2util.h"
 #include "Hashtable.h"
 #include "Team.h"
-#include "strengthtree.h"
+#include "STree.h"
 #include "Tree.h"
 #include "RTree.h"
 

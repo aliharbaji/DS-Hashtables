@@ -6,10 +6,10 @@
 #define AVLTREES_TEAM_H
 
 
-#include "item.h"
+#include "Item.h"
 #include "Tree.h"
 #include "Player.h"
-#include "strengthtree.h"
+#include "STree.h"
 
 #include <iostream>
 
