@@ -203,19 +203,27 @@ output_t<int> olympics_t::num_wins_for_team(int teamId)
 output_t<int> olympics_t::get_highest_ranked_team()
 {
     auto team = teamsByRank.getMax(); // O(1)
+    int size_of_teams = teams.getSize();
 
-    if(teamsByRank.getSize() == 0 && team){ //TODO: delete later
+//    cout << endl;
+//    cout << "teamsByRank size is " << teamsByRank.getSize() << endl;
+//    cout << "teams size is " << teams.getSize() << endl;
+//    cout << "teams size is " << teams.getSize() << endl;
+    if(team && teamsByRank.getSize() == 0){ //TODO: delete later
         throw logic_error("error with maintaining max in teamsByRank tree");
     }
-    // if there are no teams in the tree, return -1
-    if(teamsByRank.getSize() == 0 || team == nullptr){
+
+    if(size_of_teams == 0){
         return output_t<int>(-1);
     }
-
-    // if there are no players in the team, return 0
+    if(team == nullptr){
+        return output_t<int>(0);
+    }
+    // if there are no teams in the tree, return 0
     if(team->getNumberOfPlayers() == 0){
         return output_t<int>(0);
     }
+
     return output_t<int>(team->getRank());
 }
 

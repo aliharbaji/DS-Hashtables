@@ -16,7 +16,9 @@ int main()
 
     olympics_t olympics;
 
+    cout << "highest ranked team's rank should be -1: " << olympics.get_highest_ranked_team().ans() << endl;
     olympics.add_team(11);
+    cout << "highest ranked team's rank should be 0: " << olympics.get_highest_ranked_team().ans() << endl;
     olympics.add_team(22);
     olympics.add_team(31);
 
@@ -64,12 +66,23 @@ int main()
     cout << "Team31: ";
     olympics.printTeam(31);
     cout << endl;
-
-
+    cout << "Team69: ";
+    olympics.printTeam(69);
+    cout << endl;
+    cout << "Team420: ";
+    olympics.printTeam(420);
+    cout << endl;
 
     cout << endl;
+    cout << "playing match between team 69 and team 420, 69 should win:" << endl;
+    olympics.play_match(69, 420);
+
+    cout << "Team69 now has : " << olympics.num_wins_for_team(69).ans() << " wins." << endl;
+    cout << "Team420 now has : " << olympics.num_wins_for_team(420).ans() << " wins." << endl;
     cout << endl;
 
+
+    cout << "highest ranked team's rank is: " << olympics.get_highest_ranked_team().ans() << endl;
 
     return 0;
     olympics_t olympics2;
