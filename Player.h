@@ -18,10 +18,12 @@ public:
     Player& operator=(const Player&)= default;
 
     int getStrength() const {
-
         return strength;
     }
 
+    int getRank() const { // added just in case it is probably redundant
+        return strength;
+    }
 
 
 };
