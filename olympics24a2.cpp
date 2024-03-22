@@ -71,6 +71,9 @@ StatusType olympics_t::add_player(int teamId, int playerStrength)
 
     try{
         // TODO: (probably unnecessary) maybe we should remove the team, update it and re-add it (but this sets the rank and the number of wins to 0 so be careful)
+        teamsByStrength.remove(teamId, team->getStrength()); // O(logn)
+        teamsByRank.remove(teamId, team->getRank()); // O(logn)
+
         team->addPlayer(idGenerator, playerStrength);
         auto player_ptr = team->getNewestPlayer(); // O(1)
 
@@ -78,7 +81,15 @@ StatusType olympics_t::add_player(int teamId, int playerStrength)
             teamsByStrength.insert(team); // O(logn)
             teamsByRank.insert(team); // O(logn)
             teamsWithWinsOrStrength.insert(team); // O(logn)
+            idGenerator++;
+            return StatusType::SUCCESS;
         }
+        teamsByStrength.insert(team); // O(logn)
+        teamsByRank.insert(team); // O(logn)
+        teamsWithWinsOrStrength.insert(team); // O(logn)
+
+
+
     }catch(exception& e){
         // TODO: check if this removes the player for all the trees
         team->removePlayer(idGenerator);
@@ -117,7 +128,20 @@ StatusType olympics_t::remove_newest_player(int teamId)
     try{
         // remove the player from the team and the trees
         int playerID = team->getNewestPlayer()->getID(); // O(1)
+
+        // TODO: this is not working as expected, I need to fix it
+        teamsWithWinsOrStrength.remove(teamId);
+        teamsByStrength.remove(teamId, team->getStrength());
+        teamsByRank.remove(teamId, team->getRank());
+
         team->removePlayer(playerID); // O(logk) this also updates the strengthPlayer
+        // remove the player from the teamsWithWinsOrStrength tree
+
+        // reinsert the team in the trees
+        teamsByRank.insert(team); // O(logn)
+        teamsByStrength.insert(team); // O(logn)
+        teamsWithWinsOrStrength.insert(team); // O(logn)
+
 
 //        auto player = playersByOrder.find(playerID); // O(logk)
 //        playersByOrder.remove(playerID); // O(logk)
@@ -199,7 +223,7 @@ output_t<int> olympics_t::num_wins_for_team(int teamId)
 
     return output_t<int>(team->getNumberOfWins());
 }
-
+// this works in O(1)
 output_t<int> olympics_t::get_highest_ranked_team()
 {
     auto team = teamsByRank.getMax(); // O(1)

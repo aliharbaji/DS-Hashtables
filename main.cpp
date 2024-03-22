@@ -81,9 +81,14 @@ int main()
     cout << "Team420 now has : " << olympics.num_wins_for_team(420).ans() << " wins." << endl;
     cout << endl;
 
+    cout << "This test is failing... (I probably just fixed that)" << endl;
+    cout << "we are probably not updating the teamsByRank tree correctly in play_match and add_player" << endl;
+    cout << "highest ranked team's rank is (which is incorrect) : " << olympics.get_highest_ranked_team().ans() << endl;
+    cout << "removing the newest player from team 22" << endl;
 
+
+    olympics.remove_newest_player(22);
     cout << "highest ranked team's rank is: " << olympics.get_highest_ranked_team().ans() << endl;
-
     return 0;
     olympics_t olympics2;
 
