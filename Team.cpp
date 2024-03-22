@@ -36,6 +36,10 @@ void Team::removePlayer(int playerID) {
     if(!players.remove(playerID) || !playersByStrength.remove(playerID, player->getStrength())) return;
     numberOfPlayers--;
     // find strength player again
+    if(numberOfPlayers == 0){
+        strengthPlayer = nullptr;
+        return;
+    }
     strengthPlayer = playersByStrength.getKthSmallest(numberOfPlayers/2 + 1); // O(logk)
 }
 

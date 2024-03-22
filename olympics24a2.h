@@ -28,15 +28,10 @@ private:
 	// Here you may add anything you want
 	//
 	Hashtable<Team> teams;
-
-    // redundant trees
-//    Tree<Player> playersByOrder; // this tree will be used to remove the newest player
-//    STree<Player> playersByStrength;
-
-
-    Tree<Team> teamsWithWinsOrStrength; // this holds all the teams sorted by their ID
     STree<Team> teamsByStrength;
     RTree<Team> teamsByRank; // TODO: I am certain that teamsByRank does not work as expected, we need to fix it
+//    Tree<Team> teamsWithWinsOrStrength; // this holds all the teams sorted by their ID (probably unnecessary)
+
 
 
     // rank = median strength of team's players * number of players in the team + numOfWins (highest team by rank)

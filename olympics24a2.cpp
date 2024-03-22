@@ -1,6 +1,11 @@
 #include "olympics24a2.h"
 
-olympics_t::olympics_t(): teams(), teamsWithWinsOrStrength(), idGenerator(1), teamsByRank(), teamsByStrength()
+//olympics_t::olympics_t(): teams(), teamsWithWinsOrStrength(), idGenerator(1), teamsByRank(), teamsByStrength()
+//{
+//    // default constructor
+//}
+
+olympics_t::olympics_t(): teams(), idGenerator(1), teamsByRank(), teamsByStrength()
 {
     // default constructor
 }
@@ -45,9 +50,10 @@ StatusType olympics_t::remove_team(int teamId)
         team->removeAllPlayers(); // this removes all the players from the team in O(k) time complexity
         teams.remove(teamId); // this removes the team from the table, and the team's destructor is called
         // remove the team from the teamsWithWinsOrStrength tree
-        teamsWithWinsOrStrength.remove(teamId);
+//        teamsWithWinsOrStrength.remove(teamId);
         teamsByStrength.remove(teamId, team->getStrength());
         teamsByRank.remove(teamId, team->getRank());
+
     }catch (exception& e) {
         return StatusType::ALLOCATION_ERROR;
     }
@@ -80,13 +86,13 @@ StatusType olympics_t::add_player(int teamId, int playerStrength)
         if(team->getNumberOfPlayers() == 1) {
             teamsByStrength.insert(team); // O(logn)
             teamsByRank.insert(team); // O(logn)
-            teamsWithWinsOrStrength.insert(team); // O(logn)
+//            teamsWithWinsOrStrength.insert(team); // O(logn)
             idGenerator++;
             return StatusType::SUCCESS;
         }
         teamsByStrength.insert(team); // O(logn)
         teamsByRank.insert(team); // O(logn)
-        teamsWithWinsOrStrength.insert(team); // O(logn)
+//        teamsWithWinsOrStrength.insert(team); // O(logn)
 
 
 
@@ -130,7 +136,7 @@ StatusType olympics_t::remove_newest_player(int teamId)
         int playerID = team->getNewestPlayer()->getID(); // O(1)
 
         // TODO: this is not working as expected, I need to fix it
-        teamsWithWinsOrStrength.remove(teamId);
+//        teamsWithWinsOrStrength.remove(teamId);
         teamsByStrength.remove(teamId, team->getStrength());
         teamsByRank.remove(teamId, team->getRank());
 
@@ -140,7 +146,7 @@ StatusType olympics_t::remove_newest_player(int teamId)
         // reinsert the team in the trees
         teamsByRank.insert(team); // O(logn)
         teamsByStrength.insert(team); // O(logn)
-        teamsWithWinsOrStrength.insert(team); // O(logn)
+//        teamsWithWinsOrStrength.insert(team); // O(logn)
 
 
 //        auto player = playersByOrder.find(playerID); // O(logk)
@@ -183,28 +189,28 @@ output_t<int> olympics_t::play_match(int teamId1, int teamId2)
 //    cout << "Team2's strength is " << team2Strength << endl;
     if(team1Strength > team2Strength) {
         team1->addWin();
-        if(team1->getNumberOfWins() == 1){
-            teamsWithWinsOrStrength.insert(team1); // O(logn)
-        }
+//        if(team1->getNumberOfWins() == 1){
+//            teamsWithWinsOrStrength.insert(team1); // O(logn)
+//        }
         return output_t<int>(team1->getID());
     }else if(team1Strength < team2Strength){
         team2->addWin();
-        if(team2->getNumberOfWins() == 1){
-            teamsWithWinsOrStrength.insert(team2); // O(logn)
-        }
+//        if(team2->getNumberOfWins() == 1){
+//            teamsWithWinsOrStrength.insert(team2); // O(logn)
+//        }
         return output_t<int>(team2->getID());
     }else{ // in case of a tie, the team with the lower ID wins
         if(team1->getID() < team2->getID()) {
             team1->addWin();
-            if(team1->getNumberOfWins() == 1){
-                teamsWithWinsOrStrength.insert(team1); // O(logn)
-            }
+//            if(team1->getNumberOfWins() == 1){
+//                teamsWithWinsOrStrength.insert(team1); // O(logn)
+//            }
             return output_t<int>(team1->getID());
         }else{
             team2->addWin();
-            if(team2->getNumberOfWins() == 1){
-                teamsWithWinsOrStrength.insert(team2); // O(logn)
-            }
+//            if(team2->getNumberOfWins() == 1){
+//                teamsWithWinsOrStrength.insert(team2); // O(logn)
+//            }
             return output_t<int>(team2->getID());
         }
     }
@@ -228,7 +234,7 @@ output_t<int> olympics_t::get_highest_ranked_team()
 {
     auto team = teamsByRank.getMax(); // O(1)
     int size_of_teams = teams.getSize();
-
+    if(team) cout << "(ID: " << team->getID() << ", #ofPlayers: " << team->getNumberOfPlayers() <<" players.)" << endl;
 //    cout << endl;
 //    cout << "teamsByRank size is " << teamsByRank.getSize() << endl;
 //    cout << "teams size is " << teams.getSize() << endl;

@@ -80,15 +80,49 @@ int main()
     cout << "Team69 now has : " << olympics.num_wins_for_team(69).ans() << " wins." << endl;
     cout << "Team420 now has : " << olympics.num_wins_for_team(420).ans() << " wins." << endl;
     cout << endl;
+    cout << endl;
 
-    cout << "This test is failing... (I probably just fixed that)" << endl;
+    cout << "********************************************" << endl;
+    cout << "This test is failing... (look at the last few lines when removing team 420 from the olympics, "
+            "the new highest ranked team should be updated and should definitely should have an ID that is not 420)" << endl;
     cout << "we are probably not updating the teamsByRank tree correctly in play_match and add_player" << endl;
     cout << "highest ranked team's rank is (which is incorrect) : " << olympics.get_highest_ranked_team().ans() << endl;
     cout << "removing the newest player from team 22" << endl;
-
-
     olympics.remove_newest_player(22);
     cout << "highest ranked team's rank is: " << olympics.get_highest_ranked_team().ans() << endl;
+    cout << "removing the newest player from team 22 again" << endl;
+    olympics.remove_newest_player(22);
+    cout << "highest ranked team's rank is: " << olympics.get_highest_ranked_team().ans() << endl;
+
+    cout << "removing the newest player from team 11" << endl;
+    olympics.remove_newest_player(11);
+    cout << "highest ranked team's rank is: " << olympics.get_highest_ranked_team().ans() << endl;
+    cout << "removing the newest player from team 11 again" << endl;
+    olympics.remove_newest_player(11);
+    cout << "highest ranked team's rank is: " << olympics.get_highest_ranked_team().ans() << endl;
+
+    cout << "removing the newest player from team 22 again" << endl;
+    olympics.remove_newest_player(22);
+    cout << "highest ranked team's rank is: " << olympics.get_highest_ranked_team().ans() << endl;
+
+    cout << "removing the newest player from team 31" << endl;
+    olympics.remove_newest_player(31);
+    cout << "highest ranked team's rank is: " << olympics.get_highest_ranked_team().ans() << endl;
+
+    cout << "removing the newest player from team 31" << endl;
+    olympics.remove_newest_player(31);
+    cout << "highest ranked team's rank is: " << olympics.get_highest_ranked_team().ans() << endl;
+
+    cout << "removing the newest player from team 69" << endl;
+    olympics.remove_newest_player(69);
+    cout << "highest ranked team's rank is: " << olympics.get_highest_ranked_team().ans() << endl;
+    cout << endl;
+    cout << "everything seems to be working fine up until this point..." << endl;
+    cout << "*************removing team 420" << endl;
+    olympics.remove_team(420);
+
+    cout << "*************highest ranked team's rank is: " << olympics.get_highest_ranked_team().ans() << endl;
+    cout << "but we just removed team 420, so the highest ranked team should be team 69 probably" << endl;
     return 0;
     olympics_t olympics2;
 
