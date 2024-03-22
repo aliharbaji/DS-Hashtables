@@ -204,7 +204,7 @@ output_t<int> olympics_t::get_highest_ranked_team()
     auto team = teamsByRank.getMax(); // O(1)
 
     if(teamsByRank.getSize() == 0 && team){ //TODO: delete later
-        throw logic_error("The team with the highest rank is not in the teamsByRank tree");
+        throw logic_error("error with maintaining max in teamsByRank tree");
     }
     // if there are no teams in the tree, return -1
     if(teamsByRank.getSize() == 0 || team == nullptr){
