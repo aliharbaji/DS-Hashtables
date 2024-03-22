@@ -33,9 +33,9 @@ private:
 //    STree<Player> playersByStrength;
 
 
-    Tree<Team> teamsByWins; // we will add teams to this tree NOT IN THE ADD_TEAM FUNCTION, but in the add_player function
-    STree<Team> teamsByRank; // maybe this is the way to go I am still not sure (set the field STree::strength to be the rank of the tree)
+    Tree<Team> teamsWithWinsOrStrength; // this holds all the teams sorted by their ID
     STree<Team> teamsByStrength;
+    STree<Team> teamsByRank; // maybe this is the way to go I am still not sure (set the field STree::strength to be the rank of the tree)
 
     // rank = median strength of team's players * number of players in the team + numOfWins (highest team by rank)
     int idGenerator;

@@ -1,6 +1,6 @@
 #include "olympics24a2.h"
 
-olympics_t::olympics_t(): teams(), teamsByWins(), idGenerator(1), teamsByRank(), teamsByStrength()
+olympics_t::olympics_t(): teams(), teamsWithWinsOrStrength(), idGenerator(1), teamsByRank(), teamsByStrength()
 {
     // default constructor
 }
@@ -30,8 +30,7 @@ StatusType olympics_t::add_team(int teamId)
 }
 
 // TODO: make sure this works in O(logn + k) time complexity
-// TODO: make sure that the players are removed from the playersByOrder and playersByStrength trees
-// TODO: make sure to update the highestRank in case of removal of the team with the heighest rank
+// TODO: make sure to update the highestRank in case of removal of the team with the highest rank
 StatusType olympics_t::remove_team(int teamId)
 {
 	if(teamId <= 0){
@@ -43,17 +42,12 @@ StatusType olympics_t::remove_team(int teamId)
     }
 
     try{
-        team->removeAllPlayers(); // this removes all the players from the team
+        team->removeAllPlayers(); // this removes all the players from the team in O(k) time complexity
         teams.remove(teamId); // this removes the team from the table, and the team's destructor is called
-        // remove the team from the teamsByWins tree
-        teamsByWins.remove(teamId);
-
-        // remove the players from the playersByOrder and playersByStrength trees
-        // think of a way to do this in O(k) time complexity instead of O(klogk)
-
-        // update the highestRank in O(logn) time complexity?
-        // this may require us to add a new STree<Team> teamsByRank; and doing so we can update the highestRank in O(logn) time complexity
-
+        // remove the team from the teamsWithWinsOrStrength tree
+        teamsWithWinsOrStrength.remove(teamId);
+        teamsByStrength.remove(teamId, team->getStrength());
+        teamsByRank.remove(teamId, team->getRank());
     }catch (exception& e) {
         return StatusType::ALLOCATION_ERROR;
     }
@@ -78,16 +72,29 @@ StatusType olympics_t::add_player(int teamId, int playerStrength)
     try{
         // TODO: (probably unnecessary) maybe we should remove the team, update it and re-add it (but this sets the rank and the number of wins to 0 so be careful)
         team->addPlayer(idGenerator, playerStrength);
+        auto player_ptr = team->getNewestPlayer(); // O(1)
 
-        // make a player and add it to the playersByOrder tree
-        auto player_ptr = make_shared<Player>(idGenerator, playerStrength);
-//        playersByOrder.insert(player_ptr);
-//        playersByStrength.insert(player_ptr);
+        if(team->getNumberOfPlayers() == 1) {
+            teamsByStrength.insert(team); // O(logn)
+            teamsByRank.insert(team); // O(logn)
+            teamsWithWinsOrStrength.insert(team); // O(logn)
+        }
     }catch(exception& e){
-        // if the player could not be added, roll back the changes
-        // this does not sit right with me, TODO: check if this is necessary
+        // TODO: check if this removes the player for all the trees
         team->removePlayer(idGenerator);
-//        playersByOrder.remove(idGenerator);
+        // TODO: ask Omar if it's necessary  to remove the player for teamByStrength and teamByRank
+        // *****************************
+
+
+        // *****************************
+
+        // reupdates the trees
+        teamsByRank.remove(teamId, team->getRank()); // O(logn)
+        teamsByStrength.remove(teamId, team->getStrength()); // O(logn)
+
+        teamsByRank.insert(team); // O(logn)
+        teamsByStrength.insert(team); // O(logn)
+
         return StatusType::ALLOCATION_ERROR;
     }
 
@@ -110,14 +117,13 @@ StatusType olympics_t::remove_newest_player(int teamId)
     try{
         // remove the player from the team and the trees
         int playerID = team->getNewestPlayer()->getID(); // O(1)
-        team->removePlayer(playerID); // O(logk)
+        team->removePlayer(playerID); // O(logk) this also updates the strengthPlayer
 
 //        auto player = playersByOrder.find(playerID); // O(logk)
 //        playersByOrder.remove(playerID); // O(logk)
 //        playersByStrength.remove(playerID, player->getStrength()); // O(logn)
     }catch (exception& e){
         // if the player could not be removed, roll back the changes
-        // TODO: check if rolling back the changes is necessary
         return StatusType::ALLOCATION_ERROR;
     }
 
@@ -125,7 +131,7 @@ StatusType olympics_t::remove_newest_player(int teamId)
 }
 
 // this runs in O(logn)
-// TODO: make sure to remove and reinsert the winning team in the teamsByWins tree
+// TODO: make sure to remove and reinsert the winning team in the teamsWithWinsOrStrength tree
 output_t<int> olympics_t::play_match(int teamId1, int teamId2)
 {
     auto team1 = teams.find(teamId1);
@@ -143,7 +149,7 @@ output_t<int> olympics_t::play_match(int teamId1, int teamId2)
     // fixed it to work in O(1) time complexity
     auto playerStrongerThanHalf1 = team1->getStrengthPlayer();
     auto playerStrongerThanHalf2 = team2->getStrengthPlayer();
-    cout << endl;
+//    cout << endl;
 //    cout << "Team1's strength player is " << playerStrongerThanHalf1->getStrength() << endl;
 //    cout << "Team2's strength player is " << playerStrongerThanHalf2->getStrength() << endl;
     int team1Strength = playerStrongerThanHalf1->getStrength() * team1->getNumberOfPlayers();
@@ -154,32 +160,32 @@ output_t<int> olympics_t::play_match(int teamId1, int teamId2)
     if(team1Strength > team2Strength) {
         team1->addWin();
         if(team1->getNumberOfWins() == 1){
-            teamsByWins.insert(team1); // O(logn)
+            teamsWithWinsOrStrength.insert(team1); // O(logn)
         }
         return output_t<int>(team1->getID());
     }else if(team1Strength < team2Strength){
         team2->addWin();
         if(team2->getNumberOfWins() == 1){
-            teamsByWins.insert(team2); // O(logn)
+            teamsWithWinsOrStrength.insert(team2); // O(logn)
         }
         return output_t<int>(team2->getID());
     }else{ // in case of a tie, the team with the lower ID wins
         if(team1->getID() < team2->getID()) {
             team1->addWin();
             if(team1->getNumberOfWins() == 1){
-                teamsByWins.insert(team1); // O(logn)
+                teamsWithWinsOrStrength.insert(team1); // O(logn)
             }
             return output_t<int>(team1->getID());
         }else{
             team2->addWin();
             if(team2->getNumberOfWins() == 1){
-                teamsByWins.insert(team2); // O(logn)
+                teamsWithWinsOrStrength.insert(team2); // O(logn)
             }
             return output_t<int>(team2->getID());
         }
     }
 }
-
+// this works in O(logn)
 output_t<int> olympics_t::num_wins_for_team(int teamId)
 {
     if(teamId <= 0){
@@ -195,8 +201,21 @@ output_t<int> olympics_t::num_wins_for_team(int teamId)
 
 output_t<int> olympics_t::get_highest_ranked_team()
 {
-	// TODO: Your code goes here
-    return teamsByRank.getMax()->getID();
+    auto team = teamsByRank.getMax(); // O(1)
+
+    if(teamsByRank.getSize() == 0 && team){ //TODO: delete later
+        throw logic_error("The team with the highest rank is not in the teamsByRank tree");
+    }
+    // if there are no teams in the tree, return -1
+    if(teamsByRank.getSize() == 0 || team == nullptr){
+        return output_t<int>(-1);
+    }
+
+    // if there are no players in the team, return 0
+    if(team->getNumberOfPlayers() == 0){
+        return output_t<int>(0);
+    }
+    return output_t<int>(team->getRank());
 }
 
 StatusType olympics_t::unite_teams(int teamId1, int teamId2)

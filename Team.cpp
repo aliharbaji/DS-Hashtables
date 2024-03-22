@@ -12,6 +12,7 @@
 //}
 
 int Team::getStrength() const {
+    if(numberOfPlayers == 0) return 0;
     return strengthPlayer->getStrength() * numberOfPlayers;
 }
 
@@ -28,11 +29,14 @@ bool Team::addPlayer(int playerID, int playerStrength) {
     return true;
 }
 
+// logk
 void Team::removePlayer(int playerID) {
     auto player = players.find(playerID);
     if(player == nullptr) return;
     if(!players.remove(playerID) || !playersByStrength.remove(playerID, player->getStrength())) return;
     numberOfPlayers--;
+    // find strength player again
+    strengthPlayer = playersByStrength.getKthSmallest(numberOfPlayers/2 + 1); // O(logk)
 }
 
 int Team::getNumberOfPlayers() const {
@@ -45,6 +49,7 @@ void Team::printTeam() const {
 }
 
 shared_ptr<Player> Team::getStrengthPlayer() {
+    if (numberOfPlayers == 0) return nullptr;
     return strengthPlayer;
 }
 
@@ -57,6 +62,7 @@ int Team::getNumberOfWins() const {
 }
 
 int Team::getRank() const {
+    if (numberOfPlayers == 0) return numberOfPlayers;
     return numberOfWins + this->getStrength();
 }
 
@@ -76,6 +82,16 @@ shared_ptr<Player> Team::getNewestPlayer() const {
     return player;
 }
 
+void Team::insert_ptr(shared_ptr<Player> player) {
+    players.insert(player);
+    playersByStrength.insert(player);
+    numberOfPlayers++;
+    strengthPlayer = playersByStrength.getKthSmallest(numberOfPlayers/2 + 1);
+}
+
+shared_ptr<Player> Team::findPlayer(int playerID) {
+    return players.find(playerID);
+}
 
 
 

@@ -18,6 +18,7 @@ public:
     Player& operator=(const Player&)= default;
 
     int getStrength() const {
+
         return strength;
     }
 

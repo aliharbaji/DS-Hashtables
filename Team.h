@@ -53,6 +53,10 @@ public:
     shared_ptr<Player> getNewestPlayer() const;
 
     unique_ptr<Player[]> getPlayers() const;
+
+    void insert_ptr(shared_ptr<Player> player);
+
+    shared_ptr<Player> findPlayer(int playerID);
 };
 
 
