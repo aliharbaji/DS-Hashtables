@@ -304,6 +304,7 @@ public:
 
     // Inserts item. Returns false in case of duplication. True otherwise.
     bool insert(shared_ptr<T> item){
+        if(!this) throw logic_error("Cannot insert null item.");
         if (contains(item->getID())) return false;
 
         root = insertRecursively(root, item);

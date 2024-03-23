@@ -16,16 +16,16 @@
 class Team : public Item {
     int strength;
     //TODO: these are also better as pointers to trees imo.
-    Tree<Player> players;
-    STree<Player> playersByStrength;
+    shared_ptr<Tree<Player>> players;
+    shared_ptr<STree<Player>> playersByStrength;
     int numberOfPlayers;
     int numberOfWins;
     shared_ptr<Player> strengthPlayer; // this is the player with the median strength
 
 public:
     explicit Team(int teamID)
-            : Item(teamID), strength(0), players(), numberOfPlayers(0),
-            numberOfWins(0), strengthPlayer(nullptr)
+            : Item(teamID), strength(0), players(make_shared<Tree<Player>>()), numberOfPlayers(0),
+            numberOfWins(0), strengthPlayer(nullptr), playersByStrength(make_shared<STree<Player>>())
     {}
 
     Team(const Team&) = delete;

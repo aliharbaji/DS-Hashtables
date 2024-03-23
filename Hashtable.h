@@ -19,7 +19,7 @@ template <class T>
 class Hashtable {
 private:
     //TODO: need to reconsider this I think. It's better to have an array of pointers to the trees instead of holding the tree objects in the array itself.
-    unique_ptr<unique_ptr<Tree<T>>[]> table; // table of trees. Unique pointer to an array of unique pointer to trees.
+    unique_ptr<shared_ptr<Tree<T>>[]> table; // table of trees. Unique pointer to an array of unique pointer to trees.
     int size;
     int capacity;
     float load_factor; // maybe it is a good idea to increment this field when removing an element and counting
@@ -28,9 +28,9 @@ private:
     // maybe this should be a static field of the class, so that we can give an id to each player that is added to the table
 public:
     Hashtable(): size(0), capacity(DEFAULT_CAPACITY), load_factor(0.0f), total_elements_added(0) {
-        table = make_unique<unique_ptr<Tree<T>>[]>(DEFAULT_CAPACITY);
+        table = make_unique<shared_ptr<Tree<T>>[]>(DEFAULT_CAPACITY);
         for (int i = 0; i < DEFAULT_CAPACITY; ++i) {
-            table[i] = make_unique<Tree<T>>();
+            table[i] = make_shared<Tree<T>>();
         }
     }
 
@@ -38,13 +38,13 @@ public:
     ~Hashtable() = default;
 
 
-    const unique_ptr<Tree<T>>& operator[](int index) const{
+    const shared_ptr<Tree<T>>& operator[](int index) const{
         // return the team at index
         return table[index];
     }
 
 
-    unique_ptr<Tree<T>>& operator[](int index){
+    shared_ptr<Tree<T>>& operator[](int index){
         // return the team at index
         return table[index];
     }
@@ -126,7 +126,7 @@ public:
 
     void printHashTable(){
         for(int i = 0; i < capacity; i++) {
-            cout << table[i] << " ";
+            cout << *table[i] << " ";
         }
         cout << "***: size: " << size << " capacity: " << capacity << " load factor: " << load_factor;
         cout << endl;
@@ -140,7 +140,11 @@ public:
     //maybe this function can be the overloaded operator [].
     shared_ptr<T> find(int key){
         int index = hash(key);
+
+
         return table[index]->find(key);
+
+//        return table[index]->find(key);
     }
 
     int getTotalElementsAdded(){

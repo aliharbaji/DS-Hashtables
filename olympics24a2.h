@@ -21,6 +21,8 @@
 #include "STree.h"
 #include "Tree.h"
 
+
+
 class olympics_t {
 private:
 	//
@@ -32,7 +34,7 @@ private:
 	Hashtable<Team> teams;
     STree<Team> teamsByStrength;
 //    Tree<Team> teamsWithWinsOrStrength; // this holds all the teams sorted by their ID (probably unnecessary)
-
+//    RTree<Team> teamsByRank; // this holds all the teams sorted by their rank
 
 
     // rank = median strength of team's players * number of players in the team + numOfWins (highest team by rank)
@@ -43,13 +45,14 @@ public:
     // TODO: delete later:
     void printTeam(int teamId){
         auto team = teams.find(teamId);
+        if(!team) return;
         team->printTeam();
     }
     // TODO: delete later
     void printTeams(){
         for(int i = 0; i < teams.getCapacity(); i++){
             cout << "Teams at index " << i << ": ";
-            cout << teams[i] << endl;
+            cout << *teams[i] << endl;
 
         }
     }
