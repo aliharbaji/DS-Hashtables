@@ -20,7 +20,7 @@
 #include "Team.h"
 #include "STree.h"
 #include "Tree.h"
-
+#include <memory>
 
 
 class olympics_t {
