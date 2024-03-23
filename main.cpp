@@ -57,21 +57,17 @@ int main()
     cout << endl;
 
 
-    cout << "Team11: ";
+
     olympics.printTeam(11);
-    cout << endl;
-    cout << "Team22: ";
+
     olympics.printTeam(22);
-    cout << endl;
-    cout << "Team31: ";
+
     olympics.printTeam(31);
-    cout << endl;
-    cout << "Team69: ";
+
     olympics.printTeam(69);
-    cout << endl;
-    cout << "Team420: ";
+
     olympics.printTeam(420);
-    cout << endl;
+
 
     cout << endl;
     cout << "playing match between team 69 and team 420, 69 should win:" << endl;

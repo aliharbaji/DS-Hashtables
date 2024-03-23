@@ -49,7 +49,9 @@ int Team::getNumberOfPlayers() const {
 
 
 void Team::printTeam() const {
+    cout << "Team " << this->getID() << ": ";
     players->inorderPrint(players->root, cout);
+    cout << "Strength: " << this->getStrength() << endl;
 }
 
 shared_ptr<Player> Team::getStrengthPlayer() {
