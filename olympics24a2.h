@@ -32,7 +32,7 @@ private:
     //TODO: if they're pointers we can easily change these fields to point to the newly created datastructures and the old ones
     //TODO: will be destroyed automatically. instead of having to write assignment operator, move, copy, etc...
 	Hashtable<Team> teams;
-    STree<Team> teamsByStrength;
+    shared_ptr<STree<Team>> teamsByStrength;
 //    Tree<Team> teamsWithWinsOrStrength; // this holds all the teams sorted by their ID (probably unnecessary)
 //    RTree<Team> teamsByRank; // this holds all the teams sorted by their rank
 

@@ -5,7 +5,7 @@
 //    // default constructor
 //}
 
-olympics_t::olympics_t(): teams(), idGenerator(1), teamsByStrength()
+olympics_t::olympics_t(): teams(), idGenerator(1), teamsByStrength(make_shared<STree<Team>>())
 {
     // default constructor
 }
@@ -51,7 +51,7 @@ StatusType olympics_t::remove_team(int teamId)
         teams.remove(teamId); // this removes the team from the table, and the team's destructor is called
         // remove the team from the teamsWithWinsOrStrength tree
 //        teamsWithWinsOrStrength.remove(teamId);
-        teamsByStrength.remove(teamId, team->getStrength());
+        teamsByStrength->remove(teamId, team->getStrength());
 //        teamsByRank.remove(teamId, team->getRank());
 
     }catch (exception& e) {
@@ -77,20 +77,20 @@ StatusType olympics_t::add_player(int teamId, int playerStrength)
 
     try{
         // TODO: (probably unnecessary) maybe we should remove the team, update it and re-add it (but this sets the rank and the number of wins to 0 so be careful)
-        teamsByStrength.remove(teamId, team->getStrength()); // O(logn)
+        teamsByStrength->remove(teamId, team->getStrength()); // O(logn)
 //        teamsByRank.remove(teamId, team->getRank()); // O(logn)
 
         team->addPlayer(idGenerator, playerStrength);
         auto player_ptr = team->getNewestPlayer(); // O(1)
 
         if(team->getNumberOfPlayers() == 1) {
-            teamsByStrength.insert(team); // O(logn)
+            teamsByStrength->insert(team); // O(logn)
 //            teamsByRank.insert(team); // O(logn)
 //            teamsWithWinsOrStrength.insert(team); // O(logn)
             idGenerator++;
             return StatusType::SUCCESS;
         }
-        teamsByStrength.insert(team); // O(logn)
+        teamsByStrength->insert(team); // O(logn)
 //        teamsByRank.insert(team); // O(logn)
 //        teamsWithWinsOrStrength.insert(team); // O(logn)
 
@@ -107,10 +107,10 @@ StatusType olympics_t::add_player(int teamId, int playerStrength)
 
         // reupdates the trees
 //        teamsByRank.remove(teamId, team->getRank()); // O(logn)
-        teamsByStrength.remove(teamId, team->getStrength()); // O(logn)
+        teamsByStrength->remove(teamId, team->getStrength()); // O(logn)
 
 //        teamsByRank.insert(team); // O(logn)
-        teamsByStrength.insert(team); // O(logn)
+        teamsByStrength->insert(team); // O(logn)
 
         return StatusType::ALLOCATION_ERROR;
     }
@@ -137,7 +137,7 @@ StatusType olympics_t::remove_newest_player(int teamId)
 
         // TODO: this is not working as expected, I need to fix it
 //        teamsWithWinsOrStrength.remove(teamId);
-        teamsByStrength.remove(teamId, team->getStrength());
+        teamsByStrength->remove(teamId, team->getStrength());
 //        teamsByRank.remove(teamId, team->getRank());
 
         team->removePlayer(playerID); // O(logk) this also updates the strengthPlayer
@@ -145,7 +145,7 @@ StatusType olympics_t::remove_newest_player(int teamId)
 
         // reinsert the team in the trees
 //        teamsByRank.insert(team); // O(logn)
-        teamsByStrength.insert(team); // O(logn)
+        teamsByStrength->insert(team); // O(logn)
 //        teamsWithWinsOrStrength.insert(team); // O(logn)
 
 
