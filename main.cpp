@@ -24,6 +24,11 @@ int main()
 
     olympics.add_team(69);
     olympics.add_team(420);
+    olympics.printTeams();
+
+    cout << endl;
+    olympics.remove_team(11111111);
+
 
     // team 69 and 420 should have the strengths 30 and 20 respectively according to what the
     // staff wrote in the description of play_match
@@ -40,7 +45,7 @@ int main()
     olympics.add_player(420, 6);
     olympics.add_player(420, 6);
 
-//    olympics.printTeams();
+
 
     olympics.add_player(11, 11);
     olympics.add_player(11, 33);
@@ -68,6 +73,10 @@ int main()
 
     olympics.printTeam(420);
 
+    cout << "removing 2 newest players from team 420" << endl;
+    olympics.remove_newest_player(420);
+    olympics.remove_newest_player(420);
+    olympics.printTeam(420);
 
     cout << endl;
     cout << "playing match between team 69 and team 420, 69 should win:" << endl;
@@ -78,7 +87,8 @@ int main()
     cout << endl;
     cout << endl;
 
-    cout << "********************************************" << endl;
+    // TODO: Omar, check if this test is working after you've done your changes
+    cout << "********************After Omar finishes his changes to SNode, this should work properly************************" << endl;
     cout << "This test is failing... (look at the last few lines when removing team 420 from the olympics, "
             "the new highest ranked team should be updated and should definitely should have an ID that is not 420)" << endl;
     cout << "we are probably not updating the teamsByRank tree correctly in play_match and add_player" << endl;
