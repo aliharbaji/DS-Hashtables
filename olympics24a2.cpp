@@ -49,10 +49,7 @@ StatusType olympics_t::remove_team(int teamId)
     try{
         team->removeAllPlayers(); // this removes all the players from the team in O(k) time complexity
         teams.remove(teamId); // this removes the team from the table, and the team's destructor is called
-        // remove the team from the teamsWithWinsOrStrength tree
-//        teamsWithWinsOrStrength.remove(teamId);
         teamsByStrength->remove(teamId, team->getStrength());
-//        teamsByRank.remove(teamId, team->getRank());
 
     }catch (exception& e) {
         return StatusType::ALLOCATION_ERROR;
@@ -76,21 +73,15 @@ StatusType olympics_t::add_player(int teamId, int playerStrength)
     }
 
     try{
-        // TODO: (probably unnecessary) maybe we should remove the team, update it and re-add it (but this sets the rank and the number of wins to 0 so be careful)
+
         teamsByStrength->remove(teamId, team->getStrength()); // O(logn)
-//        teamsByRank.remove(teamId, team->getRank()); // O(logn)
-
         team->addPlayer(idGenerator, playerStrength);
-        auto player_ptr = team->getNewestPlayer(); // O(1)
-
-        if(team->getNumberOfPlayers() == 1) {
-            teamsByStrength->insert(team); // O(logn)
-//            teamsByRank.insert(team); // O(logn)
-//            teamsWithWinsOrStrength.insert(team); // O(logn)
-            idGenerator++;
-            return StatusType::SUCCESS;
-        }
         teamsByStrength->insert(team); // O(logn)
+
+        idGenerator++;
+
+
+
 //        teamsByRank.insert(team); // O(logn)
 //        teamsWithWinsOrStrength.insert(team); // O(logn)
 
@@ -104,14 +95,6 @@ StatusType olympics_t::add_player(int teamId, int playerStrength)
 
 
         // *****************************
-
-        // reupdates the trees
-//        teamsByRank.remove(teamId, team->getRank()); // O(logn)
-        teamsByStrength->remove(teamId, team->getStrength()); // O(logn)
-
-//        teamsByRank.insert(team); // O(logn)
-        teamsByStrength->insert(team); // O(logn)
-
         return StatusType::ALLOCATION_ERROR;
     }
 
