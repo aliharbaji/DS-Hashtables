@@ -28,13 +28,13 @@ public:
     int size; //We need to know the size of each subtree for efficiently dividing the tree into subtrees.
     shared_ptr<SNode<T>> left, right;
     shared_ptr<SNode<T>> parent;
-    int extra; //need to upkeep this during insert/removal in strength tree
     shared_ptr<SNode<T>> maxRankTeam; //contains the maxRankTeam in the node's subtree.
+    int extra; //need to upkeep this during insert/removal in strength tree
     //need to upkeep this during insert/removal tree(doesn't hurt complexity of the tree). For the get highest_ranked_team function
     // we would simply return the maxRankTeam at the root node. O(1).
 
     explicit SNode(shared_ptr<T> data): data(data),  height(0), size(1),
-                              left(nullptr), right(nullptr), maxRankTeam(nullptr), parent(), extra(0){}
+                              left(nullptr), right(nullptr), parent(), maxRankTeam(nullptr), extra(0){}
 
     int getID() const {
         return data->getID();
@@ -52,7 +52,8 @@ public:
     }
 
     int getRank() const{
-        return data->getRank();
+        if(maxRankTeam == nullptr) return 0;
+        return maxRankTeam->data->getRank();
     }
 
 };

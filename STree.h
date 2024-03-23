@@ -446,6 +446,11 @@ public:
     shared_ptr<T> getKthSmallest(int k) {
         return findKthSmallest(root, k)->data;
     }
+
+    int getHighestRank() const{
+        if(root == nullptr) return 0;
+        return root->getRank();
+    }
 };
 
 

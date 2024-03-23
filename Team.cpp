@@ -66,7 +66,7 @@ void Team::addWin() {
 int Team::getNumberOfWins() const {
     return numberOfWins;
 }
-
+// TODO: this has to be changed to work with extras field I think
 int Team::getRank() const {
     if (numberOfPlayers == 0) return numberOfPlayers;
     return numberOfWins + this->getStrength();

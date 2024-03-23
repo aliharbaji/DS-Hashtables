@@ -118,23 +118,11 @@ StatusType olympics_t::remove_newest_player(int teamId)
         // remove the player from the team and the trees
         int playerID = team->getNewestPlayer()->getID(); // O(1)
 
-        // TODO: this is not working as expected, I need to fix it
-//        teamsWithWinsOrStrength.remove(teamId);
-        teamsByStrength->remove(teamId, team->getStrength());
-//        teamsByRank.remove(teamId, team->getRank());
+        teamsByStrength->remove(teamId, team->getStrength()); // O(logn)
 
         team->removePlayer(playerID); // O(logk) this also updates the strengthPlayer
-        // remove the player from the teamsWithWinsOrStrength tree
 
-        // reinsert the team in the trees
-//        teamsByRank.insert(team); // O(logn)
         teamsByStrength->insert(team); // O(logn)
-//        teamsWithWinsOrStrength.insert(team); // O(logn)
-
-
-//        auto player = playersByOrder.find(playerID); // O(logk)
-//        playersByOrder.remove(playerID); // O(logk)
-//        playersByStrength.remove(playerID, player->getStrength()); // O(logn)
     }catch (exception& e){
         // if the player could not be removed, roll back the changes
         return StatusType::ALLOCATION_ERROR;
@@ -144,7 +132,7 @@ StatusType olympics_t::remove_newest_player(int teamId)
 }
 
 // this runs in O(logn)
-// TODO: make sure to remove and reinsert the winning team in the teamsWithWinsOrStrength tree
+// TODO: make sure to remove and reinsert the winning team ???
 output_t<int> olympics_t::play_match(int teamId1, int teamId2)
 {
     auto team1 = teams.find(teamId1);
@@ -213,39 +201,17 @@ output_t<int> olympics_t::num_wins_for_team(int teamId)
     return output_t<int>(team->getNumberOfWins());
 }
 
+// this should work in O(1) time complexity
 output_t<int> olympics_t::get_highest_ranked_team(){
-    return output_t<int>(0);
+    if(teams.getSize() == 0){
+        return output_t<int>(-1);
+    }
+
+    int highestRank = teamsByStrength->getHighestRank(); // O(1)
+
+    return output_t<int>(highestRank);
 }
 
-
-// this works in O(1)
-//output_t<int> olympics_t::get_highest_ranked_team()
-//{
-//    auto team = teamsByRank.getMax(); // O(1)
-//
-//    int size_of_teams = teams.getSize();
-//    if(team) cout << "(ID: " << team->getID() << ", #ofPlayers: " << team->getNumberOfPlayers() <<" players.)" << endl;
-////    cout << endl;
-////    cout << "teamsByRank size is " << teamsByRank.getSize() << endl;
-////    cout << "teams size is " << teams.getSize() << endl;
-////    cout << "teams size is " << teams.getSize() << endl;
-//    if(team && teamsByRank.getSize() == 0){ //TODO: delete later
-//        throw logic_error("error with maintaining max in teamsByRank tree");
-//    }
-//
-//    if(size_of_teams == 0){
-//        return output_t<int>(-1);
-//    }
-//    if(team == nullptr){
-//        return output_t<int>(0);
-//    }
-//    // if there are no teams in the tree, return 0
-//    if(team->getNumberOfPlayers() == 0){
-//        return output_t<int>(0);
-//    }
-//
-//    return output_t<int>(team->getRank());
-//}
 
 StatusType olympics_t::unite_teams(int teamId1, int teamId2)
 {
