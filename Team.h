@@ -15,6 +15,7 @@
 
 class Team : public Item {
     int strength;
+    //TODO: these are also better as pointers to trees imo.
     Tree<Player> players;
     STree<Player> playersByStrength;
     int numberOfPlayers;

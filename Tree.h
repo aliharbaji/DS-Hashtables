@@ -6,6 +6,7 @@
 #include <math.h>
 #ifndef AVLTREES_TREE_H
 template <typename T>
+
 class Tree{
     template <typename U> friend class Node;
     friend class Team;
@@ -19,6 +20,8 @@ private:
 
 
     //for team algorithms.
+
+
     shared_ptr<Node<T>> findKthSmallest(shared_ptr<Node<T>> node, int k) {
 //        if (!node || k==0) return nullptr; // Check for null node
         // this is probably a bug, if k==0, we should return the node, not nullptr
@@ -68,31 +71,31 @@ private:
         if (balance > 1 && getBalance(node->left) >= 0){
             return rightRotate(node);
         }
-        //RR
+            //RR
         else if (balance < -1 && getBalance(node->right) <= 0){
             return leftRotate(node);
         }
 
-        //Left-Right Heavy. We rotate the left subtree to the left, then we rotate the current tree to the right.
+            //Left-Right Heavy. We rotate the left subtree to the left, then we rotate the current tree to the right.
         else if (balance > 1 && getBalance(node->left) < 0){
             node->left = leftRotate(node->left);
             return rightRotate(node);
         }
-        //RL
+            //RL
         else if (balance < - 1 && getBalance(node->right) > 0){
             node->right = rightRotate(node->right);
             return leftRotate(node);
         }
         return node;
 
-        }
+    }
 
     void deleteRecursively(shared_ptr<Node<T>>& node, int ID){
         if (node == nullptr) return;
         if (ID < node->getID()) deleteRecursively(node->left, ID);
         else if (ID > node->getID()) deleteRecursively(node->right, ID);
 
-        // found the node
+            // found the node
         else{
             // node has 1 or fewer children
             if (node->right == nullptr || node->left == nullptr){
@@ -105,9 +108,9 @@ private:
                     }
                     node = nullptr;
                 }
-                // 1 child case
+                    // 1 child case
                 else{
-                     child->parent = node->parent;
+                    child->parent = node->parent;
                     if (node->parent != nullptr) {
                         if (node->parent->left == node) node->parent->left = child;
                         else node->parent->right = child;
@@ -122,12 +125,12 @@ private:
                     if (node->right) node->right->parent = node; */
                 }
             }
-            // 2 child case
+                // 2 child case
             else{
                 // find the smallest child in the right subtree to become new root
-               auto minNode = getMinNode(node->right);
-               node->data = minNode->data;
-               deleteRecursively(node->right, minNode->getID());
+                auto minNode = getMinNode(node->right);
+                node->data = minNode->data;
+                deleteRecursively(node->right, minNode->getID());
             }
 
 
@@ -272,15 +275,7 @@ public:
     Tree() : root(nullptr), maximum(nullptr), minimum(nullptr), size(0){}
     //constructor for a tree based on an array and its size.
     Tree(const Tree&) = delete;
-    Tree& operator=(const Tree& tree){
-        if(this == &tree) return *this;
-
-        root = tree.root;
-        size = tree.size;
-        minimum = tree.minimum;
-        maximum = tree.maximum;
-        return *this;
-    }
+    Tree& operator=(const Tree&)= delete;
     ~Tree(){
         clearParents(root);
     }//Necessary to break cyclical pointers and appropriately deallocate memory.
@@ -329,12 +324,12 @@ public:
 
     // self_explanatory. Returns the data of the biggest member. Returns null in case of empty so careful.
     shared_ptr<T> getMax() const{
-        if (size) return maximum->data;
+        if (size && maximum!=nullptr) return maximum->data;
         else return nullptr;
     }
 
     shared_ptr<T> getMin() const{
-        if (size) return minimum->data;
+        if (size && minimum!=nullptr) return minimum->data;
         else return nullptr;
     }
 
@@ -369,6 +364,11 @@ public:
         return arr;
     }
 
+    shared_ptr<T> getKthSmallest(int k) {
+        return findKthSmallest(root, k)->data;
+    }
+
+
     void inorderPrint(shared_ptr<Node<T>> curr, ostream& os) const{
         if(curr){
             inorderPrint(curr->left, os);
@@ -376,8 +376,6 @@ public:
             inorderPrint(curr->right, os);
         }
     }
-
-
 
     friend ostream& operator<<(ostream& os, const Tree& tree){
         if(tree.root == nullptr){
@@ -390,6 +388,7 @@ public:
         os << std::string("]");
         return os;
     }
+
 };
 #define AVLTREES_TREE_H
 

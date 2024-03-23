@@ -21,10 +21,9 @@ public:
     int size; //We need to know the size of each subtree for efficiently dividing the tree into subtrees.
     shared_ptr<Node<T>> left, right;
     shared_ptr<Node<T>> parent;
-    int extra;
 
-    Node(shared_ptr<T> data): data(data),  height(0), size(1),
-    left(nullptr), right(nullptr), parent(), extra(0){}
+    explicit Node(shared_ptr<T> data): data(data),  height(0), size(1),
+    left(nullptr), right(nullptr), parent(){}
 
     int getID() const {
         return data->getID();

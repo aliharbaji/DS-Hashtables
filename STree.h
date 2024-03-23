@@ -7,7 +7,7 @@
 //
 // Created by allih on 15/02/2024.
 //
-#include "node.h"
+#include "SNode.h"
 #include <stdexcept>
 #include <iostream>
 
@@ -15,18 +15,18 @@
 template <typename T>
 
 class STree{
-    template <typename U> friend class Node;
+    template <typename U> friend class SNode;
     friend class Team;
 private:
-    shared_ptr<Node<T>> root;
+    shared_ptr<SNode<T>> root;
     int size;
-    bool miniTree;
-    shared_ptr<Node<T>> maximum;
-    shared_ptr<Node<T>> minimum;
+    shared_ptr<SNode<T>> maximum;
+    shared_ptr<SNode<T>> minimum;
     //Adjusted logic to compare based on strength and in case of strength equality to compare based on ID.
 
     //necessary for Team
-    shared_ptr<Node<T>> findKthSmallest(shared_ptr<Node<T>> node, int k) {
+
+    shared_ptr<SNode<T>> findKthSmallest(shared_ptr<SNode<T>> node, int k) {
         if (!node || k == 0) return nullptr;
 
         int leftSize = node->left ? node->left->size : 0;
@@ -39,7 +39,7 @@ private:
             return findKthSmallest(node->right, k - leftSize - 1);
         }
     }
-    void clearParents(std::shared_ptr<Node<T>> node) {
+    void clearParents(std::shared_ptr<SNode<T>> node) {
         if (node != nullptr) {
             if (node->left != nullptr) {
                 clearParents(node->left);
@@ -52,8 +52,8 @@ private:
         }
     }
 
-    shared_ptr<Node<T>> insertRecursively(shared_ptr<Node<T>> node, shared_ptr<T> item){
-        if (node == nullptr) return make_shared<Node<T>>(item);
+    shared_ptr<SNode<T>> insertRecursively(shared_ptr<SNode<T>> node, shared_ptr<T> item){
+        if (node == nullptr) return make_shared<SNode<T>>(item);
 
         bool isLeft = false, isRight = false;
 
@@ -63,7 +63,7 @@ private:
         }
 
         else if (item->getStrength() > node->getStrength() ||
-                   (item->getStrength() == node->getStrength() && item->getID() > node->getID())) {
+                 (item->getStrength() == node->getStrength() && item->getID() > node->getID())) {
             isRight = true;
         }
 
@@ -78,7 +78,6 @@ private:
             node->right=rightChild;
             if (rightChild) rightChild->parent=node;
         }
-        else throw logic_error("Trying to insert a duplicate after duplication was ruled out");
 
         node->height = 1 + max(getHeight(node->left), getHeight(node->right));
         int balance = getBalance(node);
@@ -107,19 +106,19 @@ private:
     }
 
     //delete now searches based on strength and ID TODO: fix this, it contains a bug
-    bool deleteRecursively(shared_ptr<Node<T>>& node, int ID, int strength){
+    bool deleteRecursively(shared_ptr<SNode<T>>& node, int ID, int strength){
         if (node == nullptr) return false;
 
         bool isLeft = false, isRight = false;
         bool deleted;
 
         if (strength < node->getStrength() ||
-           (strength == node->getStrength() && ID < node->getID())) {
+            (strength == node->getStrength() && ID < node->getID())) {
             isLeft = true;
         }
 
         else if (strength > node->getStrength() ||
-                (strength == node->getStrength() && ID > node->getID())) {
+                 (strength == node->getStrength() && ID > node->getID())) {
             isRight = true;
         }
 
@@ -202,7 +201,7 @@ private:
 
 
 
-    shared_ptr<Node<T>> rightRotate(shared_ptr<Node<T>> node){
+    shared_ptr<SNode<T>> rightRotate(shared_ptr<SNode<T>> node){
         auto leftChild = node->left;
         auto subTree = leftChild->right;
         //rotating
@@ -223,7 +222,7 @@ private:
 
     }
 
-    shared_ptr<Node<T>> leftRotate(shared_ptr<Node<T>> node){
+    shared_ptr<SNode<T>> leftRotate(shared_ptr<SNode<T>> node){
         auto rightChild = node->right;
         auto subTree = rightChild->left;
         //rotating
@@ -246,7 +245,7 @@ private:
     }
 
 
-    bool containsRecursively(shared_ptr<Node<T>> node, int ID, int strength) const{
+    bool containsRecursively(shared_ptr<SNode<T>> node, int ID, int strength) const{
         if (node == nullptr) return false;
         bool isLeft = false;
 
@@ -260,7 +259,7 @@ private:
         else return containsRecursively(node->right, ID);
     }
 
-    shared_ptr<T> findRecursively(shared_ptr<Node<T>> node, int ID, int strength) const{
+    shared_ptr<T> findRecursively(shared_ptr<SNode<T>> node, int ID, int strength) const{
         if (node == nullptr) return nullptr;
 
         bool isLeft = false;
@@ -274,12 +273,12 @@ private:
         else return findRecursively(node->right, ID);
     }
 
-    int getHeight(shared_ptr<Node<T>> node) const{
+    int getHeight(shared_ptr<SNode<T>> node) const{
         if (node == nullptr) return -1;
         else return node->height;
     }
 
-    shared_ptr<Node<T>> getMinNode(shared_ptr<Node<T>> node){
+    shared_ptr<SNode<T>> getMinNode(shared_ptr<SNode<T>> node){
         if (!node) return nullptr;
         auto current = node;
         while (current->left != nullptr){
@@ -287,7 +286,7 @@ private:
         }
         return current;
     }
-    shared_ptr<Node<T>> getMaxNode(shared_ptr<Node<T>> node){
+    shared_ptr<SNode<T>> getMaxNode(shared_ptr<SNode<T>> node){
         if (!node) return nullptr;
         auto current = node;
         while (current->right != nullptr){
@@ -296,19 +295,48 @@ private:
         return current;
     }
 
-    int getBalance(shared_ptr<Node<T>> node) const{
+    int getBalance(shared_ptr<SNode<T>> node) const{
         if (node == nullptr) return -1;
         else return node->getBF();
+    }
+
+    shared_ptr<SNode<T>> sortedArrayToAVL(shared_ptr<T>* arr, int start, int end) {
+        if (start > end)
+            return nullptr;
+
+        int mid = start + (end - start) / 2;
+        auto node = make_shared<SNode<T>>(arr[mid]);
+
+        node->left = sortedArrayToAVL(arr, start, mid - 1);
+        node->right = sortedArrayToAVL(arr, mid + 1, end);
+
+        node->height = 1 + max(getHeight(node->left), getHeight(node->right));
+        node->size = 1 + getSize(node->left) + getSize(node->right);
+
+        return node;
     }
 
 
 public:
 
-    explicit STree(bool miniTree = true) : root(nullptr), size(0), miniTree(miniTree), maximum(nullptr), minimum(nullptr){}
+    explicit STree() : root(nullptr), size(0), maximum(nullptr), minimum(nullptr){}
     STree(const STree&) = delete;
-    STree& operator=(const STree&) = default;
+    STree& operator=(const STree&)= delete;
     ~STree(){
         clearParents(root);
+    }
+
+    STree(shared_ptr<T>* arr, int size) : size(size) {
+        if(size) root = sortedArrayToAVL(arr, 0, size - 1);
+        else root = nullptr;
+        minimum = root;
+        while (minimum != nullptr && minimum->left != nullptr) {
+            minimum = minimum->left;
+        }
+        maximum = root;
+        while (maximum != nullptr && maximum->right != nullptr) {
+            maximum = maximum->right;
+        }
     }
 
 
@@ -318,19 +346,14 @@ public:
     }
 
 
+    //TODO: adapt contain and find to strength. Probably unecessary because we should check for duplication before insertion into STree.
     bool contains(const int ID) const{
         return containsRecursively(root, ID);
     }
 
     // Inserts item. Returns false in case of duplication. True otherwise.
     bool insert(shared_ptr<T> item){
-        try {
-            root = insertRecursively(root, item);
-        }
-        catch(const bad_alloc& e){
-            throw;
-            //Need to manage this exception in the olympics class.
-        }
+        root = insertRecursively(root, item);
         size++;
         minimum = getMinNode(root);
         maximum = getMaxNode(root);
@@ -340,6 +363,9 @@ public:
     bool remove(const int ID, const int strength){
         if (!size) return false;
         if (deleteRecursively(root, ID, strength)) {
+            // TODO: I think that we should add an if statement here to check whether or not the deletion was successful,
+            //  before updating the size and minimum and maximum.
+            //You're absolutely right.
             size--;
             minimum = getMinNode(root);
             maximum = getMaxNode(root);
@@ -349,27 +375,27 @@ public:
     }
 
     shared_ptr<T> getMax(){
-        if (size && maximum != nullptr) return maximum->data;
+        if (size && maximum!=nullptr) return maximum->data;
         else return nullptr;
     }
 
     int getMaxStrength(){
-        if (size && maximum != nullptr) return maximum->data->getStrength();
+        if (size && maximum!=nullptr) return maximum->data->getStrength();
         else return 0;
     }
 
     int getMinStrength(){
-        if (size && minimum != nullptr) return minimum->data->getStrength();
+        if (size && minimum!=nullptr) return minimum->data->getStrength();
         else return 0;
     }
 
     shared_ptr<T> getMin(){
-        if (size && minimum != nullptr) return minimum->data;
+        if (size && minimum!=nullptr) return minimum->data;
         else return nullptr;
     }
 
 
-    int getSize(shared_ptr<Node<T>> node) const {
+    int getSize(shared_ptr<SNode<T>> node) const {
         return node ? node->size : 0; // Return 0 if node is nullptr, otherwise node's size
     }
 
@@ -377,31 +403,48 @@ public:
         return size;
     }
 
+    void inorderAddToArray(shared_ptr<SNode<T>> node, shared_ptr<T>* arr, int& index){
+        if (node == nullptr || arr == nullptr) return;
+        inorderAddToArray(node->left, arr, index);
+        arr[index++] = node->data;
+        inorderAddToArray(node->right, arr, index);
+    }
+    //this function returns a sorted array of the elements in the tree.
+    shared_ptr<T>* returnSortedArrayOfElements(){
+        if (size == 0) return nullptr;
+        auto arr = new shared_ptr<T>[size];
+        int index = 0;
+        inorderAddToArray(root, arr, index);
+        return arr;
+    }
+
+    void printTree(){
+        cout<<"PreOrder: [";
+        TreePrintPreOrder(root);
+        cout<<"]"<<endl;
+        cout<<"InOrder: [";
+        TreePrintInOrder(root);
+        cout<<"]"<<endl;
+    }
+
+    void TreePrintInOrder(shared_ptr<SNode<T>> node) {
+        if (!node) return;
+        TreePrintInOrder(node->left);
+        cout<<"("<<"str:"<<node->getStrength()<<", "<<"id: "<<node->getID()<<")";
+        TreePrintInOrder(node->right);
+    }
+
+
+    void TreePrintPreOrder(shared_ptr<SNode<T>> node) {
+        if (!node) return;
+        cout<<"("<<"str:"<<node->getStrength()<<", "<<"id: "<<node->getID()<<")";
+        TreePrintPreOrder(node->left);
+        TreePrintPreOrder(node->right);
+    }
+
     shared_ptr<T> getKthSmallest(int k) {
         return findKthSmallest(root, k)->data;
     }
-
-    void printRecursively(shared_ptr<Node<T>> node, int depth) const {
-        if (node == nullptr) return;
-        printRecursively(node->right, depth + 1);
-        std::cout << node->data->getID() << " " << node->data->getStrength() << std::endl;
-        printRecursively(node->left, depth + 1);
-    }
-    void printTree() const {
-        printRecursively(root, 0);
-    }
-
-    bool isBalancedRecursively(shared_ptr<Node<T>> node) const {
-        if (node == nullptr) return true;
-        int balance = getBalance(node);
-        if (balance > 1 || balance < -1) return false;
-        return isBalancedRecursively(node->left) && isBalancedRecursively(node->right);
-    }
-    bool isBalanced() const{
-        return isBalancedRecursively(root);
-    }
-
-
 };
 
 
