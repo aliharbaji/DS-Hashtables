@@ -393,7 +393,7 @@ public:
 
     // TODO: implement
     int getHighestRank(){
-        return -1;
+        return 0;
     }
 
     //TODO: adapt contain and find to strength. Probably unecessary because we should check for duplication before insertion into STree.
