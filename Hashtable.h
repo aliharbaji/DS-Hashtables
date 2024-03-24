@@ -26,6 +26,51 @@ private:
     int total_elements_added;
     // this might be useful in the future when we want to give an id to each ID-less player
     // maybe this should be a static field of the class, so that we can give an id to each player that is added to the table
+
+    // TODO: ask omar if this works in the required time complexity
+    void resizeUp(){
+        int new_capacity = capacity * 2 + 1;
+        unique_ptr<shared_ptr<Tree<T>>[]> newTable(new shared_ptr<Tree<T>>[new_capacity]());
+
+        for(int i = 0; i < new_capacity; i++){
+            newTable[i] = make_shared<Tree<T>>();
+        }
+
+        int old_capacity = capacity;
+        capacity = new_capacity;
+        for(int i = 0; i < old_capacity; i++){
+            for(int j = 0; j < table[i]->getSize(); j++){
+                auto item = table[i]->getKthSmallest(j);
+                int index = hash(item->getID());
+                newTable[index]->insert(item);
+            }
+        }
+
+        table = std::move(newTable);
+    }
+
+    // TODO: ask omar if this works in the required time complexity
+    void resizeDown() {
+        int new_capacity = std::max(DEFAULT_CAPACITY, capacity / 2);
+        unique_ptr<shared_ptr<Tree<T>>[]> newTable(new shared_ptr<Tree<T>>[new_capacity]());
+
+        for (int i = 0; i < new_capacity; i++) {
+            newTable[i] = make_shared<Tree<T>>();
+        }
+
+        int old_capacity = capacity;
+        capacity = new_capacity;
+
+        for (int i = 0; i < old_capacity; i++) {
+            for (int j = 0; j < table[i]->getSize(); j++) {
+                auto item = table[i]->getKthSmallest(j);
+                int index = hash(item->getID());
+                newTable[index]->insert(item);
+            }
+        }
+
+        table = std::move(newTable);
+    }
 public:
     Hashtable(): size(0), capacity(DEFAULT_CAPACITY), load_factor(0.0f), total_elements_added(0) {
         table = make_unique<shared_ptr<Tree<T>>[]>(DEFAULT_CAPACITY);
@@ -55,6 +100,7 @@ public:
 
     bool insert(int key){
         // TODO: resize up when needed (probably depending on the load factor?)
+        rehash();
         int index = hash(key);
         // make a T item with key and add to index
 
@@ -74,7 +120,7 @@ public:
     }
 
     bool remove(int key){
-        // TODO: resize up when needed (probably depending on the load factor?)
+        rehash();
         int index = hash(key);
         if(table[index]->remove(key)){
             size--;
@@ -85,35 +131,34 @@ public:
 
     }
 
-    void resizeUp(){
-        int new_capacity = capacity * 2 + 1; // TODO: use math library to find next prime number instead (now that I am looking at this I think that this is not necessary, but I will leave it here for now)
-        unique_ptr<Tree<T>[]> newTable(new Tree<T>[new_capacity]());
 
-        for(int i = 0; i < capacity; i++){
-            if(table[i].getSize() > 0){
-                newTable[i] = table[i];
-            }
+
+//    void resizeDown(){
+//        int new_capacity = capacity / 2 + 1;
+//
+//        unique_ptr<Tree<T>[]> newTable(new Tree<T>[new_capacity]());
+//
+//        for(int i = 0; i < capacity; i++){
+//            if(table[i].getSize() > 0){
+//                newTable[i] = table[i];
+//            }
+//        }
+//        table = std::move(newTable);
+//        capacity = new_capacity;
+//    }
+
+
+    void rehash(){
+
+        if(load_factor > 0.75) {
+            cout << "++++++++++++++++++++++++++++resizing up+++++++++++++++++++++++++++++++++" << endl;
+            resizeUp();
+        } else if(load_factor < 0.25){
+            if(capacity == DEFAULT_CAPACITY) return;
+            cout << "----------------------------resizing down----------------------------------" << endl;
+            resizeDown();
         }
-        table = std::move(newTable);
-        capacity = new_capacity;
     }
-
-    void resizeDown(){
-        int new_capacity = capacity / 2 + 1; // TODO: use math library to find next prime number instead
-
-        unique_ptr<Tree<T>[]> newTable(new Tree<T>[new_capacity]());
-
-        for(int i = 0; i < capacity; i++){
-            if(table[i].getSize() > 0){
-                newTable[i] = table[i];
-            }
-        }
-        table = std::move(newTable);
-        capacity = new_capacity;
-    }
-
-
-    void rehash(); // this should be a private method
 
     int getSize(){
         return size;

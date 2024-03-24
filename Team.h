@@ -18,7 +18,6 @@ class Team : public Item {
     friend class PSTree<Player>;
 
     int strength;
-    //TODO: these are also better as pointers to trees imo.
     shared_ptr<Tree<Player>> players;
     shared_ptr<PSTree<Player>> playersByStrength;
     int numberOfPlayers;
