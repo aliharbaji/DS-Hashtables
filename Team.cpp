@@ -19,7 +19,7 @@ int Team::getStrength() const {
 
 bool Team::addPlayer(int playerID, int playerStrength) {
     shared_ptr<Player> contestant = make_shared<Player>(playerID, playerStrength);
-    if(! players->insert(contestant) || !playersByStrength->insert(contestant)) return false;
+    if(!players->insert(contestant) || !playersByStrength->insert(contestant)) return false;
     numberOfPlayers++;
 
     // TODO I have a feeling that in a case of 1 or 2 players in the team, this will not work as expected,
@@ -59,7 +59,12 @@ shared_ptr<Player> Team::getStrengthPlayer() {
     return strengthPlayer;
 }
 
-void Team::addWin() {
+//
+//TODO: addWin needs to be a method in Olympics class. Because when you add a win to the team you need to update the extras in STree and maxRankTeam.
+//TODO: I will make a method for STree addWin(id, str) --O(logn) which will update the winning team and you can call it from olympics.
+//TODO: I will also make a method in the STree getTeamWins(id, str) --O(logn) which will calculate the wins for the team based on the extras.
+
+/*void Team::addWin() {
     numberOfWins++;
 }
 
@@ -71,7 +76,7 @@ int Team::getRank() const {
     if (numberOfPlayers == 0) return numberOfPlayers;
     return numberOfWins + this->getStrength();
 }
-
+*/
 
 // TODO: ask Omar if this is the right way to remove all players from a team
 void Team::removeAllPlayers() {
@@ -79,7 +84,6 @@ void Team::removeAllPlayers() {
     playersByStrength = make_shared<STree<Player>>();
     numberOfPlayers = 0;
     strengthPlayer = nullptr;
-    numberOfWins = 0;
 }
 
 shared_ptr<Player> Team::getNewestPlayer() const {

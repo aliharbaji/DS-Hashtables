@@ -52,10 +52,20 @@ private:
         }
     }
 
-    shared_ptr<SNode<T>> insertRecursively(shared_ptr<SNode<T>> node, shared_ptr<T> item){
-        if (node == nullptr) return make_shared<SNode<T>>(item);
+    shared_ptr<SNode<T>> insertRecursively(shared_ptr<SNode<T>> node, shared_ptr<T> item, int  extraSum){
+        if (node == nullptr) {
+            auto current = make_shared<SNode<T>>(item);
+            current->maxRank = item->getStrength() + item->numOfWins;
+            current->extra = item->numOfWins - extraSum;
+            return current;
+        }
 
         bool isLeft = false, isRight = false;
+
+        int itemRank = item->getStrength() + item->numOfWins;
+        extraSum += node->extra;
+
+        if (itemRank > node->maxRank) node->maxRank = itemRank;
 
         if (item->getStrength() < node->getStrength() ||
             (item->getStrength() == node->getStrength() && item->getID() < node->getID())) {
@@ -68,18 +78,21 @@ private:
         }
 
         if (isLeft){
-            auto leftChild = insertRecursively(node->left, item);
+            auto leftChild = insertRecursively(node->left, item, extraSum);
             node->left = leftChild;
             if (leftChild) leftChild->parent=node;
 
         }
         else if (isRight){
-            auto rightChild = insertRecursively(node->right, item);
+            auto rightChild = insertRecursively(node->right, item, extraSum);
             node->right=rightChild;
             if (rightChild) rightChild->parent=node;
         }
 
         node->height = 1 + max(getHeight(node->left), getHeight(node->right));
+        node->size = 1 + getSize(node->left) + getSize(node->right);
+        node->maxRank = max(node->maxRank, getMaxRank(node->left), getMaxRank(node->right));
+
         int balance = getBalance(node);
 
         //Rotation logic stays the same
@@ -106,12 +119,13 @@ private:
     }
 
     //delete now searches based on strength and ID TODO: fix this, it contains a bug
-    bool deleteRecursively(shared_ptr<SNode<T>>& node, int ID, int strength){
+    bool deleteRecursively(shared_ptr<SNode<T>>& node, int ID, int strength, int extraSum){
         if (node == nullptr) return false;
 
         bool isLeft = false, isRight = false;
         bool deleted;
 
+        extraSum += node->extra;
         if (strength < node->getStrength() ||
             (strength == node->getStrength() && ID < node->getID())) {
             isLeft = true;
@@ -122,8 +136,8 @@ private:
             isRight = true;
         }
 
-        if (isLeft) deleted = deleteRecursively(node->left, ID, strength);
-        else if (isRight) deleted = deleteRecursively(node->right, ID, strength);
+        if (isLeft) deleted = deleteRecursively(node->left, ID, strength, extraSum);
+        else if (isRight) deleted = deleteRecursively(node->right, ID, strength, extraSum);
 
             // found the node
         else{
@@ -141,6 +155,7 @@ private:
                 }
                     // 1 child case
                 else{
+                    child->extra += node->extra;
                     child->parent = node->parent;
                     if (node->parent != nullptr) {
                         if (node->parent->left == node) node->parent->left = child;
@@ -159,9 +174,14 @@ private:
                 // 2 child case
             else{
                 // find the smallest child in the right subtree to become new root
-                auto minNode = getMinNode(node->right);
+                auto minNode = getMinNode(node->right, extraSum);
+                int deletedNodeExtra = node->extra;
                 node->data = minNode->data;
-                deleteRecursively(node->right, minNode->getID(), minNode->getStrength());
+                int extraDiff = node->data->numOfWins - extraSum;
+                node->extra = deletedNodeExtra + extraDiff;
+                node->left->extra -= extraDiff;
+                node->right->extra -= extraDiff;
+                deleteRecursively(node->right, minNode->getID(), minNode->getStrength(), extraSum);
             }
 
 
@@ -204,6 +224,9 @@ private:
     shared_ptr<SNode<T>> rightRotate(shared_ptr<SNode<T>> node){
         auto leftChild = node->left;
         auto subTree = leftChild->right;
+        //updating extras
+        leftChild->extra += node->extra;
+        node->extra -= leftChild->extra;
         //rotating
         leftChild->right = node;
         node->left = subTree;
@@ -212,8 +235,14 @@ private:
         leftChild->height = 1 + max(getHeight(leftChild->left), getHeight(leftChild->right));
         node->size = 1 + getSize(node->left) + getSize(node->right);
         leftChild->size = 1 + getSize(leftChild->left) + getSize(leftChild->right);
+        node->maxRank = max(node->maxRank, getMaxRank(node->left), getMaxRank(node->right));
+        leftChild->maxRank = max(leftChild->maxRank, getMaxRank(leftChild->left), getMaxRank(leftChild->right));
 
-        if (subTree != nullptr) subTree->parent = node;
+
+        if (subTree != nullptr){
+            subTree->parent = node;
+            subTree->extra -= node->extra;
+        }
         leftChild->parent = node->parent;
         node->parent = leftChild;
 
@@ -225,23 +254,29 @@ private:
     shared_ptr<SNode<T>> leftRotate(shared_ptr<SNode<T>> node){
         auto rightChild = node->right;
         auto subTree = rightChild->left;
+        //updating extras
+        rightChild->extra += node->extra;
+        node->extra -= rightChild->extra;
+
         //rotating
         rightChild->left = node;
         node->right = subTree;
 
-        node->height = 1 + max(getHeight(node->left),getHeight(node->right));
+        node->height = 1 + max(getHeight(node->left), getHeight(node->right));
         rightChild->height = 1 + max(getHeight(rightChild->left), getHeight(rightChild->right));
         node->size = 1 + getSize(node->left) + getSize(node->right);
         rightChild->size = 1 + getSize(rightChild->left) + getSize(rightChild->right);
+        node->maxRank = max(node->rank, getMaxRank(node->left), getMaxRank(node->right));
+        rightChild->maxRank = max(rightChild->maxRank, getMaxRank(rightChild->left), getMaxRank(rightChild->right));
 
-
-        if (subTree != nullptr) subTree->parent = node;
+        if (subTree != nullptr){
+            subTree->parent = node;
+            subTree->extra -= node->extra;
+        }
         rightChild->parent = node->parent;
         node->parent = rightChild;
 
-        // returning the new root.
         return rightChild;
-
     }
 
 
@@ -278,19 +313,24 @@ private:
         else return node->height;
     }
 
-    shared_ptr<SNode<T>> getMinNode(shared_ptr<SNode<T>> node){
+    shared_ptr<SNode<T>> getMinNode(shared_ptr<SNode<T>> node, int extraSum){
         if (!node) return nullptr;
         auto current = node;
+        extraSum += current->extra;
         while (current->left != nullptr){
             current = current->left;
+            extraSum += current->extra;
         }
+        current->data->numOfWins = extraSum;
         return current;
     }
-    shared_ptr<SNode<T>> getMaxNode(shared_ptr<SNode<T>> node){
+    shared_ptr<SNode<T>> getMaxNode(shared_ptr<SNode<T>> node, int extraSum){
         if (!node) return nullptr;
         auto current = node;
+        extraSum += current->extra;
         while (current->right != nullptr){
             current = current->right;
+            extraSum += current->extra;
         }
         return current;
     }
@@ -398,6 +438,10 @@ public:
 
     int getSize(shared_ptr<SNode<T>> node) const {
         return node ? node->size : 0; // Return 0 if node is nullptr, otherwise node's size
+    }
+
+    int getMaxRank(shared_ptr<SNode<T>> node) const {
+        return node ? node->maxRank : 0;  // Return 0 if node is nullptr, otherwise node's size
     }
 
     int getSize() const{
