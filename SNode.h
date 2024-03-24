@@ -30,6 +30,7 @@ public:
     shared_ptr<SNode<T>> parent;//contains the node of the maxRankTeam in the node's subtree.
     int maxRank;// contains the value of the maxRank in the subtree situated at the node.
     int extra; //need to upkeep this during insert/removal in strength tree
+//    int rank;
     //need to upkeep this during insert/removal tree(doesn't hurt complexity of the tree). For the get highest_ranked_team function
     // we would simply return the maxRankTeam at the root node. O(1).
 

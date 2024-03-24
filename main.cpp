@@ -200,7 +200,7 @@ int main()
     Player p1(1, 1);
     Team t1(1);
 
-    STree<Player> sTree;
+    PSTree<Player> sTree;
     // make a player with strength 10
     Player p2(1, 1);
     // make a player with strength 20
@@ -243,7 +243,7 @@ int main()
     cout << "median strength player in team with strengths (1, 3, 3, 5, 7, 8) is " << sTree.getKthSmallest(sTree.getSize() / 2 + 1)->getStrength() << endl;
     cout << "********************************************" << endl;
 
-    STree<Player> s2;
+    PSTree<Player> s2;
     // make players pointers with strengths (2,4,3,6,6)
     auto p10_ptr = shared_ptr<Player>(new Player(10, 2));
     auto p11_ptr = shared_ptr<Player>(new Player(11, 4));

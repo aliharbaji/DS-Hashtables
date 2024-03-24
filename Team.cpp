@@ -81,7 +81,7 @@ int Team::getRank() const {
 // TODO: ask Omar if this is the right way to remove all players from a team
 void Team::removeAllPlayers() {
     players = make_shared<Tree<Player>>();
-    playersByStrength = make_shared<STree<Player>>();
+    playersByStrength = make_shared<PSTree<Player>>();
     numberOfPlayers = 0;
     strengthPlayer = nullptr;
 }
@@ -100,6 +100,15 @@ void Team::insert_ptr(shared_ptr<Player> player) {
 
 shared_ptr<Player> Team::findPlayer(int playerID) {
     return players->find(playerID);
+}
+
+void Team::addWin() {
+    numOfWins++;
+}
+
+// TODO: fix to sum-up extra fields
+int Team::getNumberOfWins() const {
+    return numOfWins;
 }
 
 

@@ -10,16 +10,17 @@
 #include "Tree.h"
 #include "Player.h"
 #include "STree.h"
-
+#include "PSTree.h"
 #include <iostream>
 
 class Team : public Item {
     friend class STree<Team>;
+    friend class PSTree<Player>;
 
     int strength;
     //TODO: these are also better as pointers to trees imo.
     shared_ptr<Tree<Player>> players;
-    shared_ptr<STree<Player>> playersByStrength;
+    shared_ptr<PSTree<Player>> playersByStrength;
     int numberOfPlayers;
     int numOfWins;
     shared_ptr<Player> strengthPlayer; // this is the player with the median strength
@@ -27,7 +28,7 @@ class Team : public Item {
 public:
     explicit Team(int teamID)
             : Item(teamID), strength(0), players(make_shared<Tree<Player>>()), numOfWins(0), numberOfPlayers(0),
-            strengthPlayer(nullptr), playersByStrength(make_shared<STree<Player>>())
+            strengthPlayer(nullptr), playersByStrength(make_shared<PSTree<Player>>())
     {}
 
     Team(const Team&) = delete;

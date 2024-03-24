@@ -1,36 +1,33 @@
 //
+// Created by allih on 24/03/2024.
+//
+
+#ifndef WET2_DS_PSTREE_H
+#define WET2_DS_PSTREE_H
+//
 // Created by omar_ on 18/02/2024.
 //
 
-#ifndef AVLTREES_STRENGTHTREE_H
-#define AVLTREES_STRENGTHTREE_H
-//
-// Created by allih on 15/02/2024.
-//
-#include "SNode.h"
+#include "node.h"
 #include <stdexcept>
 #include <iostream>
 
 
 template <typename T>
 
-class STree{
-    template <typename U> friend class SNode;
+
+class PSTree{
+    template <typename U> friend class Node;
     friend class Team;
 private:
-    shared_ptr<SNode<T>> root;
+    shared_ptr<Node<T>> root;
     int size;
-    shared_ptr<SNode<T>> maximum;
-    shared_ptr<SNode<T>> minimum;
+    shared_ptr<Node<T>> maximum;
+    shared_ptr<Node<T>> minimum;
     //Adjusted logic to compare based on strength and in case of strength equality to compare based on ID.
 
     //necessary for Team
-    int maxComp(int a, int b){
-        if(a > b) return a;
-        return b;
-    }
-
-    shared_ptr<SNode<T>> findKthSmallest(shared_ptr<SNode<T>> node, int k) {
+    shared_ptr<Node<T>> findKthSmallest(shared_ptr<Node<T>> node, int k) {
         if (!node || k == 0) return nullptr;
 
         int leftSize = node->left ? node->left->size : 0;
@@ -43,7 +40,7 @@ private:
             return findKthSmallest(node->right, k - leftSize - 1);
         }
     }
-    void clearParents(std::shared_ptr<SNode<T>> node) {
+    void clearParents(std::shared_ptr<Node<T>> node) {
         if (node != nullptr) {
             if (node->left != nullptr) {
                 clearParents(node->left);
@@ -56,21 +53,10 @@ private:
         }
     }
 
-    shared_ptr<SNode<T>> insertRecursively(shared_ptr<SNode<T>> node, shared_ptr<T> item, int  extraSum){
-        if (node == nullptr) {
-            auto current = make_shared<SNode<T>>(item);
-            // TODO: implementation of a new tree is necessary for this to work
-            current->maxRank = item->getStrength() + item->numOfWins;
-            current->extra = item->numOfWins - extraSum;
-            return current;
-        }
+    shared_ptr<Node<T>> insertRecursively(shared_ptr<Node<T>> node, shared_ptr<T> item){
+        if (node == nullptr) return make_shared<Node<T>>(item);
 
         bool isLeft = false, isRight = false;
-
-        int itemRank = item->getStrength() + item->numOfWins;
-        extraSum += node->extra;
-
-        if (itemRank > node->maxRank) node->maxRank = itemRank;
 
         if (item->getStrength() < node->getStrength() ||
             (item->getStrength() == node->getStrength() && item->getID() < node->getID())) {
@@ -78,26 +64,23 @@ private:
         }
 
         else if (item->getStrength() > node->getStrength() ||
-                 (item->getStrength() == node->getStrength() && item->getID() > node->getID())) {
+                   (item->getStrength() == node->getStrength() && item->getID() > node->getID())) {
             isRight = true;
         }
 
         if (isLeft){
-            auto leftChild = insertRecursively(node->left, item, extraSum);
+            auto leftChild = insertRecursively(node->left, item);
             node->left = leftChild;
             if (leftChild) leftChild->parent=node;
 
         }
         else if (isRight){
-            auto rightChild = insertRecursively(node->right, item, extraSum);
+            auto rightChild = insertRecursively(node->right, item);
             node->right=rightChild;
             if (rightChild) rightChild->parent=node;
         }
 
-        node->height = 1 + maxComp(getHeight(node->left), getHeight(node->right));
-        node->size = 1 + getSize(node->left) + getSize(node->right);
-        node->maxRank = maxComp(node->maxRank, maxComp(getMaxRank(node->left), getMaxRank(node->right)));
-
+        node->height = 1 + max(getHeight(node->left), getHeight(node->right));
         int balance = getBalance(node);
 
         //Rotation logic stays the same
@@ -124,25 +107,24 @@ private:
     }
 
     //delete now searches based on strength and ID TODO: fix this, it contains a bug
-    bool deleteRecursively(shared_ptr<SNode<T>>& node, int ID, int strength, int extraSum){
+    bool deleteRecursively(shared_ptr<Node<T>>& node, int ID, int strength){
         if (node == nullptr) return false;
 
         bool isLeft = false, isRight = false;
         bool deleted;
 
-        extraSum += node->extra;
         if (strength < node->getStrength() ||
-            (strength == node->getStrength() && ID < node->getID())) {
+           (strength == node->getStrength() && ID < node->getID())) {
             isLeft = true;
         }
 
         else if (strength > node->getStrength() ||
-                 (strength == node->getStrength() && ID > node->getID())) {
+                (strength == node->getStrength() && ID > node->getID())) {
             isRight = true;
         }
 
-        if (isLeft) deleted = deleteRecursively(node->left, ID, strength, extraSum);
-        else if (isRight) deleted = deleteRecursively(node->right, ID, strength, extraSum);
+        if (isLeft) deleted = deleteRecursively(node->left, ID, strength);
+        else if (isRight) deleted = deleteRecursively(node->right, ID, strength);
 
             // found the node
         else{
@@ -160,7 +142,6 @@ private:
                 }
                     // 1 child case
                 else{
-                    child->extra += node->extra;
                     child->parent = node->parent;
                     if (node->parent != nullptr) {
                         if (node->parent->left == node) node->parent->left = child;
@@ -179,14 +160,9 @@ private:
                 // 2 child case
             else{
                 // find the smallest child in the right subtree to become new root
-                auto minNode = getMinNode(node->right, extraSum);
-                int deletedNodeExtra = node->extra;
+                auto minNode = getMinNode(node->right);
                 node->data = minNode->data;
-                int extraDiff = node->data->numOfWins - extraSum;
-                node->extra = deletedNodeExtra + extraDiff;
-                node->left->extra -= extraDiff;
-                node->right->extra -= extraDiff;
-                deleteRecursively(node->right, minNode->getID(), minNode->getStrength(), extraSum);
+                deleteRecursively(node->right, minNode->getID(), minNode->getStrength());
             }
 
 
@@ -226,29 +202,19 @@ private:
 
 
 
-
-    shared_ptr<SNode<T>> rightRotate(shared_ptr<SNode<T>> node){
+    shared_ptr<Node<T>> rightRotate(shared_ptr<Node<T>> node){
         auto leftChild = node->left;
         auto subTree = leftChild->right;
-        //updating extras
-        leftChild->extra += node->extra;
-        node->extra -= leftChild->extra;
         //rotating
         leftChild->right = node;
         node->left = subTree;
 
-        node->height = 1 + maxComp(getHeight(node->left),getHeight(node->right));
-        leftChild->height = 1 + maxComp(getHeight(leftChild->left), getHeight(leftChild->right));
+        node->height = 1 + max(getHeight(node->left),getHeight(node->right));
+        leftChild->height = 1 + max(getHeight(leftChild->left), getHeight(leftChild->right));
         node->size = 1 + getSize(node->left) + getSize(node->right);
         leftChild->size = 1 + getSize(leftChild->left) + getSize(leftChild->right);
-        node->maxRank = maxComp(node->maxRank, maxComp(getMaxRank(node->left), getMaxRank(node->right)));
-        leftChild->maxRank = maxComp(leftChild->maxRank, maxComp(getMaxRank(leftChild->left), getMaxRank(leftChild->right)));
 
-
-        if (subTree != nullptr){
-            subTree->parent = node;
-            subTree->extra -= node->extra;
-        }
+        if (subTree != nullptr) subTree->parent = node;
         leftChild->parent = node->parent;
         node->parent = leftChild;
 
@@ -257,36 +223,30 @@ private:
 
     }
 
-    shared_ptr<SNode<T>> leftRotate(shared_ptr<SNode<T>> node){
+    shared_ptr<Node<T>> leftRotate(shared_ptr<Node<T>> node){
         auto rightChild = node->right;
         auto subTree = rightChild->left;
-        //updating extras
-        rightChild->extra += node->extra;
-        node->extra -= rightChild->extra;
-
         //rotating
         rightChild->left = node;
         node->right = subTree;
 
-        node->height = 1 + maxComp(getHeight(node->left), getHeight(node->right));
-        rightChild->height = 1 + maxComp(getHeight(rightChild->left), getHeight(rightChild->right));
+        node->height = 1 + max(getHeight(node->left),getHeight(node->right));
+        rightChild->height = 1 + max(getHeight(rightChild->left), getHeight(rightChild->right));
         node->size = 1 + getSize(node->left) + getSize(node->right);
         rightChild->size = 1 + getSize(rightChild->left) + getSize(rightChild->right);
-        node->maxRank = maxComp(node->maxRank, maxComp(getMaxRank(node->left), getMaxRank(node->right)));
-        rightChild->maxRank = max(rightChild->maxRank, maxComp(getMaxRank(rightChild->left), getMaxRank(rightChild->right)));
 
-        if (subTree != nullptr){
-            subTree->parent = node;
-            subTree->extra -= node->extra;
-        }
+
+        if (subTree != nullptr) subTree->parent = node;
         rightChild->parent = node->parent;
         node->parent = rightChild;
 
+        // returning the new root.
         return rightChild;
+
     }
 
 
-    bool containsRecursively(shared_ptr<SNode<T>> node, int ID, int strength) const{
+    bool containsRecursively(shared_ptr<Node<T>> node, int ID, int strength) const{
         if (node == nullptr) return false;
         bool isLeft = false;
 
@@ -300,7 +260,7 @@ private:
         else return containsRecursively(node->right, ID);
     }
 
-    shared_ptr<T> findRecursively(shared_ptr<SNode<T>> node, int ID, int strength) const{
+    shared_ptr<T> findRecursively(shared_ptr<Node<T>> node, int ID, int strength) const{
         if (node == nullptr) return nullptr;
 
         bool isLeft = false;
@@ -314,44 +274,39 @@ private:
         else return findRecursively(node->right, ID);
     }
 
-    int getHeight(shared_ptr<SNode<T>> node) const{
+    int getHeight(shared_ptr<Node<T>> node) const{
         if (node == nullptr) return -1;
         else return node->height;
     }
 
-    shared_ptr<SNode<T>> getMinNode(shared_ptr<SNode<T>> node, int extraSum){
+    shared_ptr<Node<T>> getMinNode(shared_ptr<Node<T>> node){
         if (!node) return nullptr;
         auto current = node;
-        extraSum += current->extra;
         while (current->left != nullptr){
             current = current->left;
-            extraSum += current->extra;
         }
-        current->data->numOfWins = extraSum;
         return current;
     }
-    shared_ptr<SNode<T>> getMaxNode(shared_ptr<SNode<T>> node, int extraSum){
+    shared_ptr<Node<T>> getMaxNode(shared_ptr<Node<T>> node){
         if (!node) return nullptr;
         auto current = node;
-        extraSum += current->extra;
         while (current->right != nullptr){
             current = current->right;
-            extraSum += current->extra;
         }
         return current;
     }
 
-    int getBalance(shared_ptr<SNode<T>> node) const{
+    int getBalance(shared_ptr<Node<T>> node) const{
         if (node == nullptr) return -1;
         else return node->getBF();
     }
 
-    shared_ptr<SNode<T>> sortedArrayToAVL(shared_ptr<T>* arr, int start, int end) {
+    shared_ptr<Node<T>> sortedArrayToAVL(shared_ptr<T>* arr, int start, int end) {
         if (start > end)
             return nullptr;
 
         int mid = start + (end - start) / 2;
-        auto node = make_shared<SNode<T>>(arr[mid]);
+        auto node = make_shared<Node<T>>(arr[mid]);
 
         node->left = sortedArrayToAVL(arr, start, mid - 1);
         node->right = sortedArrayToAVL(arr, mid + 1, end);
@@ -365,14 +320,14 @@ private:
 
 public:
 
-    explicit STree() : root(nullptr), size(0), maximum(nullptr), minimum(nullptr){}
-    STree(const STree&) = delete;
-    STree& operator=(const STree&)= delete;
-    ~STree(){
+    explicit PSTree() : root(nullptr), size(0), maximum(nullptr), minimum(nullptr){}
+    PSTree(const PSTree&) = delete;
+    PSTree& operator=(const PSTree&)= delete;
+    ~PSTree(){
         clearParents(root);
     }
 
-    STree(shared_ptr<T>* arr, int size) : size(size) {
+    PSTree(shared_ptr<T>* arr, int size) : size(size) {
         if(size) root = sortedArrayToAVL(arr, 0, size - 1);
         else root = nullptr;
         minimum = root;
@@ -385,16 +340,28 @@ public:
         }
     }
 
+    shared_ptr<SNode<T>> findKthSmallest(shared_ptr<SNode<T>> node, int k) {
+        if (!node || k == 0) return nullptr;
 
+        int leftSize = node->left ? node->left->size : 0;
+
+        if (k <= leftSize) {
+            return findKthSmallest(node->left, k);
+        } else if (k == leftSize + 1) {
+            return node;
+        } else {
+            return findKthSmallest(node->right, k - leftSize - 1);
+        }
+    }
+
+    shared_ptr<T> getKthSmallest(int k) {
+        return findKthSmallest(root, k)->data;
+    }
     // finds member with ID, returns NULL if he doesn't exist.
     shared_ptr<T> find(const int ID) const{
         return findRecursively(root, ID);
     }
 
-    // TODO: implement
-    int getHighestRank(){
-        return -1;
-    }
 
     //TODO: adapt contain and find to strength. Probably unecessary because we should check for duplication before insertion into STree.
     bool contains(const int ID) const{
@@ -403,67 +370,57 @@ public:
 
     // Inserts item. Returns false in case of duplication. True otherwise.
     bool insert(shared_ptr<T> item){
-        // TODO: make sure that extraSum = 0 is the way to do it
-        // TODO: extraSum highlight
-        root = insertRecursively(root, item, 0);
+        root = insertRecursively(root, item);
         size++;
-        minimum = getMinNode(root, 0);
-        maximum = getMaxNode(root, 0);
+        minimum = getMinNode(root);
+        maximum = getMaxNode(root);
         return true;
     }
 
-
     bool remove(const int ID, const int strength){
         if (!size) return false;
-        // TODO: extraSum highlight
-        if (deleteRecursively(root, ID, strength, 0)) {
+        if (deleteRecursively(root, ID, strength)) {
             // TODO: I think that we should add an if statement here to check whether or not the deletion was successful,
             //  before updating the size and minimum and maximum.
             //You're absolutely right.
             size--;
-            // TODO: extraSum highlight
-            minimum = getMinNode(root, 0);
-            // TODO: extraSum highlight
-            maximum = getMaxNode(root, 0);
+            minimum = getMinNode(root);
+            maximum = getMaxNode(root);
             return true;
         }
         else return false;
     }
 
     shared_ptr<T> getMax(){
-        if (size && maximum!=nullptr) return maximum->data;
+        if (size) return maximum->data;
         else return nullptr;
     }
 
     int getMaxStrength(){
-        if (size && maximum!=nullptr) return maximum->data->getStrength();
+        if (size) return maximum->data->getStrength();
         else return 0;
     }
 
     int getMinStrength(){
-        if (size && minimum!=nullptr) return minimum->data->getStrength();
+        if (size) return maximum->data->getStrength();
         else return 0;
     }
 
     shared_ptr<T> getMin(){
-        if (size && minimum!=nullptr) return minimum->data;
+        if (size) return minimum->data;
         else return nullptr;
     }
 
 
-    int getSize(shared_ptr<SNode<T>> node) const {
+    int getSize(shared_ptr<Node<T>> node) const {
         return node ? node->size : 0; // Return 0 if node is nullptr, otherwise node's size
-    }
-
-    int getMaxRank(shared_ptr<SNode<T>> node) const {
-        return node ? node->maxRank : 0;  // Return 0 if node is nullptr, otherwise node's size
     }
 
     int getSize() const{
         return size;
     }
 
-    void inorderAddToArray(shared_ptr<SNode<T>> node, shared_ptr<T>* arr, int& index){
+    void inorderAddToArray(shared_ptr<Node<T>> node, shared_ptr<T>* arr, int& index){
         if (node == nullptr || arr == nullptr) return;
         inorderAddToArray(node->left, arr, index);
         arr[index++] = node->data;
@@ -487,7 +444,7 @@ public:
         cout<<"]"<<endl;
     }
 
-    void TreePrintInOrder(shared_ptr<SNode<T>> node) {
+    void TreePrintInOrder(shared_ptr<Node<T>> node) {
         if (!node) return;
         TreePrintInOrder(node->left);
         cout<<"("<<"str:"<<node->getStrength()<<", "<<"id: "<<node->getID()<<")";
@@ -495,23 +452,15 @@ public:
     }
 
 
-    void TreePrintPreOrder(shared_ptr<SNode<T>> node) {
+    void TreePrintPreOrder(shared_ptr<Node<T>> node) {
         if (!node) return;
         cout<<"("<<"str:"<<node->getStrength()<<", "<<"id: "<<node->getID()<<")";
         TreePrintPreOrder(node->left);
         TreePrintPreOrder(node->right);
     }
-
-    shared_ptr<T> getKthSmallest(int k) {
-        return findKthSmallest(root, k)->data;
-    }
-
-    int getHighestRank() const{
-        if(root == nullptr) return 0;
-        return root->getRank();
-    }
 };
 
 
 
-#endif //AVLTREES_STRENGTHTREE_H
+
+#endif //WET2_DS_PSTREE_H
