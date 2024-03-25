@@ -91,7 +91,7 @@ shared_ptr<Player> Team::getNewestPlayer() const {
     return player;
 }
 
-void Team::insert_ptr(shared_ptr<Player> player) {
+void Team::insert_ptr(const shared_ptr<Player>& player) {
     players->insert(player);
     playersByStrength->insert(player);
     numberOfPlayers++;

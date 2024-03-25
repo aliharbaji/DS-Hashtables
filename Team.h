@@ -17,7 +17,7 @@ class Team : public Item {
     friend class STree<Team>;
     friend class PSTree<Player>;
 
-    int strength;
+
     shared_ptr<Tree<Player>> players;
     shared_ptr<PSTree<Player>> playersByStrength;
     int numberOfPlayers;
@@ -26,7 +26,7 @@ class Team : public Item {
 
 public:
     explicit Team(int teamID)
-            : Item(teamID), strength(0), players(make_shared<Tree<Player>>()), numOfWins(0), numberOfPlayers(0),
+            : Item(teamID), players(make_shared<Tree<Player>>()), numOfWins(0), numberOfPlayers(0),
             strengthPlayer(nullptr), playersByStrength(make_shared<PSTree<Player>>())
     {}
 
@@ -53,9 +53,9 @@ public:
 
     shared_ptr<Player> getNewestPlayer() const;
 
-    unique_ptr<Player[]> getPlayers() const;
+//    unique_ptr<Player[]> getPlayers() const;
 
-    void insert_ptr(shared_ptr<Player> player);
+    void insert_ptr(const shared_ptr<Player>& player);
 
     shared_ptr<Player> findPlayer(int playerID);
 };
