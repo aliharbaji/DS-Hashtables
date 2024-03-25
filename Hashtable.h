@@ -28,127 +28,40 @@ private:
     // maybe this should be a static field of the class, so that we can give an id to each player that is added to the table
 
 
-
-
-//    void resizeUp(){
-//        int new_capacity = capacity * 2 + 1;
-//        unique_ptr<shared_ptr<Tree<T>>[]> newTable(new shared_ptr<Tree<T>>[new_capacity]());
-//
-//        for(int i = 0; i < new_capacity; i++){
-//            newTable[i] = make_shared<Tree<T>>();
-//        }
-//        // TODO: add try catch block here
-//        auto arr = new shared_ptr<T>[size];
-//
-//        int index = 0;
-//        for(int i = 0; i < capacity; i++){ // O(capacity) time complexity
-//            if(table[i]->getSize() == 0) continue;
-//            auto temp = table[i]->returnSortedArrayOfElements(); // works in O(n_of_team_i) time complexity
-//            for(int j = 0; j < table[i]->getSize(); j++){ // O(n_of_team_i) time complexity
-//                arr[index] = temp[j];
-//                index++;
-//            }
-//            delete[] temp;
-//        }
-//
-//        capacity = new_capacity; // changing the rehash function
-//
-//        if(index != size) {
-//            cerr << "index: " << index << " size: " << size << endl;
-//            throw std::runtime_error("index is not equal to size");
-//        }
-//        for(int i = 0; i < index; i++){
-//            int hashed_index = hash(arr[i]->getID());
-//            newTable[hashed_index]->insert(arr[i]);
-//        }
-//        delete[] arr;
-//        table = std::move(newTable);
-//    }
     void resizeUp() {
-        int new_capacity = capacity * 2 + 1;
+        int new_capacity = 2 * capacity + 1;
         unique_ptr<shared_ptr<Tree<T>>[]> newTable(new shared_ptr<Tree<T>>[new_capacity]());
 
         for (int i = 0; i < new_capacity; i++) {
             newTable[i] = make_shared<Tree<T>>();
         }
-        shared_ptr<T>* arr = nullptr;
 
-        try{
-            arr = new shared_ptr<T>[size];
-        } catch (const std::bad_alloc& e) {
-            // free the memory
-            throw;
-        }
-
-        int index = 0;
-        for (int i = 0; i < capacity; i++) {
-            try {
-                if (table[i]->getSize() == 0) continue;
-                auto temp = table[i]->returnSortedArrayOfElements();
-                for (int j = 0; j < table[i]->getSize(); j++) {
-                    arr[index] = temp[j];
-                    index++;
-                }
-                delete[] temp;
-            } catch (const std::exception& e) {
-                // rethrow the exception
-                // free the memory
-                delete[] arr;
-                throw;
-            }
-        }
-
+        int old_capacity = capacity;
         capacity = new_capacity; // changing the rehash function
 
+        // TODO: add try-catch block around returnSortedArrayOfElements
+        int index = 0;
+        for (int i = 0; i < old_capacity; i++) {
+            if (table[i]->getSize() == 0) continue;
+            auto temp = table[i]->returnSortedArrayOfElements();
+            for (int j = 0; j < table[i]->getSize(); j++) {
+                int hashed_index = hash(temp[j]->getID());
+                newTable[hashed_index]->insert(temp[j]);
+                index++;
+            }
+            delete[] temp;
+        }
+
+        // TODO: delete later
         if (index != size) {
             cerr << "index: " << index << " size: " << size << endl;
             throw std::runtime_error("index is not equal to size");
         }
-        for (int i = 0; i < index; i++) {
-            int hashed_index = hash(arr[i]->getID());
-            newTable[hashed_index]->insert(arr[i]);
-        }
-        delete[] arr;
+
         table = std::move(newTable);
     }
 
 
-//    void resizeDown() {
-//        int new_capacity = std::max(DEFAULT_CAPACITY, capacity / 2);
-//        unique_ptr<shared_ptr<Tree<T>>[]> newTable(new shared_ptr<Tree<T>>[new_capacity]());
-//
-//        for(int i = 0; i < new_capacity; i++) {
-//            newTable[i] = make_shared<Tree<T>>();
-//        }
-//
-//        // TODO: add try catch block here
-//        auto arr = new shared_ptr<T>[size];
-//        int index = 0;
-//        for(int i = 0; i < capacity; i++){ // O(capacity) time complexity
-//            if(table[i]->getSize() == 0) continue;
-//            auto temp = table[i]->returnSortedArrayOfElements(); // works in O(n_of_team_i) time complexity
-//            for(int j = 0; j < table[i]->getSize(); j++){ // O(n_of_team_i) time complexity
-//                arr[index] = temp[j];
-//                index++;
-//            }
-//            delete[] temp;
-//        }
-//
-//        if(index != size) {
-//            cerr << "index: " << index << " size: " << size << endl;
-//            throw std::runtime_error("index is not equal to size");
-//        }
-//
-//        capacity = new_capacity; // changing the rehash function
-//
-//        for(int i = 0; i < index; i++) {
-//            int hashed_index = hash(arr[i]->getID());
-//            newTable[hashed_index]->insert(arr[i]);
-//        }
-//
-//        delete[] arr;
-//        table = std::move(newTable);
-//    }
 
     void resizeDown() {
         int new_capacity = std::max(DEFAULT_CAPACITY, capacity / 2);
@@ -158,44 +71,28 @@ private:
             newTable[i] = make_shared<Tree<T>>();
         }
 
-        shared_ptr<T>* arr = nullptr;
-
-        try{
-            arr = new shared_ptr<T>[size];
-        } catch (const std::bad_alloc& e) {
-            // free the memory
-            throw;
-        }
-
-        int index = 0;
-        for (int i = 0; i < capacity; i++) {
-            try {
-                if (table[i]->getSize() == 0) continue;
-                auto temp = table[i]->returnSortedArrayOfElements();
-                for (int j = 0; j < table[i]->getSize(); j++) {
-                    arr[index] = temp[j];
-                    index++;
-                }
-                delete[] temp;
-            } catch (const std::exception& e) {
-                // rethrow the exception
-                // free the memory
-                delete[] arr;
-                throw;
-            }
-        }
-
+        int old_capacity = capacity;
         capacity = new_capacity; // changing the rehash function
 
+        // TODO: add try-catch block around returnSortedArrayOfElements
+        int index = 0;
+        for (int i = 0; i < old_capacity; i++) {
+            if (table[i]->getSize() == 0) continue;
+            auto temp = table[i]->returnSortedArrayOfElements();
+            for (int j = 0; j < table[i]->getSize(); j++) {
+                int hashed_index = hash(temp[j]->getID());
+                newTable[hashed_index]->insert(temp[j]);
+                index++;
+            }
+            delete[] temp;
+        }
+
+        // TODO: delete later
         if (index != size) {
             cerr << "index: " << index << " size: " << size << endl;
             throw std::runtime_error("index is not equal to size");
         }
-        for (int i = 0; i < index; i++) {
-            int hashed_index = hash(arr[i]->getID());
-            newTable[hashed_index]->insert(arr[i]);
-        }
-        delete[] arr;
+
         table = std::move(newTable);
     }
 
@@ -227,8 +124,7 @@ public:
     }
 
     bool insert(int key){
-        // TODO: resize up when needed (probably depending on the load factor?)
-        rehash();
+
         int index = hash(key);
         // make a T item with key and add to index
 
@@ -240,6 +136,7 @@ public:
             total_elements_added++;
             // update load factor
             load_factor = size * 1.0f / capacity * 1.0f; //
+            rehash();
             return true;
         }
 
@@ -248,11 +145,11 @@ public:
     }
 
     bool remove(int key){
-        rehash();
         int index = hash(key);
         if(table[index]->remove(key)){
             size--;
             load_factor = size * 1.0f / capacity * 1.0f ;
+            rehash();
             return true;
         }
         return false;
