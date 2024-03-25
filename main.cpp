@@ -13,9 +13,15 @@ using namespace std;
 
 int main() {
     cout << "Testing the olympics_t class (set x to the test number you want to run)" << endl << endl;
-    int x = 4;
+    int x = 0;
 
     switch (x) {
+        case 0: // ALL TESTS
+            testResizingUpAndDown();
+            test2();
+            test3();
+            test4();
+            break;
         case 1: // TEST1 (a test for resizing up and down) PASS
             testResizingUpAndDown();
             break;
