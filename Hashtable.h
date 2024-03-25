@@ -85,9 +85,8 @@ private:
                 }
                 delete[] temp;
             } catch (const std::exception& e) {
-                // Handle exception here
-                // For example, you might log the error and continue or rethrow the exception.
-                std::cerr << "Exception occurred while processing: " << e.what() << std::endl;
+                // rethrow the exception
+                throw;
             }
         }
 
@@ -144,45 +143,43 @@ private:
 //    }
 
     void resizeDown() {
-        try {
-            int new_capacity = std::max(DEFAULT_CAPACITY, capacity / 2);
-            unique_ptr<shared_ptr<Tree<T>>[]> newTable(new shared_ptr<Tree<T>>[new_capacity]());
+        int new_capacity = std::max(DEFAULT_CAPACITY, capacity / 2);
+        unique_ptr<shared_ptr<Tree<T>>[]> newTable(new shared_ptr<Tree<T>>[new_capacity]());
 
-            for(int i = 0; i < new_capacity; i++) {
-                newTable[i] = make_shared<Tree<T>>();
-            }
+        for (int i = 0; i < new_capacity; i++) {
+            newTable[i] = make_shared<Tree<T>>();
+        }
 
-            auto arr = new shared_ptr<T>[size];
-            int index = 0;
-            for(int i = 0; i < capacity; i++) {
-                if(table[i]->getSize() == 0) continue;
+        auto arr = new shared_ptr<T>[size];
+
+        int index = 0;
+        for (int i = 0; i < capacity; i++) {
+            try {
+                if (table[i]->getSize() == 0) continue;
                 auto temp = table[i]->returnSortedArrayOfElements();
-                for(int j = 0; j < table[i]->getSize(); j++) {
+                for (int j = 0; j < table[i]->getSize(); j++) {
                     arr[index] = temp[j];
                     index++;
                 }
                 delete[] temp;
+            } catch (const std::exception& e) {
+                // rethrow the exception
+                throw;
             }
-
-            if(index != size) {
-                cerr << "index: " << index << " size: " << size << endl;
-                throw std::runtime_error("index is not equal to size");
-            }
-
-            capacity = new_capacity; // changing the rehash function
-
-            for(int i = 0; i < index; i++) {
-                int hashed_index = hash(arr[i]->getID());
-                newTable[hashed_index]->insert(arr[i]);
-            }
-
-            delete[] arr;
-            table = std::move(newTable);
-        } catch (const std::exception& e) {
-            // Handle exception here
-            // For example, you might log the error and continue or rethrow the exception.
-            std::cerr << "Exception occurred: " << e.what() << std::endl;
         }
+
+        capacity = new_capacity; // changing the rehash function
+
+        if (index != size) {
+            cerr << "index: " << index << " size: " << size << endl;
+            throw std::runtime_error("index is not equal to size");
+        }
+        for (int i = 0; i < index; i++) {
+            int hashed_index = hash(arr[i]->getID());
+            newTable[hashed_index]->insert(arr[i]);
+        }
+        delete[] arr;
+        table = std::move(newTable);
     }
 
 public:
