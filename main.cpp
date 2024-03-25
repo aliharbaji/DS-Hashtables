@@ -15,7 +15,7 @@ int main() {
     cout << "Testing the olympics_t class (set x to the test number you want to run)" << endl << endl;
     int x = 0;
 
-    switch (x) {
+    switch (3) {
         case 0: // ALL TESTS
             testResizingUpAndDown();
             test2();

@@ -414,7 +414,7 @@ public:
     // Inserts item. Returns false in case of duplication. True otherwise.
     bool insert(shared_ptr<T> item){
         if(!item) throw logic_error("Cannot insert null item.");
-        if (!contains(item->getID(), item->getStrength())) return false;
+        if (contains(item->getID(), item->getStrength())) return false; // this had a bug
         root = insertRecursively(root, item, 0);
         size++;
         minimum = getMinNode(root, 0);
@@ -570,6 +570,7 @@ public:
 
     //This implementation might seem confusing at first but the reason we have to find the team first is because when while searching for a team
     //we sum up the extras along the way and then update numOfWins before returning the team..
+    // TODO: note (even if the team doesn't exist in the strength tree, it could still exist in the hashtable, so we need to check if it exists in the hashtable before calling this function)
     int getTeamWins(int teamID, int teamStrength){
         if (!contains(teamID, teamStrength)) throw invalid_argument("team doesn't exist and we're trying to get its wins");
         return find(teamID, teamStrength)->numOfWins;
