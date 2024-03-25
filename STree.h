@@ -569,7 +569,7 @@ public:
     }
 
     //This implementation might seem confusing at first but the reason we have to find the team first is because when while searching for a team
-    //we sum up the extras along the way and then update numOfWins before returning the team.
+    //we sum up the extras along the way and then update numOfWins before returning the team..
     int getTeamWins(int teamID, int teamStrength){
         if (!contains(teamID, teamStrength)) throw invalid_argument("team doesn't exist and we're trying to get its wins");
         return find(teamID, teamStrength)->numOfWins;
