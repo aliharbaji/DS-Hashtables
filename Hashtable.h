@@ -71,8 +71,14 @@ private:
         for (int i = 0; i < new_capacity; i++) {
             newTable[i] = make_shared<Tree<T>>();
         }
+        shared_ptr<T>* arr = nullptr;
 
-        auto arr = new shared_ptr<T>[size];
+        try{
+            arr = new shared_ptr<T>[size];
+        } catch (const std::bad_alloc& e) {
+            // free the memory
+            throw;
+        }
 
         int index = 0;
         for (int i = 0; i < capacity; i++) {
@@ -86,6 +92,8 @@ private:
                 delete[] temp;
             } catch (const std::exception& e) {
                 // rethrow the exception
+                // free the memory
+                delete[] arr;
                 throw;
             }
         }
@@ -150,7 +158,14 @@ private:
             newTable[i] = make_shared<Tree<T>>();
         }
 
-        auto arr = new shared_ptr<T>[size];
+        shared_ptr<T>* arr = nullptr;
+
+        try{
+            arr = new shared_ptr<T>[size];
+        } catch (const std::bad_alloc& e) {
+            // free the memory
+            throw;
+        }
 
         int index = 0;
         for (int i = 0; i < capacity; i++) {
@@ -164,6 +179,8 @@ private:
                 delete[] temp;
             } catch (const std::exception& e) {
                 // rethrow the exception
+                // free the memory
+                delete[] arr;
                 throw;
             }
         }
