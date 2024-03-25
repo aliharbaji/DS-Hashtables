@@ -24,16 +24,19 @@ int test2() {
     olympics.add_team(1);
     olympics.add_team(2);
     olympics.add_team(3);
-    olympics.add_team(4);
 
     cout << "before resizing the table" << endl;
     olympics.printTeams();
-    cout << endl;
 
-    olympics.add_team(5);
+
+    olympics.add_team(4);
+    cout << endl;
 
     cout << "after resizing the table" << endl;
     olympics.printTeams();
+
+    olympics.add_team(5);
+
 
     cout << "after resizing down the table" << endl;
     olympics.remove_team(5);
@@ -41,6 +44,7 @@ int test2() {
     olympics.remove_team(3);
     olympics.remove_team(2);
     olympics.remove_team(1);
+
 
     olympics.printTeams();
 

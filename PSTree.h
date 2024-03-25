@@ -369,7 +369,7 @@ public:
     // Inserts item. Returns false in case of duplication. True otherwise.
     bool insert(shared_ptr<T> item){
         if(!item) throw logic_error("Cannot insert null item.");
-        if (!contains(item->getID(), item->getStrength())) return false;
+        if (contains(item->getID(), item->getStrength())) return false;
         root = insertRecursively(root, item);
         size++;
         minimum = getMinNode(root);

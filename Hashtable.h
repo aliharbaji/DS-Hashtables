@@ -43,7 +43,16 @@ private:
         int index = 0;
         for (int i = 0; i < old_capacity; i++) {
             if (table[i]->getSize() == 0) continue;
-            auto temp = table[i]->returnSortedArrayOfElements();
+            shared_ptr<T>* temp = nullptr;
+
+            try{
+                temp = table[i]->returnSortedArrayOfElements();
+            }catch (std::bad_alloc& e){
+                // free the memory allocated for the newTable
+                newTable.reset();
+                throw;
+            }
+
             for (int j = 0; j < table[i]->getSize(); j++) {
                 int hashed_index = hash(temp[j]->getID());
                 newTable[hashed_index]->insert(temp[j]);
@@ -78,7 +87,16 @@ private:
         int index = 0;
         for (int i = 0; i < old_capacity; i++) {
             if (table[i]->getSize() == 0) continue;
-            auto temp = table[i]->returnSortedArrayOfElements();
+            shared_ptr<T>* temp = nullptr;
+
+            try{
+                temp = table[i]->returnSortedArrayOfElements();
+            }catch (std::bad_alloc& e){
+                // free the memory allocated for the newTable
+                newTable.reset();
+                throw;
+            }
+
             for (int j = 0; j < table[i]->getSize(); j++) {
                 int hashed_index = hash(temp[j]->getID());
                 newTable[hashed_index]->insert(temp[j]);
@@ -137,6 +155,26 @@ public:
             // update load factor
             load_factor = size * 1.0f / capacity * 1.0f; //
             rehash();
+            return true;
+        }
+
+        return false;
+
+    }
+
+    bool insert(shared_ptr<T> item_ptr){
+
+        int index = hash(item_ptr->getID());
+        // make a T item with key and add to index
+
+        // might throw bad_alloc, so we need to catch it TODO: check if this is necessary
+        // maybe add an if statement here to check if the item is already in the tree???
+        if (table[index]->insert(item_ptr)) {
+            size++;
+            total_elements_added++;
+            // update load factor
+            load_factor = size * 1.0f / capacity * 1.0f;
+
             return true;
         }
 
