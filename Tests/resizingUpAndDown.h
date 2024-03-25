@@ -13,8 +13,8 @@ using namespace std;
 int testResizingUpAndDown() {
     olympics_t olympics69;
     olympics69.add_team(1);
-    olympics69.add_team(2);
-    olympics69.add_team(3);
+    olympics69.add_team(12);
+    olympics69.add_team(23);
     olympics69.add_team(4);
     olympics69.add_team(5);
     olympics69.add_team(6);

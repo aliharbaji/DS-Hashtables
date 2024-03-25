@@ -221,5 +221,5 @@ StatusType olympics_t::unite_teams(int teamId1, int teamId2)
 
 output_t<int> olympics_t::play_tournament(int lowPower, int highPower)
 {
-
+    return output_t<int>(-1);
 }
