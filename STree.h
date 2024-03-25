@@ -570,10 +570,11 @@ public:
 
     //This implementation might seem confusing at first but the reason we have to find the team first is because when while searching for a team
     //we sum up the extras along the way and then update numOfWins before returning the team..
-    // TODO: note (even if the team doesn't exist in the strength tree, it could still exist in the hashtable, so we need to check if it exists in the hashtable before calling this function)
+    // great approach, but how are you updating the extras field along the way? hence, if we want to find the team again, we have to update the extras field
     int getTeamWins(int teamID, int teamStrength){
         if (!contains(teamID, teamStrength)) throw invalid_argument("team doesn't exist and we're trying to get its wins");
-        return find(teamID, teamStrength)->numOfWins;
+        auto team = find(teamID, teamStrength);
+        return team->numOfWins;
     }
 
 

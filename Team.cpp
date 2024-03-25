@@ -102,6 +102,11 @@ shared_ptr<Player> Team::findPlayer(int playerID) {
     return players->find(playerID);
 }
 
+// you can delete this method I was testing something
+void Team::addWinAli() {
+    numOfWins++;
+}
+
 // TODO: the usage of these function needs to be done through STree in the Olympics method. The STree has a method which does this while updating the extras.
 /*
 void Team::addWin() {

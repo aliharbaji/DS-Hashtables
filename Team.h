@@ -45,6 +45,7 @@ public:
 
     shared_ptr<Player> getStrengthPlayer();
 
+    void addWinAli();
     /*
     void addWin();
 
