@@ -40,9 +40,6 @@ public:
         return bf;
     }
 
-    int getRank() const{
-        return data->getRank();
-    }
 
 };
 

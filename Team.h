@@ -39,16 +39,17 @@ public:
 
     void removePlayer(int playerID);
 
-    int getNumberOfPlayers() const;
+    int getSize() const;
 
     void printTeam() const;
 
     shared_ptr<Player> getStrengthPlayer();
 
+    /*
     void addWin();
 
     int getNumberOfWins() const;
-
+    */
     void removeAllPlayers();
 
     shared_ptr<Player> getNewestPlayer() const;

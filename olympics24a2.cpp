@@ -1,4 +1,7 @@
 #include "olympics24a2.h"
+#include <cmath>
+
+
 
 //olympics_t::olympics_t(): teams(), teamsWithWinsOrStrength(), idGenerator(1), teamsByRank(), teamsByStrength()
 //{
@@ -47,7 +50,8 @@ StatusType olympics_t::remove_team(int teamId)
     }
 
     try{
-        team->removeAllPlayers(); // this removes all the players from the team in O(k) time complexity
+        // unnecessary I think. Removing the team means the pointers to that team and therefore that team's players are no longer accessible so they're destructed.
+        // team->removeAllPlayers(); // this removes all the players from the team in O(k) time complexity
         teams->remove(teamId); // this removes the team from the table, and the team's destructor is called
         teamsByStrength->remove(teamId, team->getStrength());
 
@@ -110,7 +114,7 @@ StatusType olympics_t::remove_newest_player(int teamId)
         return StatusType::INVALID_INPUT;
     }
     auto team = teams->find(teamId); // O(logn)
-    if(team == nullptr || team->getNumberOfPlayers() == 0){
+    if(team == nullptr || team->getSize() == 0){
         return StatusType::FAILURE;
     }
 
@@ -138,50 +142,34 @@ output_t<int> olympics_t::play_match(int teamId1, int teamId2)
     auto team1 = teams->find(teamId1);
     auto team2 = teams->find(teamId2);
 
-    if(team1 == nullptr || team2 == nullptr || team1->getNumberOfPlayers() == 0 || team2->getNumberOfPlayers() == 0){
-        return output_t<int>(StatusType::FAILURE);
-    }
-
-    if(team1->getID() == team2->getID() || team1->getID() <= 0 || team2->getID() <= 0){
+    if(teamId1 == teamId2 || teamId1 <= 0 || teamId2 <= 0){
         return output_t<int>(StatusType::INVALID_INPUT);
     }
 
-    // TODO: this calculation should be maintained in other functions!! I already did that but will keep this TODO just in case
-    // fixed it to work in O(1) time complexity
-    auto playerStrongerThanHalf1 = team1->getStrengthPlayer();
-    auto playerStrongerThanHalf2 = team2->getStrengthPlayer();
-//    cout << endl;
-//    cout << "Team1's strength player is " << playerStrongerThanHalf1->getStrength() << endl;
-//    cout << "Team2's strength player is " << playerStrongerThanHalf2->getStrength() << endl;
-    int team1Strength = playerStrongerThanHalf1->getStrength() * team1->getNumberOfPlayers();
-    int team2Strength = playerStrongerThanHalf2->getStrength() * team2->getNumberOfPlayers();
-//    cout << endl;
-//    cout << "Team1's strength is " << team1Strength << endl;
-//    cout << "Team2's strength is " << team2Strength << endl;
+    if(team1 == nullptr || team2 == nullptr || team1->getSize() == 0 || team2->getSize() == 0){
+        return output_t<int>(StatusType::FAILURE);
+    }
+
+
+
+    int team1Strength = team1->getStrength();
+    int team2Strength = team2->getStrength();
+
     if(team1Strength > team2Strength) {
-        team1->addWin();
-//        if(team1->getNumberOfWins() == 1){
-//            teamsWithWinsOrStrength.insert(team1); // O(logn)
-//        }
-        return output_t<int>(team1->getID());
+        teamsByStrength->addWinsToTeam(teamId1, team1Strength, 1);
+        return output_t<int>(teamId1);
+
+
     }else if(team1Strength < team2Strength){
-        team2->addWin();
-//        if(team2->getNumberOfWins() == 1){
-//            teamsWithWinsOrStrength.insert(team2); // O(logn)
-//        }
-        return output_t<int>(team2->getID());
+        teamsByStrength->addWinsToTeam(teamId2, team2Strength, 1);
+        return output_t<int>(teamId2);
+
     }else{ // in case of a tie, the team with the lower ID wins
-        if(team1->getID() < team2->getID()) {
-            team1->addWin();
-//            if(team1->getNumberOfWins() == 1){
-//                teamsWithWinsOrStrength.insert(team1); // O(logn)
-//            }
+        if(teamId1 < teamId2) {
+            teamsByStrength->addWinsToTeam(teamId1, team1Strength, 1);
             return output_t<int>(team1->getID());
         }else{
-            team2->addWin();
-//            if(team2->getNumberOfWins() == 1){
-//                teamsWithWinsOrStrength.insert(team2); // O(logn)
-//            }
+            teamsByStrength->addWinsToTeam(teamId2, team2Strength, 1);
             return output_t<int>(team2->getID());
         }
     }
@@ -198,7 +186,7 @@ output_t<int> olympics_t::num_wins_for_team(int teamId)
         return output_t<int>(StatusType::FAILURE);
     }
 
-    return output_t<int>(team->getNumberOfWins());
+    return output_t<int>(teamsByStrength->getTeamWins(team->getID(), team->getStrength()));
 }
 
 // this should work in O(1) time complexity
@@ -206,10 +194,7 @@ output_t<int> olympics_t::get_highest_ranked_team(){
     if(teams->getSize() == 0){
         return output_t<int>(-1);
     }
-
-    int highestRank = teamsByStrength->getHighestRank(); // O(1)
-
-    return output_t<int>(highestRank);
+    return output_t<int>(teamsByStrength->getHighestRank());
 }
 
 
@@ -221,5 +206,36 @@ StatusType olympics_t::unite_teams(int teamId1, int teamId2)
 
 output_t<int> olympics_t::play_tournament(int lowPower, int highPower)
 {
-    return output_t<int>(-1);
+
+    if (lowPower <= 0 || highPower <= 0 || lowPower >= highPower) return output_t<int>(StatusType::INVALID_INPUT);
+    auto upperTeam = teamsByStrength->findHighestRankedLEStrength(highPower);
+    auto lowerTeam = teamsByStrength->findLowestRankedGEStrength(lowPower);
+
+    if (!upperTeam || !lowerTeam) return output_t<int>(StatusType::FAILURE); //no team with less equal highPower or no team with greater equal lowPower
+    int upperTeamRank = teamsByStrength->getRank(upperTeam->getID(), upperTeam->getStrength());
+    int lowerTeamRank = teamsByStrength->getRank(lowerTeam->getID(), lowerTeam->getStrength());
+
+    if (upperTeamRank < lowerTeamRank || upperTeamRank == -1 || lowerTeamRank == -1) return output_t<int>(StatusType::FAILURE);
+    // there is a team with more strength than lowPower but its strength is greater than highPower or such teams don't exist.
+    //
+    if (upperTeamRank == lowerTeamRank) return output_t<int>(upperTeam->getID());
+    int numOfParticipants = upperTeamRank - lowerTeamRank + 1;
+    double logResult = log2(numOfParticipants);
+    double roundedResult = static_cast<int>(logResult);
+
+    const double epsilon = 1e-6;
+    if (std::fabs(logResult - roundedResult) > epsilon) return output_t<int>(StatusType::FAILURE);
+
+    //TODO: should work even with 2 teams but maybe it's still better to just call play match in that scenario for simplicity.
+    //log(i) times loop
+    while (numOfParticipants >= 1){
+        auto lowestRankWinner = teamsByStrength->getKthSmallest(lowerTeamRank + numOfParticipants/2);
+        teamsByStrength->addWins(lowestRankWinner->getStrength(), upperTeam->getStrength(), 1);// log(n)
+        numOfParticipants /= 2;
+    }
+    //log(i) * log(n) overall
+
+    return output_t<int>(upperTeam->getID());
+
+
 }

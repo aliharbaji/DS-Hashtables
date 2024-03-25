@@ -16,7 +16,7 @@ int Team::getStrength() const {
     return strengthPlayer->getStrength() * numberOfPlayers;
 }
 
-
+//TODO: should change it so that team doesn't take playerID as a parameter but generates playerID based on numberOfPlayers.
 bool Team::addPlayer(int playerID, int playerStrength) {
     shared_ptr<Player> contestant = make_shared<Player>(playerID, playerStrength);
     if(!players->insert(contestant) || !playersByStrength->insert(contestant)) return false;
@@ -43,7 +43,7 @@ void Team::removePlayer(int playerID) {
     strengthPlayer = playersByStrength->getKthSmallest(numberOfPlayers/2 + 1); // O(logk)
 }
 
-int Team::getNumberOfPlayers() const {
+int Team::getSize() const {
     return numberOfPlayers;
 }
 
@@ -102,6 +102,8 @@ shared_ptr<Player> Team::findPlayer(int playerID) {
     return players->find(playerID);
 }
 
+// TODO: the usage of these function needs to be done through STree in the Olympics method. The STree has a method which does this while updating the extras.
+/*
 void Team::addWin() {
     numOfWins++;
 }
@@ -110,7 +112,7 @@ void Team::addWin() {
 int Team::getNumberOfWins() const {
     return numOfWins;
 }
-
+*/
 
 
 

@@ -65,14 +65,14 @@ private:
         if (node == nullptr) {
             auto current = make_shared<SNode<T>>(item);
             // TODO: implementation of a new tree is necessary for this to work
-            current->maxRank = item->getStrength() + item->numOfWins;
+            current->maxRank = (item->getSize()) ? (item->getStrength() + item->numOfWins) : 0;
             current->extra = item->numOfWins - extraSum;
             return current;
         }
 
         bool isLeft = false, isRight = false;
 
-        int itemRank = item->getStrength() + item->numOfWins;
+        int itemRank = (item->getSize()) ? (item->getStrength() + item->numOfWins) : 0;
         if (itemRank > node->maxRank) node->maxRank = itemRank;
 
         extraSum += node->extra;
@@ -204,9 +204,9 @@ private:
 
         if (node==nullptr) return deleted;
 
-        int currRank = node->getStrength() + node->data->numOfWins;
+        int currRank = (node->data->getSize()) ? (node->getStrength() + node->data->numOfWins) : 0;;
         node->height = 1 + maxComp(getHeight(node->right), getHeight(node->left));
-        node->size = 1+ getSize(node->left) + getSize(node->right);
+        node->size = 1 + getSize(node->left) + getSize(node->right);
         node->maxRank = maxComp(currRank, maxComp(getMaxRank(node->left), getMaxRank(node->right)));
 
 
@@ -313,7 +313,7 @@ private:
         else return containsRecursively(node->right, ID, strength);
     }
 
-    shared_ptr<T> findRecursively(shared_ptr<SNode<T>> node, int ID, int strength, int extraSum) const{
+    shared_ptr<T> findRecursively(shared_ptr<SNode<T>> node, int ID, int strength, int extraSum) {
         if (node == nullptr) return nullptr;
 
         extraSum += node->extra;
@@ -325,8 +325,8 @@ private:
         }
 
         if (node->data->getID() == ID) return node->data;
-        if (isLeft) return findRecursively(node->left, ID, extraSum);
-        else return findRecursively(node->right, ID, extraSum);
+        if (isLeft) return findRecursively(node->left, ID, strength, extraSum);
+        else return findRecursively(node->right, ID, strength, extraSum);
     }
 
     int getHeight(shared_ptr<SNode<T>> node) const{
@@ -403,7 +403,7 @@ public:
 
 
     // finds member with ID, returns NULL if he doesn't exist.
-    shared_ptr<T> find(const int ID, const int strength) const{
+    shared_ptr<T> find(const int ID, const int strength) {
         return findRecursively(root, ID, strength, 0);
     }
 
@@ -463,7 +463,7 @@ public:
     }
 
     int getMaxRank(shared_ptr<SNode<T>> node) const {
-        return node ? node->maxRank : 0;  // Return 0 if node is nullptr, otherwise node's size
+        return node ? node->maxRank : 0;
     }
 
     int getSize() const{
@@ -574,6 +574,134 @@ public:
         if (!contains(teamID, teamStrength)) throw invalid_argument("team doesn't exist and we're trying to get its wins");
         return find(teamID, teamStrength)->numOfWins;
     }
+
+
+    int findRank(shared_ptr<SNode<T>> node, int ID, int strength, int& rank) const{
+        if (node == nullptr) return -1;
+
+        if (strength < node->getStrength() || (strength == node->getStrength() && ID > node->getID())) {
+            return findRank(node->left, ID, strength, rank);
+        }
+        else if (strength > node->getStrength() || (strength == node->getStrength() && ID < node->getID())) {
+            int leftSize = node->left ? node->left->size : 0;
+            rank += leftSize + 1;
+            return findRank(node->right, ID, strength, rank);
+        }
+        else {
+            int leftSize = node->left ? node->left->size : 0;
+            rank += leftSize;
+            return rank + 1;
+        }
+    }
+
+    int getRank(int ID, int strength) const{
+        int rank = 0;
+        int result = findRank(root, ID, strength, rank);
+        if (result == -1) {
+            return -1;
+        }
+        return rank;
+    }
+
+
+    shared_ptr<T> findRankedLowestNodeGEStrengthAux(shared_ptr<SNode<T>> node, int strength) {
+        if (!node) return nullptr;
+
+        shared_ptr<T> result = nullptr;
+
+        if (node->getStrength() >= strength) {
+
+            result = findRankedLowestNodeGEStrengthAux(node->left, strength);
+            if (!result) {
+                return node->data;
+            }
+        } else {
+
+            return findRankedLowestNodeGEStrengthAux(node->right, strength);
+        }
+
+        return result;
+    }
+
+    shared_ptr<T> findLowestRankedGEStrength(int strength) {
+        return findRankedLowestNodeGEStrengthAux(root, strength);
+    }
+
+
+    shared_ptr<T> findHighestRankedNodeLEStrengthAux(shared_ptr<SNode<T>> node, int strength) {
+        if (!node) return nullptr;
+
+        shared_ptr<T> result = nullptr;
+
+        if (node->getStrength() <= strength) {
+
+            result = findHighestRankedNodeLEStrengthAux(node->right, strength);
+            if (!result) {
+
+                result = node->data;
+            }
+        } else {
+            result = findHighestRankedNodeLEStrengthAux(node->left, strength);
+        }
+
+        return result;
+    }
+
+    shared_ptr<T> findHighestRankedLEStrength(int strength) {
+        return findHighestRankedNodeLEStrengthAux(root, strength);
+    }
+
+
+
+    shared_ptr<T> findHighestIdWithStrengthAux(shared_ptr<SNode<T>> node, int strength, int extraSum = 0){
+        if (!node) return nullptr;
+
+        extraSum += node->extra;
+        if (strength > node->getStrength()){
+            return findHighestIdWithStrengthAux(node->right, strength);
+
+        } else if (strength < node->getStrength()){
+            return findHighestIdWithStrengthAux(node->left, strength);
+
+        } else{
+            while (node->left && node->left->getStrength() == strength){
+                node = node->left;
+                extraSum += node->extra;
+            }
+        }
+            node->data->numOfWins = extraSum;
+            return node->data;
+    }
+
+    shared_ptr<T> findHighestIdWithStrength(int strength){
+        return findHighestIdWithStrengthAux(root, strength);
+    }
+
+    shared_ptr<T> findLowestIdWithStrengthAux(shared_ptr<SNode<T>> node, int strength, int extraSum = 0){
+        if (!node) return nullptr;
+
+        extraSum += node->extra;
+        if (strength > node->getStrength()){
+            return findLowestIdWithStrengthAux(node->right, strength);
+
+        } else if (strength < node->getStrength()){
+            return findLowestIdWithStrengthAux(node->left, strength);
+
+        } else{
+            while (node->right && node->right->getStrength() == strength){
+                node = node->right;
+                extraSum += node->extra;
+            }
+        }
+        node->data->numOfWins = extraSum;
+        return node->data;
+    }
+
+    shared_ptr<T> findLowestIdWithStrength(int strength){
+        return findLowestIdWithStrengthAux(root, strength);
+    }
+
+
 
 };
 

@@ -15,13 +15,13 @@
 #ifndef OLYMPICSA2_H_
 #define OLYMPICSA2_H_
 
+
 #include "wet2util.h"
 #include "Hashtable.h"
 #include "Team.h"
 #include "STree.h"
 #include "Tree.h"
 #include <memory>
-
 
 class olympics_t {
 private:
