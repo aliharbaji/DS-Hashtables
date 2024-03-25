@@ -39,12 +39,15 @@ private:
         }
         // TODO: add try catch block here
         auto arr = new shared_ptr<T>[size];
+
         int index = 0;
         for(int i = 0; i < capacity; i++){ // O(capacity) time complexity
             if(table[i]->getSize() == 0) continue;
-            auto temp = table[i]->returnSortedArrayOfElements(); // works in O(n) time complexity
-            std::copy(temp, temp + table[i]->getSize(), arr + index); // O(n) time complexity
-            index = index + table[i]->getSize();
+            auto temp = table[i]->returnSortedArrayOfElements(); // works in O(n_of_team_i) time complexity
+            for(int j = 0; j < table[i]->getSize(); j++){ // O(n_of_team_i) time complexity
+                arr[index] = temp[j];
+                index++;
+            }
         }
 
         capacity = new_capacity; // changing the rehash function
@@ -73,11 +76,13 @@ private:
         // TODO: add try catch block here
         auto arr = new shared_ptr<T>[size];
         int index = 0;
-        for(int i = 0; i < capacity; i++) { // O(capacity) time complexity
+        for(int i = 0; i < capacity; i++){ // O(capacity) time complexity
             if(table[i]->getSize() == 0) continue;
-            auto temp = table[i]->returnSortedArrayOfElements(); // works in O(n) time complexity
-            std::copy(temp, temp + table[i]->getSize(), arr + index); // O(n) time complexity
-            index = index + table[i]->getSize();
+            auto temp = table[i]->returnSortedArrayOfElements(); // works in O(n_of_team_i) time complexity
+            for(int j = 0; j < table[i]->getSize(); j++){ // O(n_of_team_i) time complexity
+                arr[index] = temp[j];
+                index++;
+            }
         }
 
         if(index != size) {
