@@ -8,19 +8,31 @@
 #include "Tests/resizingUpAndDown.h"
 #include "Tests/test2.h"
 #include "Tests/test3.h"
-
+#include "Tests/test4.h"
 using namespace std;
 
 int main() {
-    cout << "Testing the olympics_t class (uncomment the test you want to see)" << endl;
-    // TEST1 (a test for resizing up and down) PASS
-    testResizingUpAndDown();
+    cout << "Testing the olympics_t class (set x to the test number you want to run)" << endl << endl;
+    int x = 4;
 
-    // TEST2 this is a big test but I tried to keep it commented as much as possible, it works properly up until the stars *** appear
-//    test2();
+    switch (x) {
+        case 1: // TEST1 (a test for resizing up and down) PASS
+            testResizingUpAndDown();
+            break;
+        case 2: // TEST2 this is a big test but I tried to keep it commented as much as possible, it works properly up until the stars *** appear
+            test2();
+            break;
+        case 3: // TEST3 (a small test for playing matches and removing players) PASS
+            test3();
+            break;
+        case 4: // TEST4 (empty teams) PASS
+            test4();
+            break;
+        default:
+            break;
+    }
 
-    // TEST3 (a small test for playing matches and removing players) PASS
-//    test3();
+
 
     return 0;
 }

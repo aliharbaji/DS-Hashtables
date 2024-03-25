@@ -13,21 +13,22 @@ using namespace std;
 int testResizingUpAndDown() {
     olympics_t olympics69;
     olympics69.add_team(1);
-    olympics69.add_team(2);
-    olympics69.add_team(3);
+    olympics69.add_team(12);
+    olympics69.add_team(23);
     olympics69.add_team(4);
     olympics69.add_team(5);
     olympics69.add_team(6);
     olympics69.add_team(7);
     olympics69.add_team(8);
-    olympics69.add_team(9);
     cout << "BEFORE RESIZING UP" << endl;
     olympics69.printTeams();
 
-    olympics69.add_team(10);
+    olympics69.add_team(9);
+
     cout << "AFTER RESIZING UP" << endl;
     olympics69.printTeams();
 
+    olympics69.add_team(10);
     cout << endl;
     cout << "removing 10" << endl;
     olympics69.remove_team(10);
@@ -37,13 +38,22 @@ int testResizingUpAndDown() {
     olympics69.remove_team(8);
     cout << "removing 7" << endl;
     olympics69.remove_team(7);
+
+    cout << endl;
+    cout <<"BEFORE RESIZING DOWN" << endl;
+    olympics69.printTeams();
+
+    cout << endl;
+    cout << "AFTER RESIZING DOWN" << endl;
     cout << "removing 6" << endl;
     olympics69.remove_team(6);
+
+    olympics69.printTeams();
+    cout << endl;
+
     cout << "removing 5" << endl;
     olympics69.remove_team(5);
 
-    cout << "AFTER RESIZING DOWN" << endl;
-    olympics69.printTeams();
     return 0;
 }
 

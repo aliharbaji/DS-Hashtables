@@ -5,7 +5,7 @@
 //    // default constructor
 //}
 
-olympics_t::olympics_t(): teams(), idGenerator(1), teamsByStrength(make_shared<STree<Team>>())
+olympics_t::olympics_t(): teams(make_shared<Hashtable<Team>>()), idGenerator(1), teamsByStrength(make_shared<STree<Team>>())
 {
     // default constructor
 }
@@ -21,12 +21,12 @@ StatusType olympics_t::add_team(int teamId)
     if(teamId <= 0){
         return StatusType::INVALID_INPUT;
     }
-    if(teams.contains(teamId)){
+    if(teams->contains(teamId)){
         return StatusType::FAILURE;
     }
 
     try{
-        teams.insert(teamId);
+        teams->insert(teamId);
     }catch(bad_alloc& e){
         return StatusType::ALLOCATION_ERROR;
     }
@@ -41,14 +41,14 @@ StatusType olympics_t::remove_team(int teamId)
 	if(teamId <= 0){
         return StatusType::INVALID_INPUT;
     }
-    auto team = teams.find(teamId);
+    auto team = teams->find(teamId);
     if(!team){
         return StatusType::FAILURE;
     }
 
     try{
         team->removeAllPlayers(); // this removes all the players from the team in O(k) time complexity
-        teams.remove(teamId); // this removes the team from the table, and the team's destructor is called
+        teams->remove(teamId); // this removes the team from the table, and the team's destructor is called
         teamsByStrength->remove(teamId, team->getStrength());
 
     }catch (exception& e) {
@@ -65,7 +65,7 @@ StatusType olympics_t::add_player(int teamId, int playerStrength)
     }
 
     // find the team
-    auto team = teams.find(teamId);
+    auto team = teams->find(teamId);
 
 
     if(team == nullptr){
@@ -109,7 +109,7 @@ StatusType olympics_t::remove_newest_player(int teamId)
 	if(teamId <= 0){
         return StatusType::INVALID_INPUT;
     }
-    auto team = teams.find(teamId); // O(logn)
+    auto team = teams->find(teamId); // O(logn)
     if(team == nullptr || team->getNumberOfPlayers() == 0){
         return StatusType::FAILURE;
     }
@@ -135,8 +135,8 @@ StatusType olympics_t::remove_newest_player(int teamId)
 // TODO: make sure to remove and reinsert the winning team ???
 output_t<int> olympics_t::play_match(int teamId1, int teamId2)
 {
-    auto team1 = teams.find(teamId1);
-    auto team2 = teams.find(teamId2);
+    auto team1 = teams->find(teamId1);
+    auto team2 = teams->find(teamId2);
 
     if(team1 == nullptr || team2 == nullptr || team1->getNumberOfPlayers() == 0 || team2->getNumberOfPlayers() == 0){
         return output_t<int>(StatusType::FAILURE);
@@ -193,7 +193,7 @@ output_t<int> olympics_t::num_wins_for_team(int teamId)
     if(teamId <= 0){
         return output_t<int>(StatusType::INVALID_INPUT);
     }
-    auto team = teams.find(teamId);
+    auto team = teams->find(teamId);
     if(team == nullptr){
         return output_t<int>(StatusType::FAILURE);
     }
@@ -203,7 +203,7 @@ output_t<int> olympics_t::num_wins_for_team(int teamId)
 
 // this should work in O(1) time complexity
 output_t<int> olympics_t::get_highest_ranked_team(){
-    if(teams.getSize() == 0){
+    if(teams->getSize() == 0){
         return output_t<int>(-1);
     }
 
@@ -221,5 +221,5 @@ StatusType olympics_t::unite_teams(int teamId1, int teamId2)
 
 output_t<int> olympics_t::play_tournament(int lowPower, int highPower)
 {
-
+    return output_t<int>(-1);
 }

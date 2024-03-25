@@ -27,33 +27,51 @@ private:
     // this might be useful in the future when we want to give an id to each ID-less player
     // maybe this should be a static field of the class, so that we can give an id to each player that is added to the table
 
-    // TODO: ask omar if this works in the required time complexity
-    void resizeUp(){
-        int new_capacity = capacity * 2 + 1;
+
+    void resizeUp() {
+        int new_capacity = 2 * capacity + 1;
         unique_ptr<shared_ptr<Tree<T>>[]> newTable(new shared_ptr<Tree<T>>[new_capacity]());
 
-        for(int i = 0; i < new_capacity; i++){
+        for (int i = 0; i < new_capacity; i++) {
             newTable[i] = make_shared<Tree<T>>();
         }
 
         int old_capacity = capacity;
-        capacity = new_capacity;
-        //TODO: this part needs rewriting. This method searches for each element in the tree separately so it's klogk where k is tree size.
-        // The most efficient way to get all the items in a tree is inorder traversal. There's already a function that returns a tree as a sorted array.
-        //TODO: table[i]->returnedSortedArrayOfElements() returns an array of all the elements in the tree in sorted order. You need to free the array at the end.
-        //TODO: use that function to get each tree into an array and then insert that array into the hash.
-        for(int i = 0; i < old_capacity; i++){
-            for(int j = 0; j < table[i]->getSize(); j++){
-                auto item = table[i]->getKthSmallest(j);
-                int index = hash(item->getID());
-                newTable[index]->insert(item);
+        capacity = new_capacity; // changing the rehash function
+
+        // TODO: add try-catch block around returnSortedArrayOfElements
+        int index = 0;
+        for (int i = 0; i < old_capacity; i++) {
+            if (table[i]->getSize() == 0) continue;
+            shared_ptr<T>* temp = nullptr;
+
+            try{
+                temp = table[i]->returnSortedArrayOfElements();
+            }catch (std::bad_alloc& e){
+                // free the memory allocated for the newTable
+                newTable.reset();
+                throw;
             }
+
+            for (int j = 0; j < table[i]->getSize(); j++) {
+                int hashed_index = hash(temp[j]->getID());
+                newTable[hashed_index]->insert(temp[j]);
+                index++;
+            }
+            delete[] temp;
+        }
+
+        // TODO: delete later
+        if (index != size) {
+            cerr << "index: " << index << " size: " << size << endl;
+            throw std::runtime_error("index is not equal to size");
         }
 
         table = std::move(newTable);
     }
 
-    // TODO: ask omar if this works in the required time complexity
+
+
     void resizeDown() {
         int new_capacity = std::max(DEFAULT_CAPACITY, capacity / 2);
         unique_ptr<shared_ptr<Tree<T>>[]> newTable(new shared_ptr<Tree<T>>[new_capacity]());
@@ -63,18 +81,39 @@ private:
         }
 
         int old_capacity = capacity;
-        capacity = new_capacity;
+        capacity = new_capacity; // changing the rehash function
 
+        // TODO: add try-catch block around returnSortedArrayOfElements
+        int index = 0;
         for (int i = 0; i < old_capacity; i++) {
-            for (int j = 0; j < table[i]->getSize(); j++) {
-                auto item = table[i]->getKthSmallest(j);
-                int index = hash(item->getID());
-                newTable[index]->insert(item);
+            if (table[i]->getSize() == 0) continue;
+            shared_ptr<T>* temp = nullptr;
+
+            try{
+                temp = table[i]->returnSortedArrayOfElements();
+            }catch (std::bad_alloc& e){
+                // free the memory allocated for the newTable
+                newTable.reset();
+                throw;
             }
+
+            for (int j = 0; j < table[i]->getSize(); j++) {
+                int hashed_index = hash(temp[j]->getID());
+                newTable[hashed_index]->insert(temp[j]);
+                index++;
+            }
+            delete[] temp;
+        }
+
+        // TODO: delete later
+        if (index != size) {
+            cerr << "index: " << index << " size: " << size << endl;
+            throw std::runtime_error("index is not equal to size");
         }
 
         table = std::move(newTable);
     }
+
 public:
     Hashtable(): size(0), capacity(DEFAULT_CAPACITY), load_factor(0.0f), total_elements_added(0) {
         table = make_unique<shared_ptr<Tree<T>>[]>(DEFAULT_CAPACITY);
@@ -103,8 +142,7 @@ public:
     }
 
     bool insert(int key){
-        // TODO: resize up when needed (probably depending on the load factor?)
-        rehash();
+
         int index = hash(key);
         // make a T item with key and add to index
 
@@ -116,6 +154,27 @@ public:
             total_elements_added++;
             // update load factor
             load_factor = size * 1.0f / capacity * 1.0f; //
+            rehash();
+            return true;
+        }
+
+        return false;
+
+    }
+
+    bool insert(shared_ptr<T> item_ptr){
+
+        int index = hash(item_ptr->getID());
+        // make a T item with key and add to index
+
+        // might throw bad_alloc, so we need to catch it TODO: check if this is necessary
+        // maybe add an if statement here to check if the item is already in the tree???
+        if (table[index]->insert(item_ptr)) {
+            size++;
+            total_elements_added++;
+            // update load factor
+            load_factor = size * 1.0f / capacity * 1.0f;
+
             return true;
         }
 
@@ -124,11 +183,11 @@ public:
     }
 
     bool remove(int key){
-        rehash();
         int index = hash(key);
         if(table[index]->remove(key)){
             size--;
             load_factor = size * 1.0f / capacity * 1.0f ;
+            rehash();
             return true;
         }
         return false;

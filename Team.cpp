@@ -12,7 +12,7 @@
 //}
 
 int Team::getStrength() const {
-    if(numberOfPlayers == 0) return 0;
+    if(!strengthPlayer || players->getSize() == 0) return 0;
     return strengthPlayer->getStrength() * numberOfPlayers;
 }
 
@@ -91,7 +91,7 @@ shared_ptr<Player> Team::getNewestPlayer() const {
     return player;
 }
 
-void Team::insert_ptr(shared_ptr<Player> player) {
+void Team::insert_ptr(const shared_ptr<Player>& player) {
     players->insert(player);
     playersByStrength->insert(player);
     numberOfPlayers++;
