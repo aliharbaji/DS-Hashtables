@@ -48,6 +48,7 @@ private:
                 arr[index] = temp[j];
                 index++;
             }
+            delete[] temp;
         }
 
         capacity = new_capacity; // changing the rehash function
@@ -83,6 +84,7 @@ private:
                 arr[index] = temp[j];
                 index++;
             }
+            delete[] temp;
         }
 
         if(index != size) {
