@@ -27,6 +27,11 @@ private:
     //Adjusted logic to compare based on strength and in case of strength equality to compare based on ID.
 
     //necessary for Team
+    int maxComp(int a, int b){
+        if(a > b) return a;
+        return b;
+    }
+
     shared_ptr<Node<T>> findKthSmallest(shared_ptr<Node<T>> node, int k) {
         if (!node || k == 0) return nullptr;
 
@@ -80,7 +85,8 @@ private:
             if (rightChild) rightChild->parent=node;
         }
 
-        node->height = 1 + max(getHeight(node->left), getHeight(node->right));
+        node->height = 1 + maxComp(getHeight(node->left), getHeight(node->right));
+        node->size = 1+ getSize(node->left) + getSize(node->right);
         int balance = getBalance(node);
 
         //Rotation logic stays the same
@@ -170,7 +176,7 @@ private:
 
         if (node==nullptr) return deleted;
 
-        node->height = 1 + max(getHeight(node->right), getHeight(node->left));
+        node->height = 1 + maxComp(getHeight(node->right), getHeight(node->left));
         node->size = 1+ getSize(node->left) + getSize(node->right);
 
         int balance = getBalance(node);
@@ -209,8 +215,8 @@ private:
         leftChild->right = node;
         node->left = subTree;
 
-        node->height = 1 + max(getHeight(node->left),getHeight(node->right));
-        leftChild->height = 1 + max(getHeight(leftChild->left), getHeight(leftChild->right));
+        node->height = 1 + maxComp(getHeight(node->left),getHeight(node->right));
+        leftChild->height = 1 + maxComp(getHeight(leftChild->left), getHeight(leftChild->right));
         node->size = 1 + getSize(node->left) + getSize(node->right);
         leftChild->size = 1 + getSize(leftChild->left) + getSize(leftChild->right);
 
@@ -230,8 +236,8 @@ private:
         rightChild->left = node;
         node->right = subTree;
 
-        node->height = 1 + max(getHeight(node->left),getHeight(node->right));
-        rightChild->height = 1 + max(getHeight(rightChild->left), getHeight(rightChild->right));
+        node->height = 1 + maxComp(getHeight(node->left),getHeight(node->right));
+        rightChild->height = 1 + maxComp(getHeight(rightChild->left), getHeight(rightChild->right));
         node->size = 1 + getSize(node->left) + getSize(node->right);
         rightChild->size = 1 + getSize(rightChild->left) + getSize(rightChild->right);
 
@@ -256,8 +262,8 @@ private:
         }
 
         if (node->getID() == ID) return true;
-        if (isLeft) return containsRecursively(node->left, ID);
-        else return containsRecursively(node->right, ID);
+        if (isLeft) return containsRecursively(node->left, ID, strength);
+        else return containsRecursively(node->right, ID, strength);
     }
 
     shared_ptr<T> findRecursively(shared_ptr<Node<T>> node, int ID, int strength) const{
@@ -311,7 +317,7 @@ private:
         node->left = sortedArrayToAVL(arr, start, mid - 1);
         node->right = sortedArrayToAVL(arr, mid + 1, end);
 
-        node->height = 1 + max(getHeight(node->left), getHeight(node->right));
+        node->height = 1 + maxComp(getHeight(node->left), getHeight(node->right));
         node->size = 1 + getSize(node->left) + getSize(node->right);
 
         return node;

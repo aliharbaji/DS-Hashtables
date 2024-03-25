@@ -205,7 +205,7 @@ private:
         if (node==nullptr) return deleted;
 
         int currRank = node->getStrength() + node->data->numOfWins;
-        node->height = 1 + max(getHeight(node->right), getHeight(node->left));
+        node->height = 1 + maxComp(getHeight(node->right), getHeight(node->left));
         node->size = 1+ getSize(node->left) + getSize(node->right);
         node->maxRank = maxComp(currRank, maxComp(getMaxRank(node->left), getMaxRank(node->right)));
 
@@ -286,7 +286,7 @@ private:
         node->size = 1 + getSize(node->left) + getSize(node->right);
         rightChild->size = 1 + getSize(rightChild->left) + getSize(rightChild->right);
         node->maxRank = maxComp(node->maxRank, maxComp(getMaxRank(node->left), getMaxRank(node->right)));
-        rightChild->maxRank = max(rightChild->maxRank, maxComp(getMaxRank(rightChild->left), getMaxRank(rightChild->right)));
+        rightChild->maxRank = maxComp(rightChild->maxRank, maxComp(getMaxRank(rightChild->left), getMaxRank(rightChild->right)));
 
         if (subTree != nullptr){
             subTree->parent = node;
@@ -372,7 +372,7 @@ private:
         node->left = sortedArrayToAVL(arr, start, mid - 1);
         node->right = sortedArrayToAVL(arr, mid + 1, end);
 
-        node->height = 1 + max(getHeight(node->left), getHeight(node->right));
+        node->height = 1 + maxComp(getHeight(node->left), getHeight(node->right));
         node->size = 1 + getSize(node->left) + getSize(node->right);
 
         return node;
@@ -525,11 +525,11 @@ public:
 
     //adds wins equal to wins amount to the teams with strengths in the range [i,j] inclusive. Similar to vaccines question.
     void auxAddWins(int highPower, int wins){
+        auxAddWinsRecursive(root, highPower, wins);
 
     }
-    void auxAddWinsRecursive(shared_ptr<SNode<T>> node, int highPower, int wins, bool rightStreak = false, bool previousIdentical = false){
+    void auxAddWinsRecursive(shared_ptr<SNode<T>> node, int highPower, int wins, bool rightStreak = false){
         if (!node) return;
-
 
         if (highPower > node->getStrength()){
             if (!rightStreak) node->extra += wins;
@@ -540,11 +540,13 @@ public:
             return auxAddWinsRecursive(node->left, highPower, wins, false);
 
         } else{
-            //reached the first node with highPower
-            previousIdentical = true;
+            if (!rightStreak) node->extra += wins;
 
-
-
+            while (node->right && node->right->getStrength() == highPower){
+                node = node->right;
+            }
+            if (node->right) node->right->extra -= wins;
+            return;
         }
 
 
@@ -552,8 +554,27 @@ public:
 
     }
     void addWins(int lowPower, int highPower, int wins){
-
+        auxAddWins(highPower, wins);
+        auxAddWins(lowPower-1, -wins);
     }
+
+
+    bool addWinsToTeam(int teamID, int teamStrength, int wins){
+        if (!contains(teamID, teamStrength)) return false;
+        auto team = find(teamID, teamStrength);
+        team->numOfWins++;
+        remove(teamID, teamStrength);
+        insert(team);
+        return true;
+    }
+
+    //This implementation might seem confusing at first but the reason we have to find the team first is because when while searching for a team
+    //we sum up the extras along the way and then update numOfWins before returning the team.
+    int getTeamWins(int teamID, int teamStrength){
+        if (!contains(teamID, teamStrength)) throw invalid_argument("team doesn't exist and we're trying to get its wins");
+        return find(teamID, teamStrength)->numOfWins;
+    }
+
 };
 
 
