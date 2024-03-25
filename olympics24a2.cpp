@@ -5,7 +5,7 @@
 //    // default constructor
 //}
 
-olympics_t::olympics_t(): teams(make_shared<Hashtable<Team>>()), idGenerator(1), teamsByStrength(make_shared<STree<Team>>())
+olympics_t::olympics_t(): teams(make_shared<Hashtable<Team>>()), teamsByStrength(make_shared<STree<Team>>()), idGenerator(1)
 {
     // default constructor
 }
@@ -221,5 +221,5 @@ StatusType olympics_t::unite_teams(int teamId1, int teamId2)
 
 output_t<int> olympics_t::play_tournament(int lowPower, int highPower)
 {
-    return output_t<int>(-1);
+    return {-1};
 }

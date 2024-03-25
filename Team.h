@@ -26,8 +26,8 @@ class Team : public Item {
 
 public:
     explicit Team(int teamID)
-            : Item(teamID), players(make_shared<Tree<Player>>()), numOfWins(0), numberOfPlayers(0),
-            strengthPlayer(nullptr), playersByStrength(make_shared<PSTree<Player>>())
+            : Item(teamID), players(make_shared<Tree<Player>>()), playersByStrength(make_shared<PSTree<Player>>()),
+            numberOfPlayers(0), numOfWins(0), strengthPlayer(nullptr)
     {}
 
     Team(const Team&) = delete;
