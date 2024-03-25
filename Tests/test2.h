@@ -62,7 +62,8 @@ int test2() {
     cout << endl;
     olympics.remove_team(11111111);
 
-
+    cout << endl << endl;
+    cout << "adding players to the teams" << endl;
     // team 69 and 420 should have the strengths 30 and 20 respectively according to what the
     // staff wrote in the description of play_match
     olympics.add_player(69, 1);
@@ -93,6 +94,19 @@ int test2() {
 
     olympics.printTeams();
     cout << endl;
+
+    cout << "adding team 77" << endl;
+    olympics.add_team(77);
+    cout << "adding team 88" << endl;
+    olympics.add_team(88);
+    cout << "adding team 99" << endl;
+    olympics.add_team(99);
+    cout << "adding team 100" << endl;
+    olympics.add_team(100);
+    cout << "adding team 101" << endl;
+
+    cout << "PRINTING TEAMS AFTER REHASH" << endl;
+    olympics.printTeams();
 
 
     cout << "printing all the teams" << endl;
