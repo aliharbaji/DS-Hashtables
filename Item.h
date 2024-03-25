@@ -9,7 +9,7 @@
 #include "Tree.h"
 
 class Item {
-    unsigned long long ID;
+    int ID;
 public:
     explicit Item(int ID) : ID(ID) {}
 
