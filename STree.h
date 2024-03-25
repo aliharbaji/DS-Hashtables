@@ -309,8 +309,8 @@ private:
         }
 
         if (node->getID() == ID) return true;
-        if (isLeft) return containsRecursively(node->left, ID);
-        else return containsRecursively(node->right, ID);
+        if (isLeft) return containsRecursively(node->left, ID, strength);
+        else return containsRecursively(node->right, ID, strength);
     }
 
     shared_ptr<T> findRecursively(shared_ptr<SNode<T>> node, int ID, int strength, int extraSum) const{
