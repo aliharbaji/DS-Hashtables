@@ -12,7 +12,7 @@
 using namespace std;
 
 int main() {
-    cout << "Testing the olympics_t class (uncomment the test you want to see)" << endl;
+    cout << "Testing the olympics_t class (uncomment the test you want to see)" << endl << endl;
     // TEST1 (a test for resizing up and down) PASS
     testResizingUpAndDown();
 
