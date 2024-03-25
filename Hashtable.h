@@ -38,6 +38,10 @@ private:
 
         int old_capacity = capacity;
         capacity = new_capacity;
+        //TODO: this part needs rewriting. This method searches for each element in the tree separately so it's klogk where k is tree size.
+        // The most efficient way to get all the items in a tree is inorder traversal. There's already a function that returns a tree as a sorted array.
+        //TODO: table[i]->returnedSortedArrayOfElements() returns an array of all the elements in the tree in sorted order. You need to free the array at the end.
+        //TODO: use that function to get each tree into an array and then insert that array into the hash.
         for(int i = 0; i < old_capacity; i++){
             for(int j = 0; j < table[i]->getSize(); j++){
                 auto item = table[i]->getKthSmallest(j);
