@@ -137,6 +137,7 @@ StatusType olympics_t::remove_newest_player(int teamId)
 
 // this runs in O(logn)
 // TODO: make sure to remove and reinsert the winning team ???
+//TODO: addWinsToTeam's implementation already removes and reinserts the team while updating wins.
 output_t<int> olympics_t::play_match(int teamId1, int teamId2)
 {
     auto team1 = teams->find(teamId1);
@@ -186,7 +187,13 @@ output_t<int> olympics_t::num_wins_for_team(int teamId)
         return output_t<int>(StatusType::FAILURE);
     }
 
-    return output_t<int>(teamsByStrength->getTeamWins(team->getID(), team->getStrength()));
+    //separated to cases based on whether the team has ever had a player added before. If a team never had a player added before then it doesn't exist in the teams str tree.
+    //if it ever had a player added then it should exist in the team str tree. An empty team can exist in a strTree(only if we inserted players then removed all of them).
+    // and in that case it remembers how many wins it had. Maybe the numOfWin's bug is solved now? Wishful thinking probably.
+    int strength = team->getStrength();
+    bool exist = teamsByStrength->contains(teamId, strength);
+    if (!exist) return output_t<int>(0); //if a team was always empty it can't have wins because it can't play matches while empty.
+    else return output_t<int>(teamsByStrength->getTeamWins(teamId, strength));
 }
 
 // this should work in O(1) time complexity
@@ -200,7 +207,36 @@ output_t<int> olympics_t::get_highest_ranked_team(){
 
 StatusType olympics_t::unite_teams(int teamId1, int teamId2)
 {
-	// TODO: Your code goes here
+    if (teamId1 <= 0 || teamId2 <= 0 || teamId1 == teamId2) return StatusType::INVALID_INPUT;
+	auto team1 = teams->find(teamId1);
+    auto team2 = teams->find(teamId2);
+    if (!team1 || !team2) return StatusType::FAILURE;
+
+    if (!team2->getSize()) return StatusType::SUCCESS; //if team2 is empty do nothing.
+
+    //TODO: catch allocation and basically do the same thing for strength.
+    int team1Size = team1->getSize();
+    int team2Size = team2->getSize();
+    int newSize = team2Size + team1Size;
+    auto team2Arr = team2->returnedSortedArrayOfElementsByID();
+    auto team1Arr = team1->returnedSortedArrayOfElementsByID();
+    auto mergedArr = new shared_ptr<Player>[team1Size + team2Size];
+
+    for (int i = 0; i < team1Size; i++){
+        //TODO: WE HAVE TO MOVE IDGENERATOR TO TEAM! each team separately manages ids instead of globally. starts at 1 and caps at team's size.
+        //After that we don't need to make new players and it simplifies.
+        int currentStr = team1Arr[i]->getStrength();
+        mergedArr[i] = make_shared<Player>(i + 1, currentStr);
+    }
+
+    for (int i = 0; i < team2Size; i++){
+        int currentStr = team2Arr[i]->getStrength();
+        mergedArr[team1Size + i] = make_shared<Player>(team1Size + i, currentStr);
+    }
+    //TODO:: method/constructor in team that calls the already implemented STree/Tree method sortedArrayToAVL() so we can make the team point to the new trees.
+    //TODO:: need a method for recalculating median.
+
+
     return StatusType::SUCCESS;
 }
 
@@ -228,7 +264,7 @@ output_t<int> olympics_t::play_tournament(int lowPower, int highPower)
 
     //TODO: should work even with 2 teams but maybe it's still better to just call play match in that scenario for simplicity.
     //log(i) times loop
-    while (numOfParticipants >= 1){
+    while (numOfParticipants >= 2){
         auto lowestRankWinner = teamsByStrength->getKthSmallest(lowerTeamRank + numOfParticipants/2);
         teamsByStrength->addWins(lowestRankWinner->getStrength(), upperTeam->getStrength(), 1);// log(n)
         numOfParticipants /= 2;

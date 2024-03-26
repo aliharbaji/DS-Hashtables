@@ -45,6 +45,10 @@ public:
 
     shared_ptr<Player> getStrengthPlayer();
 
+    shared_ptr<Player>* returnedSortedArrayOfElementsByStrength();
+
+    shared_ptr<Player>* returnedSortedArrayOfElementsByID();
+
     void addWinAli();
     /*
     void addWin();

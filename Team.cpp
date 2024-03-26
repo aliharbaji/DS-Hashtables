@@ -119,5 +119,13 @@ int Team::getNumberOfWins() const {
 }
 */
 
+shared_ptr<Player>* Team::returnedSortedArrayOfElementsByStrength(){
+    return playersByStrength->returnSortedArrayOfElements();
+}
+
+shared_ptr<Player>* Team::returnedSortedArrayOfElementsByID(){
+    return players->returnSortedArrayOfElements();
+}
+
 
 

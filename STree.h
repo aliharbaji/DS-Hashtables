@@ -570,7 +570,10 @@ public:
 
     //This implementation might seem confusing at first but the reason we have to find the team first is because when while searching for a team
     //we sum up the extras along the way and then update numOfWins before returning the team..
-    // great approach, but how are you updating the extras field along the way? hence, if we want to find the team again, we have to update the extras field
+    // great approach, but how are you updating the extras field along the way? hence, if we want to find the team again, we have to update the extras field.
+
+    //Thanks, searching for a team doesn't change any extras. It just sums up the extras along the way and makes sure that the private field of the team's win count is updated before we return it.
+    // That way we can remember how many wins a team had before you remove it and reinsert it.
     int getTeamWins(int teamID, int teamStrength){
         if (!contains(teamID, teamStrength)) throw invalid_argument("team doesn't exist and we're trying to get its wins");
         auto team = find(teamID, teamStrength);
