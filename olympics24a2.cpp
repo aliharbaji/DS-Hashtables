@@ -8,7 +8,7 @@
 //    // default constructor
 //}
 
-olympics_t::olympics_t(): teams(make_shared<Hashtable<Team>>()), idGenerator(1), teamsByStrength(make_shared<STree<Team>>())
+olympics_t::olympics_t(): teams(make_shared<Hashtable<Team>>()), teamsByStrength(make_shared<STree<Team>>())
 {
     // default constructor
 }
@@ -79,10 +79,11 @@ StatusType olympics_t::add_player(int teamId, int playerStrength)
     try{
 
         teamsByStrength->remove(teamId, team->getStrength()); // O(logn)
-        team->addPlayer(idGenerator, playerStrength);
+//        team->addPlayer(idGenerator, playerStrength);
+        team->addPlayer(playerStrength);
         teamsByStrength->insert(team); // O(logn)
 
-        idGenerator++;
+//        idGenerator++;
 
 
 
@@ -93,8 +94,8 @@ StatusType olympics_t::add_player(int teamId, int playerStrength)
 
     }catch(exception& e){
         // TODO: check if this removes the player for all the trees
-        team->removePlayer(idGenerator);
-        // TODO: ask Omar if it's necessary  to remove the player for teamByStrength and teamByRank
+//        team->removePlayer(idGenerator);
+        team->removePlayer(team->getNewestPlayer()->getID());
         // *****************************
 
 
@@ -102,7 +103,7 @@ StatusType olympics_t::add_player(int teamId, int playerStrength)
         return StatusType::ALLOCATION_ERROR;
     }
 
-    idGenerator++;
+//    idGenerator++;
 	return StatusType::SUCCESS;
 }
 
@@ -226,6 +227,8 @@ StatusType olympics_t::unite_teams(int teamId1, int teamId2)
     for (int i = 0; i < team1Size; i++){
         //TODO: WE HAVE TO MOVE IDGENERATOR TO TEAM! each team separately manages ids instead of globally. starts at 1 and caps at team's size.
         //After that we don't need to make new players and it simplifies.
+        //TODO: just did that, but I don't think it should cap at team's since, because if we add 3 players {1,2,3}
+        // and remove player 2 and then add another player we ge this {1,3,3} which contains 3 twice. which could complicate things. correct me if I'm wrong.
         int currentStr = team1Arr[i]->getStrength();
         mergedArr[i] = make_shared<Player>(i + 1, currentStr);
     }

@@ -23,9 +23,18 @@ bool Team::addPlayer(int playerID, int playerStrength) {
     numberOfPlayers++;
 
     strengthPlayer = playersByStrength->getKthSmallest(numberOfPlayers/2 + 1); // O(logk)
-//    cout << "++++++++++++++++++++++++++++++++++++++++++++++++strength is " << strengthPlayer->getStrength() << endl;
     return true;
 }
+
+bool Team::addPlayer(int playerStrength) {
+    shared_ptr<Player> contestant = make_shared<Player>(++numberOfPlayers, playerStrength);
+    if(!players->insert(contestant) || !playersByStrength->insert(contestant)) return false;
+
+
+    strengthPlayer = playersByStrength->getKthSmallest(numberOfPlayers/2 + 1); // O(logk)
+    return true;
+}
+
 
 // O(logk)
 void Team::removePlayer(int playerID) {
@@ -124,6 +133,8 @@ shared_ptr<Player>* Team::returnedSortedArrayOfElementsByStrength(){
 shared_ptr<Player>* Team::returnedSortedArrayOfElementsByID(){
     return players->returnSortedArrayOfElements();
 }
+
+
 
 
 

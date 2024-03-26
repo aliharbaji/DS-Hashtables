@@ -37,6 +37,8 @@ public:
 
     bool addPlayer(int playerID, int playerStrength);
 
+    bool addPlayer(int playerStrength);
+
     void removePlayer(int playerID);
 
     int getSize() const;
@@ -64,6 +66,8 @@ public:
     void insert_ptr(const shared_ptr<Player>& player);
 
     shared_ptr<Player> findPlayer(int playerID);
+
+
 };
 
 
