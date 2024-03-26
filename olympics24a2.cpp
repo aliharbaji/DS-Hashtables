@@ -95,7 +95,7 @@ StatusType olympics_t::add_player(int teamId, int playerStrength)
     }catch(exception& e){
         // TODO: check if this removes the player for all the trees
 //        team->removePlayer(idGenerator);
-        team->removePlayer(team->getNewestPlayer()->getID());
+        team->removePlayer();
         // *****************************
 
 
@@ -120,13 +120,8 @@ StatusType olympics_t::remove_newest_player(int teamId)
     }
 
     try{
-        // remove the player from the team and the trees
-        int playerID = team->getNewestPlayer()->getID(); // O(1)
-
         teamsByStrength->remove(teamId, team->getStrength()); // O(logn)
-
-        team->removePlayer(playerID); // O(logk) this also updates the strengthPlayer
-
+        team->removePlayer(); // O(logk) this also updates the strengthPlayer
         teamsByStrength->insert(team); // O(logn)
     }catch (exception& e){
         // if the player could not be removed, roll back the changes
