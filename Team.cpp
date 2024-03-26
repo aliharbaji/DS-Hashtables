@@ -141,7 +141,7 @@ void Team::uniteWith(shared_ptr<Team> team2){
     }
 
     for (unsigned long long i = 0; i < team2Size; i++){
-        team2Arr[i]->id = team1Size + i;
+        team2Arr[i]->id = team1Size + i + 1;
         mergedArr[team1Size + i] = team2Arr[i];
     }
 
