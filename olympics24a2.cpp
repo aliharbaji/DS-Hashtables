@@ -136,18 +136,17 @@ StatusType olympics_t::remove_newest_player(int teamId)
 //TODO: addWinsToTeam's implementation already removes and reinserts the team while updating wins.
 output_t<int> olympics_t::play_match(int teamId1, int teamId2)
 {
-    auto team1 = teams->find(teamId1);
-    auto team2 = teams->find(teamId2);
-
     if(teamId1 == teamId2 || teamId1 <= 0 || teamId2 <= 0){
         return output_t<int>(StatusType::INVALID_INPUT);
     }
 
+    auto team1 = teams->find(teamId1);
+    auto team2 = teams->find(teamId2);
+
+
     if(team1 == nullptr || team2 == nullptr || team1->getSize() == 0 || team2->getSize() == 0){
         return output_t<int>(StatusType::FAILURE);
     }
-
-
 
     int team1Strength = team1->getStrength();
     int team2Strength = team2->getStrength();
@@ -206,10 +205,11 @@ StatusType olympics_t::unite_teams(int teamId1, int teamId2)
     if (teamId1 <= 0 || teamId2 <= 0 || teamId1 == teamId2) return StatusType::INVALID_INPUT;
 	auto team1 = teams->find(teamId1);
     auto team2 = teams->find(teamId2);
+
     if (!team1 || !team2) return StatusType::FAILURE;
 
     if (!team2->getSize()) return StatusType::SUCCESS; //if team2 is empty do nothing.
-
+    remove_team(teamId2);
     //TODO: WE HAVE TO MOVE IDGENERATOR TO TEAM! each team separately manages ids instead of globally. starts at 1 and caps at team's size.
     //After that we don't need to make new players and it simplifies.
     //TODO: just did that, but I don't think it should cap at team's since, because if we add 3 players {1,2,3}
@@ -217,7 +217,9 @@ StatusType olympics_t::unite_teams(int teamId1, int teamId2)
     //TODO: you can't remove player 2 because he's not the last one that was added. You always remove the player with id = size.
 
     try {
+        teamsByStrength->remove(teamId1,team1->getStrength());
         team1->uniteWith(team2);
+        teamsByStrength->insert(team1);
     }
     catch(bad_alloc&){
         return StatusType::ALLOCATION_ERROR;

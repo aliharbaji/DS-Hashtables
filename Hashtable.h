@@ -214,11 +214,9 @@ public:
     void rehash(){
 
         if(load_factor > 0.75) {
-            cout << "++++++++++++++++++++++++++++resizing up+++++++++++++++++++++++++++++++++" << endl;
             resizeUp();
         } else if(load_factor < 0.25){
             if(capacity == DEFAULT_CAPACITY) return;
-            cout << "----------------------------resizing down----------------------------------" << endl;
             resizeDown();
         }
     }

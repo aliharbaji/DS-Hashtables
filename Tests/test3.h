@@ -57,12 +57,11 @@ int test3(){
     // Team2's strength is 4 * 5 = 20
 
     olympics2.printTeams();
-    cout << "playing match between team 1 and team 2, 2 should win" << endl;
-    olympics2.printTeamTree(); // this prints the team str tree along with extras and maxRank
+    cout << "playing match between team 1 and team 2, 2 should win" << endl;// this prints the team str tree along with extras and maxRank
     olympics2.play_match(1, 2);
-    olympics2.printTeamTree(); //bug extras not updated.
     cout << "Team1 wins : " << olympics2.num_wins_for_team(1).ans() << endl;
     cout << "Team2 wins : " << olympics2.num_wins_for_team(2).ans() << endl;
+    cout<<"highest ranked team:"<<olympics2.get_highest_ranked_team().ans()<<endl;
     cout << endl;
 
     cout << "playing match between team 1 and team 1, nothing should change" << endl;
@@ -83,8 +82,12 @@ int test3(){
     cout << "playing match between team 1 and team 2, 1 should win" << endl;
     olympics2.play_match(1, 2);
 
+
     cout << "Team1 wins : " << olympics2.num_wins_for_team(1).ans() << endl;
     cout << "Team2 wins : " << olympics2.num_wins_for_team(2).ans() << endl;
+    cout<<"highest ranked team:"<<olympics2.get_highest_ranked_team().ans()<<endl;
+
+    olympics2.printTeamTree();
 
     cout << "********************end of test************************" << endl;
     return 0; // end of test1
