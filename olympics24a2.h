@@ -48,6 +48,9 @@ public:
         }
     }
 
+    void printTeamTree(){
+        teamsByStrength->printTree();
+    }
     void printStrengthTree(int teamId, int strength){
 //        auto teamS = teamsByStrength.find(teamId, strength);
 //        teamS->printTeam();
