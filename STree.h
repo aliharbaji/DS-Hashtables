@@ -139,7 +139,7 @@ private:
         bool deleted;
 
         extraSum += node->extra;
-//        node->data->numOfWins += extraSum; // TODO: **IMPORTANT: this line was node->data->numOfWins = extraSum; before, I changed it to += and I commented it out
+        node->data->numOfWins = extraSum;
 
 
         if (strength < node->getStrength() ||
@@ -158,6 +158,7 @@ private:
             // found the node
         else{
             // node has 1 or fewer children
+            deleted = true;
             if (node->right == nullptr || node->left == nullptr){
                 auto child = (node->left == nullptr) ? node->right : node->left;
                 // no child case
@@ -559,9 +560,11 @@ public:
     bool addWinsToTeam(int teamID, int teamStrength, int wins){
         if (!contains(teamID, teamStrength)) return false;
         auto team = find(teamID, teamStrength);
-        team->numOfWins++;
+
         remove(teamID, teamStrength);
+        team->numOfWins++;
         insert(team);
+
         return true;
     }
 

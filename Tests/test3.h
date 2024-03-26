@@ -58,8 +58,9 @@ int test3(){
 
     olympics2.printTeams();
     cout << "playing match between team 1 and team 2, 2 should win" << endl;
+    olympics2.printTeamTree(); // this prints the team str tree along with extras and maxRank
     olympics2.play_match(1, 2);
-
+    olympics2.printTeamTree(); //bug extras not updated.
     cout << "Team1 wins : " << olympics2.num_wins_for_team(1).ans() << endl;
     cout << "Team2 wins : " << olympics2.num_wins_for_team(2).ans() << endl;
     cout << endl;
