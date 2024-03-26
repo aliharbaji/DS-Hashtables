@@ -139,7 +139,7 @@ private:
         bool deleted;
 
         extraSum += node->extra;
-//        node->data->numOfWins += extraSum; // TODO: **IMPORTANT: this line was node->data->numOfWins = extraSum; before, I changed it to += and I commented it out
+        node->data->numOfWins = extraSum;
 
 
         if (strength < node->getStrength() ||
