@@ -8,7 +8,7 @@
 //    // default constructor
 //}
 
-olympics_t::olympics_t(): teams(make_shared<Hashtable<Team>>()), idGenerator(1), teamsByStrength(make_shared<STree<Team>>())
+olympics_t::olympics_t(): teams(make_shared<Hashtable<Team>>()), teamsByStrength(make_shared<STree<Team>>())
 {
     // default constructor
 }
@@ -79,10 +79,11 @@ StatusType olympics_t::add_player(int teamId, int playerStrength)
     try{
 
         teamsByStrength->remove(teamId, team->getStrength()); // O(logn)
-        team->addPlayer(idGenerator, playerStrength);
+//        team->addPlayer(idGenerator, playerStrength);
+        team->addPlayer(0, playerStrength);
         teamsByStrength->insert(team); // O(logn)
 
-        idGenerator++;
+//        idGenerator++;
 
 
 
@@ -93,8 +94,8 @@ StatusType olympics_t::add_player(int teamId, int playerStrength)
 
     }catch(exception& e){
         // TODO: check if this removes the player for all the trees
-        team->removePlayer(idGenerator);
-        // TODO: ask Omar if it's necessary  to remove the player for teamByStrength and teamByRank
+//        team->removePlayer(idGenerator);
+        team->removePlayer(team->getNewestPlayer()->getID());
         // *****************************
 
 
@@ -102,7 +103,7 @@ StatusType olympics_t::add_player(int teamId, int playerStrength)
         return StatusType::ALLOCATION_ERROR;
     }
 
-    idGenerator++;
+//    idGenerator++;
 	return StatusType::SUCCESS;
 }
 

@@ -23,11 +23,11 @@ class Team : public Item {
     int numberOfPlayers;
     int numOfWins;
     shared_ptr<Player> strengthPlayer; // this is the player with the median strength
-
+    int idGenerator;
 public:
     explicit Team(int teamID)
             : Item(teamID), players(make_shared<Tree<Player>>()), playersByStrength(make_shared<PSTree<Player>>()),
-            numberOfPlayers(0), numOfWins(0), strengthPlayer(nullptr)
+            numberOfPlayers(0), numOfWins(0), strengthPlayer(nullptr), idGenerator(1)
     {}
 
     Team(const Team&) = delete;
@@ -64,6 +64,8 @@ public:
     void insert_ptr(const shared_ptr<Player>& player);
 
     shared_ptr<Player> findPlayer(int playerID);
+
+
 };
 
 

@@ -30,14 +30,8 @@ private:
 	//
     shared_ptr<Hashtable<Team>> teams;
     shared_ptr<STree<Team>> teamsByStrength;
-//    Tree<Team> teamsWithWinsOrStrength; // this holds all the teams sorted by their ID (probably unnecessary)
-//    RTree<Team> teamsByRank; // this holds all the teams sorted by their rank
-
-
-    // rank = median strength of team's players * number of players in the team + numOfWins (highest team by rank)
 
     //TODO: we should use the counter in team because they might try to overflow this in the test
-    int idGenerator;
 
 public:
 
