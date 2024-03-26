@@ -543,6 +543,7 @@ public:
             subTreeMaxRank = auxAddWinsRecursive(node->right, highPower, wins, true, extraSum);
             maxRank = max(maxRank, subTreeMaxRank);
             node->maxRank = maxRank;
+            return maxRank;
 
         } else if (highPower < node->getStrength()){
             if (rightStreak){
@@ -556,6 +557,7 @@ public:
             subTreeMaxRank = auxAddWinsRecursive(node->left, highPower, wins, false);
             maxRank = max(maxRank, subTreeMaxRank);
             node->maxRank = maxRank;
+            return maxRank;
 
         } else{
             if (!rightStreak) node->extra += wins;
@@ -572,6 +574,7 @@ public:
                 if (node->right) node->right->extra -= wins;
             }
             maxRank = max(maxRank, subTreeMaxRank);
+            node->maxRank = maxRank;
             return maxRank;
         }
 
