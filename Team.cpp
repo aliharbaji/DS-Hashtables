@@ -27,9 +27,9 @@ bool Team::addPlayer(int playerID, int playerStrength) {
 }
 
 bool Team::addPlayer(int playerStrength) {
-    shared_ptr<Player> contestant = make_shared<Player>(idGenerator++, playerStrength);
+    shared_ptr<Player> contestant = make_shared<Player>(++numberOfPlayers, playerStrength);
     if(!players->insert(contestant) || !playersByStrength->insert(contestant)) return false;
-    numberOfPlayers++;
+
 
     strengthPlayer = playersByStrength->getKthSmallest(numberOfPlayers/2 + 1); // O(logk)
     return true;
