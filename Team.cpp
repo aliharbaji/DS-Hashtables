@@ -17,8 +17,16 @@ int Team::getStrength() const {
 }
 
 //TODO: should change it so that team doesn't take playerID as a parameter but generates playerID based on numberOfPlayers.
-// I did a quick fix
 bool Team::addPlayer(int playerID, int playerStrength) {
+    shared_ptr<Player> contestant = make_shared<Player>(playerID, playerStrength);
+    if(!players->insert(contestant) || !playersByStrength->insert(contestant)) return false;
+    numberOfPlayers++;
+
+    strengthPlayer = playersByStrength->getKthSmallest(numberOfPlayers/2 + 1); // O(logk)
+    return true;
+}
+
+bool Team::addPlayer(int playerStrength) {
     shared_ptr<Player> contestant = make_shared<Player>(idGenerator++, playerStrength);
     if(!players->insert(contestant) || !playersByStrength->insert(contestant)) return false;
     numberOfPlayers++;
@@ -26,6 +34,7 @@ bool Team::addPlayer(int playerID, int playerStrength) {
     strengthPlayer = playersByStrength->getKthSmallest(numberOfPlayers/2 + 1); // O(logk)
     return true;
 }
+
 
 // O(logk)
 void Team::removePlayer(int playerID) {

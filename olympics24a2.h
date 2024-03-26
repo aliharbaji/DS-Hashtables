@@ -31,8 +31,6 @@ private:
     shared_ptr<Hashtable<Team>> teams;
     shared_ptr<STree<Team>> teamsByStrength;
 
-    //TODO: we should use the counter in team because they might try to overflow this in the test
-
 public:
 
     // TODO: delete later:

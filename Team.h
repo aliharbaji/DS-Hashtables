@@ -37,6 +37,8 @@ public:
 
     bool addPlayer(int playerID, int playerStrength);
 
+    bool addPlayer(int playerStrength);
+
     void removePlayer(int playerID);
 
     int getSize() const;
