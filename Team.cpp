@@ -22,8 +22,6 @@ bool Team::addPlayer(int playerID, int playerStrength) {
     if(!players->insert(contestant) || !playersByStrength->insert(contestant)) return false;
     numberOfPlayers++;
 
-    // TODO I have a feeling that in a case of 1 or 2 players in the team, this will not work as expected,
-    // I might be wrong though
     strengthPlayer = playersByStrength->getKthSmallest(numberOfPlayers/2 + 1); // O(logk)
 //    cout << "++++++++++++++++++++++++++++++++++++++++++++++++strength is " << strengthPlayer->getStrength() << endl;
     return true;
@@ -78,7 +76,7 @@ int Team::getRank() const {
 }
 */
 
-// TODO: ask Omar if this is the right way to remove all players from a team
+
 void Team::removeAllPlayers() {
     players = make_shared<Tree<Player>>();
     playersByStrength = make_shared<PSTree<Player>>();

@@ -19,7 +19,7 @@ olympics_t::~olympics_t() = default;
 StatusType olympics_t::add_team(int teamId)
 {
 
-    // TODO: make sure this works in O(1) time complexity
+
 
     if(teamId <= 0){
         return StatusType::INVALID_INPUT;

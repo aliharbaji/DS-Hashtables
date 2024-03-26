@@ -349,7 +349,7 @@ public:
 //        this->remove(root->data->getID());
 //    }
 
-    // TODO: move to private
+
     void inorderAddToArray(shared_ptr<Node<T>> node, shared_ptr<T>* arr, int& index){
         if (node == nullptr || arr == nullptr) return;
         inorderAddToArray(node->left, arr, index);

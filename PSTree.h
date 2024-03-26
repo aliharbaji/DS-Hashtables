@@ -386,9 +386,7 @@ public:
     bool remove(const int ID, const int strength){
         if (!size) return false;
         if (deleteRecursively(root, ID, strength)) {
-            // TODO: I think that we should add an if statement here to check whether or not the deletion was successful,
-            //  before updating the size and minimum and maximum.
-            //You're absolutely right.
+
             size--;
             minimum = getMinNode(root);
             maximum = getMaxNode(root);

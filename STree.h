@@ -64,7 +64,7 @@ private:
     shared_ptr<SNode<T>> insertRecursively(shared_ptr<SNode<T>> node, shared_ptr<T> item, int  extraSum){
         if (node == nullptr) {
             auto current = make_shared<SNode<T>>(item);
-            // TODO: implementation of a new tree is necessary for this to work
+
             current->maxRank = (item->getSize()) ? (item->getStrength() + item->numOfWins) : 0;
             current->extra = item->numOfWins - extraSum;
             return current;
@@ -426,9 +426,6 @@ public:
     bool remove(const int ID, const int strength){
         if (!size) return false;
         if (deleteRecursively(root, ID, strength, 0)) {
-            // TODO: I think that we should add an if statement here to check whether or not the deletion was successful,
-            //  before updating the size and minimum and maximum.
-            //You're absolutely right.
             size--;
             minimum = getMinNode(root, 0);
             maximum = getMaxNode(root, 0);

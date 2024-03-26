@@ -28,9 +28,6 @@ private:
 	//
 	// Here you may add anything you want
 	//
-    //TODO: I think these are better as smart pointers because in unite we'll probably have to create new HashTable and Tree
-    //TODO: if they're pointers we can easily change these fields to point to the newly created datastructures and the old ones
-    //TODO: will be destroyed automatically. instead of having to write assignment operator, move, copy, etc...
     shared_ptr<Hashtable<Team>> teams;
     shared_ptr<STree<Team>> teamsByStrength;
 //    Tree<Team> teamsWithWinsOrStrength; // this holds all the teams sorted by their ID (probably unnecessary)
