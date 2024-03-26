@@ -139,7 +139,8 @@ private:
         bool deleted;
 
         extraSum += node->extra;
-        node->data->numOfWins = extraSum;
+//        node->data->numOfWins += extraSum; // TODO: **IMPORTANT: this line was node->data->numOfWins = extraSum; before, I changed it to += and I commented it out
+
 
         if (strength < node->getStrength() ||
             (strength == node->getStrength() && ID > node->getID())) {
@@ -157,7 +158,6 @@ private:
             // found the node
         else{
             // node has 1 or fewer children
-            deleted = true;
             if (node->right == nullptr || node->left == nullptr){
                 auto child = (node->left == nullptr) ? node->right : node->left;
                 // no child case
