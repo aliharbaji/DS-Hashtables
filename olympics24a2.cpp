@@ -214,6 +214,7 @@ StatusType olympics_t::unite_teams(int teamId1, int teamId2)
 
     if (!team2->getSize()) return StatusType::SUCCESS; //if team2 is empty do nothing.
 
+    //TODO: START
     //TODO: catch allocation and basically do the same thing for strength.
     int team1Size = team1->getSize();
     int team2Size = team2->getSize();
@@ -233,8 +234,9 @@ StatusType olympics_t::unite_teams(int teamId1, int teamId2)
         int currentStr = team2Arr[i]->getStrength();
         mergedArr[team1Size + i] = make_shared<Player>(team1Size + i, currentStr);
     }
-    //TODO:: method/constructor in team that calls the already implemented STree/Tree method sortedArrayToAVL() so we can make the team point to the new trees.
-    //TODO:: need a method for recalculating median.
+    //TODO:: END method/constructor in team that calls the already implemented STree/Tree method sortedArrayToAVL() so we can make the team point to the new trees.
+    //TODO:: need a method for recalculating median. EDIT: actually... It's probably better to move the logic between "START" and "END" inside Team class.
+    //TODO:: that way we can simply change the private fields there. It's getting 2 late.
 
 
     return StatusType::SUCCESS;
