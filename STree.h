@@ -652,6 +652,7 @@ public:
         return result;
     }
 
+    //
     shared_ptr<T> findHighestRankedLEStrength(int strength) {
         return findHighestRankedNodeLEStrengthAux(root, strength);
     }
