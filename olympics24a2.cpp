@@ -208,8 +208,9 @@ StatusType olympics_t::unite_teams(int teamId1, int teamId2)
 
     if (!team1 || !team2) return StatusType::FAILURE;
 
-    if (!team2->getSize()) return StatusType::SUCCESS; //if team2 is empty do nothing.
     remove_team(teamId2);
+    if (!team2->getSize()) return StatusType::SUCCESS; //if team2 is empty do nothing.
+
     //TODO: WE HAVE TO MOVE IDGENERATOR TO TEAM! each team separately manages ids instead of globally. starts at 1 and caps at team's size.
     //After that we don't need to make new players and it simplifies.
     //TODO: just did that, but I don't think it should cap at team's since, because if we add 3 players {1,2,3}
