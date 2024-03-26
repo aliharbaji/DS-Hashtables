@@ -8,11 +8,13 @@
 #include "Item.h"
 
 
-class Player : public Item{
+class Player {
+    friend class Team;
     int strength;
+    unsigned long long id;
 public:
-    explicit Player(int playerID, int strength)
-            : Item(playerID), strength(strength){}
+    explicit Player(unsigned long long id, int strength)
+            : id(id), strength(strength){}
 
     Player(const Player&) = default;
     Player& operator=(const Player&)= default;
@@ -23,6 +25,10 @@ public:
 
     int getRank() const { // added just in case it is probably redundant
         return strength;
+    }
+
+    unsigned long long getID() const{
+        return id;
     }
 
 

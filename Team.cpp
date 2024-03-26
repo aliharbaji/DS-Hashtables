@@ -17,14 +17,6 @@ int Team::getStrength() const {
 }
 
 //TODO: should change it so that team doesn't take playerID as a parameter but generates playerID based on numberOfPlayers.
-bool Team::addPlayer(int playerID, int playerStrength) {
-    shared_ptr<Player> contestant = make_shared<Player>(playerID, playerStrength);
-    if(!players->insert(contestant) || !playersByStrength->insert(contestant)) return false;
-    numberOfPlayers++;
-
-    strengthPlayer = playersByStrength->getKthSmallest(numberOfPlayers/2 + 1); // O(logk)
-    return true;
-}
 
 bool Team::addPlayer(int playerStrength) {
     shared_ptr<Player> contestant = make_shared<Player>(++numberOfPlayers, playerStrength);
@@ -37,10 +29,10 @@ bool Team::addPlayer(int playerStrength) {
 
 
 // O(logk)
-void Team::removePlayer(int playerID) {
-    auto player = players->find(playerID);
-    if(player == nullptr) return;
-    if(!players->remove(playerID) || !playersByStrength->remove(playerID, player->getStrength())) return;
+void Team::removePlayer() {
+    auto playerID = players->getMax()->getID();
+    auto playerStrength = players->getMax()->getStrength();
+    if(!players->remove(playerID) || !playersByStrength->remove(playerID, playerStrength)) return;
     numberOfPlayers--;
     // find strength player again
     if(numberOfPlayers == 0){
@@ -110,9 +102,6 @@ shared_ptr<Player> Team::findPlayer(int playerID) {
 }
 
 // you can delete this method I was testing something
-void Team::addWinAli() {
-    numOfWins++;
-}
 
 // TODO: the usage of these function needs to be done through STree in the Olympics method. The STree has a method which does this while updating the extras.
 /*
@@ -134,7 +123,52 @@ shared_ptr<Player>* Team::returnedSortedArrayOfElementsByID(){
     return players->returnSortedArrayOfElements();
 }
 
+void Team::uniteWith(shared_ptr<Team> team2){
+    int team1Size = numberOfPlayers;
+    int team2Size = team2->getSize();
+    int newSize = team2Size + team1Size;
 
+    auto team2Arr = team2->returnedSortedArrayOfElementsByID();
+    auto team1Arr = returnedSortedArrayOfElementsByID();
+    auto mergedArr = new shared_ptr<Player>[team1Size + team2Size];
+    auto team2StrArr = team2->returnedSortedArrayOfElementsByStrength();
+    auto team1StrArr = returnedSortedArrayOfElementsByStrength();
+    auto mergedStrArr = new shared_ptr<Player>[team1Size + team2Size];
+
+
+    for (unsigned long long i = 0; i < team1Size; i++){
+        mergedArr[i] = team1Arr[i];
+    }
+
+    for (unsigned long long i = 0; i < team2Size; i++){
+        team2Arr[i]->id = team1Size + i;
+        mergedArr[team1Size + i] = team2Arr[i];
+    }
+
+
+    for (unsigned long long i = 0; i < team1Size; i++){
+        mergedStrArr[i] = team1StrArr[i];
+    }
+
+    for (unsigned long long i = 0; i < team2Size; i++){
+        mergedStrArr[team1Size + i] = team2StrArr[i];
+    }
+
+    numberOfPlayers += team2Size;
+
+    players = make_shared<Tree<Player>>(mergedArr, numberOfPlayers);
+    playersByStrength = make_shared<PSTree<Player>>(mergedStrArr, numberOfPlayers);
+
+    strengthPlayer = playersByStrength->getKthSmallest(numberOfPlayers/2 + 1);
+
+    delete[] team1Arr;
+    delete[] team2Arr;
+    delete[] team1StrArr;
+    delete[] team2StrArr;
+    delete[] mergedArr;
+    delete[] mergedStrArr;
+
+}
 
 
 

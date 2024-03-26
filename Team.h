@@ -20,7 +20,7 @@ class Team : public Item {
 
     shared_ptr<Tree<Player>> players;
     shared_ptr<PSTree<Player>> playersByStrength;
-    int numberOfPlayers;
+    unsigned long long numberOfPlayers;
     int numOfWins;
     shared_ptr<Player> strengthPlayer; // this is the player with the median strength
 
@@ -39,7 +39,7 @@ public:
 
     bool addPlayer(int playerStrength);
 
-    void removePlayer(int playerID);
+    void removePlayer();
 
     int getSize() const;
 
@@ -66,6 +66,8 @@ public:
     void insert_ptr(const shared_ptr<Player>& player);
 
     shared_ptr<Player> findPlayer(int playerID);
+
+    void uniteWith(shared_ptr<Team> other);
 
 
 };
