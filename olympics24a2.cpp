@@ -215,31 +215,18 @@ StatusType olympics_t::unite_teams(int teamId1, int teamId2)
 
     if (!team2->getSize()) return StatusType::SUCCESS; //if team2 is empty do nothing.
 
-    //TODO: START
-    //TODO: catch allocation and basically do the same thing for strength.
-    int team1Size = team1->getSize();
-    int team2Size = team2->getSize();
-    int newSize = team2Size + team1Size;
-    auto team2Arr = team2->returnedSortedArrayOfElementsByID();
-    auto team1Arr = team1->returnedSortedArrayOfElementsByID();
-    auto mergedArr = new shared_ptr<Player>[team1Size + team2Size];
+    //TODO: WE HAVE TO MOVE IDGENERATOR TO TEAM! each team separately manages ids instead of globally. starts at 1 and caps at team's size.
+    //After that we don't need to make new players and it simplifies.
+    //TODO: just did that, but I don't think it should cap at team's since, because if we add 3 players {1,2,3}
+    // and remove player 2 and then add another player we ge this {1,3,3} which contains 3 twice. which could complicate things. correct me if I'm wrong.
+    //TODO: you can't remove player 2 because he's not the last one that was added. You always remove the player with id = size.
 
-    for (int i = 0; i < team1Size; i++){
-        //TODO: WE HAVE TO MOVE IDGENERATOR TO TEAM! each team separately manages ids instead of globally. starts at 1 and caps at team's size.
-        //After that we don't need to make new players and it simplifies.
-        //TODO: just did that, but I don't think it should cap at team's since, because if we add 3 players {1,2,3}
-        // and remove player 2 and then add another player we ge this {1,3,3} which contains 3 twice. which could complicate things. correct me if I'm wrong.
-        int currentStr = team1Arr[i]->getStrength();
-        mergedArr[i] = make_shared<Player>(i + 1, currentStr);
+    try {
+        team1->uniteWith(team2);
     }
-
-    for (int i = 0; i < team2Size; i++){
-        int currentStr = team2Arr[i]->getStrength();
-        mergedArr[team1Size + i] = make_shared<Player>(team1Size + i, currentStr);
+    catch(bad_alloc&){
+        return StatusType::ALLOCATION_ERROR;
     }
-    //TODO:: END method/constructor in team that calls the already implemented STree/Tree method sortedArrayToAVL() so we can make the team point to the new trees.
-    //TODO:: need a method for recalculating median. EDIT: actually... It's probably better to move the logic between "START" and "END" inside Team class.
-    //TODO:: that way we can simply change the private fields there. It's getting 2 late.
 
 
     return StatusType::SUCCESS;

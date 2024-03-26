@@ -19,7 +19,7 @@ class STree{
     friend class Team;
 private:
     shared_ptr<SNode<T>> root;
-    int size;
+    unsigned long long size;
     shared_ptr<SNode<T>> maximum;
     shared_ptr<SNode<T>> minimum;
     //Adjusted logic to compare based on strength and in case of strength equality to compare based on ID.

@@ -15,7 +15,7 @@ private:
     shared_ptr<Node<T>> root;
     shared_ptr<Node<T>> maximum;
     shared_ptr<Node<T>> minimum; //this is needed for austerity measure.
-    int size;
+    unsigned long long size;
 
 
 
