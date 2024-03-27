@@ -41,7 +41,7 @@ StatusType olympics_t::add_team(int teamId)
 // TODO: make sure to update the highestRank in case of removal of the team with the highest rank
 StatusType olympics_t::remove_team(int teamId)
 {
-	if(teamId <= 0){
+    if(teamId <= 0){
         return StatusType::INVALID_INPUT;
     }
     auto team = teams->find(teamId);
@@ -255,7 +255,7 @@ output_t<int> olympics_t::play_tournament(int lowPower, int highPower)
     //log(i) times loop
     while (numOfParticipants >= 2){
         auto lowestRankWinner = teamsByStrength->getKthSmallest(lowerTeamRank + numOfParticipants/2);
-        teamsByStrength->addWins(lowestRankWinner->getStrength(), upperTeam->getStrength(), 1);// log(n)
+        teamsByStrength->addWins(lowestRankWinner->getStrength(), highPower, 1);// log(n)
         numOfParticipants /= 2;
     }
     //log(i) * log(n) overall
