@@ -169,6 +169,7 @@ output_t<int> olympics_t::play_match(int teamId1, int teamId2)
             return output_t<int>(team2->getID());
         }
     }
+
 }
 
 // this works in O(logn) (should also sum up the extra fields)
@@ -210,7 +211,6 @@ StatusType olympics_t::unite_teams(int teamId1, int teamId2)
 
     remove_team(teamId2);
     if (!team2->getSize()) return StatusType::SUCCESS; //if team2 is empty do nothing.
-
     //TODO: WE HAVE TO MOVE IDGENERATOR TO TEAM! each team separately manages ids instead of globally. starts at 1 and caps at team's size.
     //After that we don't need to make new players and it simplifies.
     //TODO: just did that, but I don't think it should cap at team's since, because if we add 3 players {1,2,3}
@@ -225,7 +225,6 @@ StatusType olympics_t::unite_teams(int teamId1, int teamId2)
     catch(bad_alloc&){
         return StatusType::ALLOCATION_ERROR;
     }
-
 
     return StatusType::SUCCESS;
 }

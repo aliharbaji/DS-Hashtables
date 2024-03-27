@@ -373,7 +373,6 @@ private:
         else return node->getBF();
     }
 
-    //TODO:: update this to also max rank.
     shared_ptr<SNode<T>> sortedArrayToAVL(shared_ptr<T>* arr, int start, int end) {
         if (start > end)
             return nullptr;
@@ -541,46 +540,53 @@ public:
         int maxRank = 0;
         int currRank = 0;
         int subTreeMaxRank = 0;
+        int otherSubTreeMaxRank = 0;
+        int currentWinDiff = 0;
+
+
         if (highPower > node->getStrength()){
-            if (!rightStreak){
-                node->extra += wins;
-            }
+
+            if (!rightStreak) node->extra += wins;
+
             extraSum += node->extra;
+            currentWinDiff = extraSum - node->data->numOfWins;
+            if (node->left) otherSubTreeMaxRank = node->left->maxRank + currentWinDiff;
             node->data->numOfWins = extraSum;
             currRank = (node->data->getSize()) ? (node->getStrength() + node->data->numOfWins) : 0;
-            maxRank = max(currRank, node->maxRank);
             subTreeMaxRank = auxAddWinsRecursive(node->right, highPower, wins, true, extraSum);
-            maxRank = max(maxRank, subTreeMaxRank);
+            maxRank = max(currRank, max(subTreeMaxRank, otherSubTreeMaxRank));
             node->maxRank = maxRank;
             return maxRank;
 
         } else if (highPower < node->getStrength()){
-            if (rightStreak){
-                node->extra -= wins;
-            }
+            if (rightStreak) node->extra -= wins;
 
             extraSum += node->extra;
+            currentWinDiff = extraSum - node->data->numOfWins;
+            if (node->right) otherSubTreeMaxRank = node->right->maxRank + currentWinDiff;
             node->data->numOfWins = extraSum;
             currRank = (node->data->getSize()) ? (node->getStrength() + node->data->numOfWins) : 0;
-            maxRank = max(currRank, node->maxRank);
-            subTreeMaxRank = auxAddWinsRecursive(node->left, highPower, wins, false);
-            maxRank = max(maxRank, subTreeMaxRank);
+            subTreeMaxRank = auxAddWinsRecursive(node->left, highPower, wins, false, extraSum);
+            maxRank = max(currRank, max(subTreeMaxRank, otherSubTreeMaxRank));
             node->maxRank = maxRank;
             return maxRank;
 
         } else{
             if (!rightStreak) node->extra += wins;
 
+            extraSum += node->extra;
+            currentWinDiff = extraSum - node->data->numOfWins;
 
+            if (node->left) otherSubTreeMaxRank = node->left->maxRank + currentWinDiff;
             extraSum += node->extra;
             node->data->numOfWins = extraSum;
             currRank = (node->data->getSize()) ? (node->getStrength() + node->data->numOfWins) : 0;
-            maxRank = max(currRank, node->maxRank);
-
             if (node->right && node->right->getStrength() == highPower){
-                subTreeMaxRank = auxAddWinsRecursive(node->right, highPower, wins, true);
+                subTreeMaxRank = auxAddWinsRecursive(node->right, highPower, wins, true, extraSum);
             }else{
-                if (node->right) node->right->extra -= wins;
+                if (node->right){ node->right->extra -= wins;
+                    subTreeMaxRank = node->right->maxRank;
+                }
             }
             maxRank = max(maxRank, subTreeMaxRank);
             node->maxRank = maxRank;
@@ -634,8 +640,10 @@ public:
         }
         else {
             int leftSize = node->left ? node->left->size : 0;
-            rank += leftSize;
-            return rank + 1;
+            rank += leftSize + 1;
+            //return rank + 1; //fuck this bug lmao I passed rank by reference but returning rank + 1 doesn't update the reference.
+            return rank;
+
         }
     }
 
