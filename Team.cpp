@@ -146,12 +146,24 @@ void Team::uniteWith(shared_ptr<Team> team2){
     }
 
 
-    for (unsigned long long i = 0; i < team1Size; i++){
-        mergedStrArr[i] = team1StrArr[i];
-    }
 
-    for (unsigned long long i = 0; i < team2Size; i++){
-        mergedStrArr[team1Size + i] = team2StrArr[i];
+
+
+    int i = 0, j = 0, k = 0;
+
+
+    while (i < team1Size && j < team2Size) {
+        if (team1StrArr[i]->getStrength() <= team2StrArr[j]->getStrength()) {
+            mergedStrArr[k++] = team1StrArr[i++];
+        } else {
+            mergedStrArr[k++] = team2StrArr[j++];
+        }
+    }
+    while (i < team1Size) {
+        mergedStrArr[k++] = team1StrArr[i++];
+    }
+    while (j < team2Size) {
+        mergedStrArr[k++] = team2StrArr[j++];
     }
 
     numberOfPlayers += team2Size;

@@ -1,3 +1,5 @@
+//the stack overflow example for many rotations. The tree seems balanced and the maxRanks are correct at the end of the sequence.
+
 olympics_t olympics;
 olympics.add_team(50);
 olympics.add_team(25);

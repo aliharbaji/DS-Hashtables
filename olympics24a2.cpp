@@ -259,8 +259,6 @@ output_t<int> olympics_t::play_tournament(int lowPower, int highPower)
         numOfParticipants /= 2;
     }
     //log(i) * log(n) overall
-
     return output_t<int>(upperTeam->getID());
-
 
 }
