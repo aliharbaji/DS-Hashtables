@@ -13,7 +13,7 @@
 
 using namespace std;
 
-const int DEFAULT_CAPACITY = 11;
+const int DEFAULT_CAPACITY = 101;
 
 template <class T>
 class Hashtable {
