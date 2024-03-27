@@ -534,6 +534,8 @@ public:
         auxAddWinsRecursive(root, highPower, wins);
 
     }
+
+
     int auxAddWinsRecursive(shared_ptr<SNode<T>> node, int highPower, int wins, bool rightStreak = false, int extraSum = 0){
         if (!node) return 0;
 
@@ -541,7 +543,6 @@ public:
         int currRank = 0;
         int subTreeMaxRank = 0;
         int otherSubTreeMaxRank = 0;
-        int currentWinDiff = 0;
 
 
         if (highPower > node->getStrength()){
@@ -549,8 +550,7 @@ public:
             if (!rightStreak) node->extra += wins;
 
             extraSum += node->extra;
-            currentWinDiff = extraSum - node->data->numOfWins;
-            if (node->left) otherSubTreeMaxRank = node->left->maxRank + currentWinDiff;
+            if (node->left) otherSubTreeMaxRank = node->left->maxRank;
             node->data->numOfWins = extraSum;
             currRank = (node->data->getSize()) ? (node->getStrength() + node->data->numOfWins) : 0;
             subTreeMaxRank = auxAddWinsRecursive(node->right, highPower, wins, true, extraSum);
@@ -562,8 +562,7 @@ public:
             if (rightStreak) node->extra -= wins;
 
             extraSum += node->extra;
-            currentWinDiff = extraSum - node->data->numOfWins;
-            if (node->right) otherSubTreeMaxRank = node->right->maxRank + currentWinDiff;
+            if (node->right) otherSubTreeMaxRank = node->right->maxRank;
             node->data->numOfWins = extraSum;
             currRank = (node->data->getSize()) ? (node->getStrength() + node->data->numOfWins) : 0;
             subTreeMaxRank = auxAddWinsRecursive(node->left, highPower, wins, false, extraSum);
@@ -575,9 +574,8 @@ public:
             if (!rightStreak) node->extra += wins;
 
             extraSum += node->extra;
-            currentWinDiff = extraSum - node->data->numOfWins;
 
-            if (node->left) otherSubTreeMaxRank = node->left->maxRank + currentWinDiff;
+            if (node->left) otherSubTreeMaxRank = node->left->maxRank;
             extraSum += node->extra;
             node->data->numOfWins = extraSum;
             currRank = (node->data->getSize()) ? (node->getStrength() + node->data->numOfWins) : 0;
@@ -588,7 +586,7 @@ public:
                     subTreeMaxRank = node->right->maxRank;
                 }
             }
-            maxRank = max(maxRank, subTreeMaxRank);
+            maxRank = max(currRank, max(subTreeMaxRank, otherSubTreeMaxRank));
             node->maxRank = maxRank;
             return maxRank;
         }
