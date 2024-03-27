@@ -576,7 +576,7 @@ public:
             extraSum += node->extra;
 
             if (node->left) otherSubTreeMaxRank = node->left->maxRank;
-            extraSum += node->extra;
+//            extraSum += node->extra;
             node->data->numOfWins = extraSum;
             currRank = (node->data->getSize()) ? (node->getStrength() + node->data->numOfWins) : 0;
             if (node->right && node->right->getStrength() == highPower){

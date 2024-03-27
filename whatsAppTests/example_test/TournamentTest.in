@@ -1,0 +1,32 @@
+add_team 1
+add_player 1 10
+add_team 2
+add_player 2 10
+add_team 3
+add_player 3 10
+play_tournament -1 20
+play_tournament 11 9
+play_tournament 10 10
+play_tournament 1 10
+add_team 4
+add_player 4 10
+play_tournament 9 10
+get_highest_ranked_team
+num_wins_for_team 1
+num_wins_for_team 2
+num_wins_for_team 3
+num_wins_for_team 4
+unite_teams 1 2
+num_wins_for_team 1
+get_highest_ranked_team
+add_team 2
+add_player 2 100
+add_team 5
+add_player 5 150
+play_tournament 10 100
+num_wins_for_team 1
+num_wins_for_team 2
+num_wins_for_team 3
+num_wins_for_team 4
+num_wins_for_team 5
+get_highest_ranked_team
