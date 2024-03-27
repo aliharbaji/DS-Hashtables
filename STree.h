@@ -72,9 +72,6 @@ private:
 
         bool isLeft = false, isRight = false;
 
-        int itemRank = (item->getSize()) ? (item->getStrength() + item->numOfWins) : 0;
-        if (itemRank > node->maxRank) node->maxRank = itemRank;
-
         extraSum += node->extra;
         node->data->numOfWins = extraSum;
 
@@ -104,7 +101,8 @@ private:
 
         node->height = 1 + maxComp(getHeight(node->left), getHeight(node->right));
         node->size = 1 + getSize(node->left) + getSize(node->right);
-        node->maxRank = maxComp(node->maxRank, maxComp(getMaxRank(node->left), getMaxRank(node->right)));
+        int currRank = (node->data->getSize()) ? (node->getStrength() + node->data->numOfWins) : 0;
+        node->maxRank = maxComp(currRank, maxComp(getMaxRank(node->left), getMaxRank(node->right)));
 
         int balance = getBalance(node);
 
@@ -119,11 +117,13 @@ private:
 
             //Left-Right Heavy. We rotate the left subtree to the left, then we rotate the current tree to the right.
         else if (balance > 1 && getBalance(node->left) < 0){
+            node->left->data->numOfWins = extraSum + node->left->extra;
             node->left = leftRotate(node->left);
             return rightRotate(node);
         }
             //RL
         else if (balance < - 1 && getBalance(node->right) > 0){
+            node->right->data->numOfWins = extraSum + node->right->extra;
             node->right = rightRotate(node->right);
             return leftRotate(node);
         }
@@ -197,6 +197,7 @@ private:
                 node->extra = deletedNodeExtra + extraDiff;
                 node->left->extra -= extraDiff;
                 node->right->extra -= extraDiff;
+                extraSum = node->data->numOfWins;
                 deleteRecursively(node->right, minNode->getID(), minNode->getStrength(), extraSum);
             }
 
@@ -205,7 +206,7 @@ private:
 
         if (node==nullptr) return deleted;
 
-        int currRank = (node->data->getSize()) ? (node->getStrength() + node->data->numOfWins) : 0;;
+        int currRank = (node->data->getSize()) ? (node->getStrength() + node->data->numOfWins) : 0;
         node->height = 1 + maxComp(getHeight(node->right), getHeight(node->left));
         node->size = 1 + getSize(node->left) + getSize(node->right);
         node->maxRank = maxComp(currRank, maxComp(getMaxRank(node->left), getMaxRank(node->right)));
@@ -224,11 +225,13 @@ private:
 
             //Left-Right Heavy. We rotate the left subtree to the left, then we rotate the current tree to the right.
         else if (balance > 1 && getBalance(node->left) < 0){
+            node->left->data->numOfWins = extraSum + node->left->extra;
             node->left = leftRotate(node->left);
             node = rightRotate(node);
         }
             //RL
         else if (balance < - 1 && getBalance(node->right) > 0){
+            node->right->data->numOfWins = extraSum + node->right->extra;
             node->right = rightRotate(node->right);
             node = leftRotate(node);
         }
@@ -244,6 +247,10 @@ private:
     shared_ptr<SNode<T>> rightRotate(shared_ptr<SNode<T>> node){
         auto leftChild = node->left;
         auto subTree = leftChild->right;
+
+        int nodeRank = (node->data->getSize()) ? (node->getStrength() + node->data->numOfWins) : 0;
+        int leftChildRank = (leftChild->data->getSize()) ? (leftChild->getStrength() + leftChild->data->numOfWins) : 0;
+
         //updating extras
         leftChild->extra += node->extra;
         node->extra -= leftChild->extra;
@@ -255,8 +262,8 @@ private:
         leftChild->height = 1 + maxComp(getHeight(leftChild->left), getHeight(leftChild->right));
         node->size = 1 + getSize(node->left) + getSize(node->right);
         leftChild->size = 1 + getSize(leftChild->left) + getSize(leftChild->right);
-        node->maxRank = maxComp(node->maxRank, maxComp(getMaxRank(node->left), getMaxRank(node->right)));
-        leftChild->maxRank = maxComp(leftChild->maxRank, maxComp(getMaxRank(leftChild->left), getMaxRank(leftChild->right)));
+        node->maxRank = maxComp(nodeRank, maxComp(getMaxRank(node->left), getMaxRank(node->right)));
+        leftChild->maxRank = maxComp(leftChildRank, maxComp(getMaxRank(leftChild->left), getMaxRank(leftChild->right)));
 
 
         if (subTree != nullptr){
@@ -274,6 +281,9 @@ private:
     shared_ptr<SNode<T>> leftRotate(shared_ptr<SNode<T>> node){
         auto rightChild = node->right;
         auto subTree = rightChild->left;
+
+        int nodeRank = (node->data->getSize()) ? (node->getStrength() + node->data->numOfWins) : 0;
+        int rightChildRank = (rightChild->data->getSize()) ? (rightChild->getStrength() + rightChild->data->numOfWins) : 0;
         //updating extras
         rightChild->extra += node->extra;
         node->extra -= rightChild->extra;
@@ -286,8 +296,8 @@ private:
         rightChild->height = 1 + maxComp(getHeight(rightChild->left), getHeight(rightChild->right));
         node->size = 1 + getSize(node->left) + getSize(node->right);
         rightChild->size = 1 + getSize(rightChild->left) + getSize(rightChild->right);
-        node->maxRank = maxComp(node->maxRank, maxComp(getMaxRank(node->left), getMaxRank(node->right)));
-        rightChild->maxRank = maxComp(rightChild->maxRank, maxComp(getMaxRank(rightChild->left), getMaxRank(rightChild->right)));
+        node->maxRank = maxComp(nodeRank, maxComp(getMaxRank(node->left), getMaxRank(node->right)));
+        rightChild->maxRank = maxComp(rightChildRank, maxComp(getMaxRank(rightChild->left), getMaxRank(rightChild->right)));
 
         if (subTree != nullptr){
             subTree->parent = node;
@@ -498,15 +508,13 @@ public:
     void TreePrintInOrder(shared_ptr<SNode<T>> node, int extraSum = 0) {
         if (!node) return;
         TreePrintInOrder(node->left, extraSum + node->extra);
-        node->data->numOfWins = extraSum + node->extra;
-        cout << "(" << "str:" << node->getStrength() << ", " << "id:" << node->getID() << ", ex:" << node->extra << ", maxR:" << node->maxRank << ", wins:" << node->data->numOfWins << ")";
+        cout << "(" << "str:" << node->getStrength() << ", " << "id:" << node->getID() << ", ex:" << node->extra << ", maxR:" << node->maxRank <<")";
         TreePrintInOrder(node->right, extraSum + node->extra);
     }
 
 
     void TreePrintPreOrder(shared_ptr<SNode<T>> node, int extraSum = 0) {
         if (!node) return;
-        node->data->numOfWins = extraSum + node->extra;
         cout<<"("<<"str:"<<node->getStrength()<<", "<<"id:"<<node->getID()<<", ex:"<<node->extra<<", maxR:"<<node->maxRank<<")";
         TreePrintPreOrder(node->left);
         TreePrintPreOrder(node->right);
@@ -532,46 +540,53 @@ public:
         int maxRank = 0;
         int currRank = 0;
         int subTreeMaxRank = 0;
+        int otherSubTreeMaxRank = 0;
+        int currentWinDiff = 0;
+
+
         if (highPower > node->getStrength()){
-            if (!rightStreak){
-                node->extra += wins;
-            }
+
+            if (!rightStreak) node->extra += wins;
+
             extraSum += node->extra;
+            currentWinDiff = extraSum - node->data->numOfWins;
+            if (node->left) otherSubTreeMaxRank = node->left->maxRank + currentWinDiff;
             node->data->numOfWins = extraSum;
-            currRank = node->data->numOfWins + node->getStrength();
-            maxRank = max(currRank, node->maxRank);
+            currRank = (node->data->getSize()) ? (node->getStrength() + node->data->numOfWins) : 0;
             subTreeMaxRank = auxAddWinsRecursive(node->right, highPower, wins, true, extraSum);
-            maxRank = max(maxRank, subTreeMaxRank);
+            maxRank = max(currRank, max(subTreeMaxRank, otherSubTreeMaxRank));
             node->maxRank = maxRank;
             return maxRank;
 
         } else if (highPower < node->getStrength()){
-            if (rightStreak){
-                node->extra -= wins;
-            }
+            if (rightStreak) node->extra -= wins;
 
             extraSum += node->extra;
+            currentWinDiff = extraSum - node->data->numOfWins;
+            if (node->right) otherSubTreeMaxRank = node->right->maxRank + currentWinDiff;
             node->data->numOfWins = extraSum;
-            currRank = node->data->numOfWins + node->getStrength();
-            maxRank = max(currRank, node->maxRank);
-            subTreeMaxRank = auxAddWinsRecursive(node->left, highPower, wins, false);
-            maxRank = max(maxRank, subTreeMaxRank);
+            currRank = (node->data->getSize()) ? (node->getStrength() + node->data->numOfWins) : 0;
+            subTreeMaxRank = auxAddWinsRecursive(node->left, highPower, wins, false, extraSum);
+            maxRank = max(currRank, max(subTreeMaxRank, otherSubTreeMaxRank));
             node->maxRank = maxRank;
             return maxRank;
 
         } else{
             if (!rightStreak) node->extra += wins;
 
+            extraSum += node->extra;
+            currentWinDiff = extraSum - node->data->numOfWins;
 
+            if (node->left) otherSubTreeMaxRank = node->left->maxRank + currentWinDiff;
             extraSum += node->extra;
             node->data->numOfWins = extraSum;
-            currRank = node->data->numOfWins + node->getStrength();
-            maxRank = max(currRank, node->maxRank);
-
+            currRank = (node->data->getSize()) ? (node->getStrength() + node->data->numOfWins) : 0;
             if (node->right && node->right->getStrength() == highPower){
-                subTreeMaxRank = auxAddWinsRecursive(node->right, highPower, wins, true);
+                subTreeMaxRank = auxAddWinsRecursive(node->right, highPower, wins, true, extraSum);
             }else{
-                if (node->right) node->right->extra -= wins;
+                if (node->right){ node->right->extra -= wins;
+                    subTreeMaxRank = node->right->maxRank;
+                }
             }
             maxRank = max(maxRank, subTreeMaxRank);
             node->maxRank = maxRank;
@@ -625,8 +640,10 @@ public:
         }
         else {
             int leftSize = node->left ? node->left->size : 0;
-            rank += leftSize;
-            return rank + 1;
+            rank += leftSize + 1;
+            //return rank + 1; //fuck this bug lmao I passed rank by reference but returning rank + 1 doesn't update the reference.
+            return rank;
+
         }
     }
 
