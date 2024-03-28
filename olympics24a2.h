@@ -32,17 +32,6 @@ private:
     shared_ptr<STree<Team>> teamsByStrength;
 
 public:
-
-
-
-
-    void printTeamTree(){
-        teamsByStrength->printTree();
-    }
-    void printStrengthTree(int teamId, int strength){
-//        auto teamS = teamsByStrength.find(teamId, strength);
-//        teamS->printTeam();
-    }
 	// <DO-NOT-MODIFY> {
 
     olympics_t();

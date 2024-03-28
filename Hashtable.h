@@ -23,7 +23,7 @@ private:
     int size;
     int capacity;
     float load_factor; // maybe it is a good idea to increment this field when removing an element and counting
-    int total_elements_added;
+    //int total_elements_added;
     // this might be useful in the future when we want to give an id to each ID-less player
     // maybe this should be a static field of the class, so that we can give an id to each player that is added to the table
 
@@ -120,7 +120,7 @@ private:
     }
 
 public:
-    Hashtable(): size(0), capacity(DEFAULT_CAPACITY), load_factor(0.0f), total_elements_added(0) {
+    Hashtable(): size(0), capacity(DEFAULT_CAPACITY), load_factor(0.0f) {
 //        table = make_unique<shared_ptr<Tree<T>>[]>(DEFAULT_CAPACITY);
         table = new shared_ptr<Tree<T>>[capacity];
         for (int i = 0; i < DEFAULT_CAPACITY; ++i) {
@@ -160,7 +160,7 @@ public:
         // maybe add an if statement here to check if the item is already in the tree???
         if (table[index]->insert(item_ptr)) {
             size++;
-            total_elements_added++;
+            //total_elements_added++;
             // update load factor
             load_factor = size * 1.0f / capacity * 1.0f; //
             rehash();
@@ -180,7 +180,7 @@ public:
         // maybe add an if statement here to check if the item is already in the tree???
         if (table[index]->insert(item_ptr)) {
             size++;
-            total_elements_added++;
+            //total_elements_added++;
             // update load factor
             load_factor = size * 1.0f / capacity * 1.0f;
 
@@ -262,9 +262,9 @@ public:
 //        return table[index]->find(key);
     }
 
-    int getTotalElementsAdded(){
-        return total_elements_added;
-    }
+    //int getTotalElementsAdded(){
+    //   return total_elements_added;
+    //}
 };
 
 #endif //WET2_DS_HASHTABLE_H
