@@ -232,6 +232,7 @@ StatusType olympics_t::unite_teams(int teamId1, int teamId2)
 output_t<int> olympics_t::play_tournament(int lowPower, int highPower)
 {
 
+
     if (lowPower <= 0 || highPower <= 0 || lowPower >= highPower) return output_t<int>(StatusType::INVALID_INPUT);
     auto upperTeam = teamsByStrength->findHighestRankedLEStrength(highPower);
     auto lowerTeam = teamsByStrength->findLowestRankedGEStrength(lowPower);

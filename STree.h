@@ -531,7 +531,7 @@ public:
 
     //adds wins equal to wins amount to the teams with strengths in the range [i,j] inclusive. Similar to vaccines question.
     void auxAddWins(int highPower, int highId, int wins){
-        auxAddWinsRecursive(root, highPower, highPower, wins, false, 0);
+        auxAddWinsRecursive(root, highPower, highId, wins, false, 0);
     }
 
 
