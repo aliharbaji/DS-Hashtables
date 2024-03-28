@@ -544,7 +544,6 @@ public:
         int subTreeMaxRank = 0;
         int otherSubTreeMaxRank = 0;
 
-
         if (highPower > node->getStrength()){
 
             if (!rightStreak) node->extra += wins;
@@ -576,7 +575,6 @@ public:
             extraSum += node->extra;
 
             if (node->left) otherSubTreeMaxRank = node->left->maxRank;
-            extraSum += node->extra;
             node->data->numOfWins = extraSum;
             currRank = (node->data->getSize()) ? (node->getStrength() + node->data->numOfWins) : 0;
             if (node->right && node->right->getStrength() == highPower){
