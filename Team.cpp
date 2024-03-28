@@ -16,7 +16,7 @@ int Team::getStrength() const {
     return strengthPlayer->getStrength() * numberOfPlayers;
 }
 
-//TODO: should change it so that team doesn't take playerID as a parameter but generates playerID based on numberOfPlayers.
+
 
 bool Team::addPlayer(int playerStrength) {
     shared_ptr<Player> contestant = make_shared<Player>(++numberOfPlayers, playerStrength);
@@ -70,7 +70,7 @@ shared_ptr<Player> Team::getStrengthPlayer() {
 int Team::getNumberOfWins() const {
     return numberOfWins;
 }
-// TODO: this has to be changed to work with extras field I think
+
 int Team::getRank() const {
     if (numberOfPlayers == 0) return numberOfPlayers;
     return numberOfWins + this->getStrength();
@@ -103,13 +103,11 @@ shared_ptr<Player> Team::findPlayer(int playerID) {
 
 // you can delete this method I was testing something
 
-// TODO: the usage of these function needs to be done through STree in the Olympics method. The STree has a method which does this while updating the extras.
 /*
 void Team::addWin() {
     numOfWins++;
 }
 
-// TODO: fix to sum-up extra fields
 int Team::getNumberOfWins() const {
     return numOfWins;
 }
@@ -127,13 +125,30 @@ void Team::uniteWith(shared_ptr<Team> team2){
     int team1Size = numberOfPlayers;
     int team2Size = team2->getSize();
 //    int newSize = team2Size + team1Size;
+    shared_ptr<Player>* team2Arr = nullptr;
+    shared_ptr<Player>* team1Arr = nullptr;
+    shared_ptr<Player>* mergedArr = nullptr;
+    shared_ptr<Player>* team2StrArr = nullptr;
+    shared_ptr<Player>* team1StrArr = nullptr;
+    shared_ptr<Player>* mergedStrArr = nullptr;
+    try{
+        team2Arr = team2->returnedSortedArrayOfElementsByID();
+        team1Arr = returnedSortedArrayOfElementsByID();
+        mergedArr = new shared_ptr<Player>[team1Size + team2Size];
+        team2StrArr = team2->returnedSortedArrayOfElementsByStrength();
+        team1StrArr = returnedSortedArrayOfElementsByStrength();
+        mergedStrArr = new shared_ptr<Player>[team1Size + team2Size];
+    }catch (const exception& e){
+        // free allocated memory
+        if (team1Arr) delete[] team1Arr;
+        if (team2Arr) delete[] team2Arr;
+        if (mergedArr) delete[] mergedArr;
+        if (team2StrArr) delete[] team2StrArr;
+        if (team1StrArr) delete[] team1StrArr;
+        if (mergedStrArr) delete[] mergedStrArr;
 
-    auto team2Arr = team2->returnedSortedArrayOfElementsByID();
-    auto team1Arr = returnedSortedArrayOfElementsByID();
-    auto mergedArr = new shared_ptr<Player>[team1Size + team2Size];
-    auto team2StrArr = team2->returnedSortedArrayOfElementsByStrength();
-    auto team1StrArr = returnedSortedArrayOfElementsByStrength();
-    auto mergedStrArr = new shared_ptr<Player>[team1Size + team2Size];
+        throw e;
+    }
 
 
     for (int i = 0; i < team1Size; i++){

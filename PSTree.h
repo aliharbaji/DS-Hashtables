@@ -112,7 +112,7 @@ private:
 
     }
 
-    //delete now searches based on strength and ID TODO: fix this, it contains a bug
+    //delete now searches based on strength and ID
     bool deleteRecursively(shared_ptr<Node<T>>& node, int ID, int strength){
         if (node == nullptr) return false;
 

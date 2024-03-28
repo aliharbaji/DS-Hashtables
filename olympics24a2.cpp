@@ -37,8 +37,7 @@ StatusType olympics_t::add_team(int teamId)
 	return StatusType::SUCCESS;
 }
 
-// TODO: make sure this works in O(logn + k) time complexity
-// TODO: make sure to update the highestRank in case of removal of the team with the highest rank
+
 StatusType olympics_t::remove_team(int teamId)
 {
     if(teamId <= 0){
@@ -93,7 +92,7 @@ StatusType olympics_t::add_player(int teamId, int playerStrength)
 
 
     }catch(exception& e){
-        // TODO: check if this removes the player for all the trees
+
 //        team->removePlayer(idGenerator);
         team->removePlayer();
         // *****************************
@@ -107,7 +106,7 @@ StatusType olympics_t::add_player(int teamId, int playerStrength)
 	return StatusType::SUCCESS;
 }
 
-// TODO: make sure to update the highestRank in case of removal of a player in the highest ranked team
+
 // this should run in O(logn + log(k)) time complexity
 StatusType olympics_t::remove_newest_player(int teamId)
 {
@@ -132,8 +131,6 @@ StatusType olympics_t::remove_newest_player(int teamId)
 }
 
 // this runs in O(logn)
-// TODO: make sure to remove and reinsert the winning team ???
-//TODO: addWinsToTeam's implementation already removes and reinserts the team while updating wins.
 output_t<int> olympics_t::play_match(int teamId1, int teamId2)
 {
     if(teamId1 == teamId2 || teamId1 <= 0 || teamId2 <= 0){
@@ -211,11 +208,9 @@ StatusType olympics_t::unite_teams(int teamId1, int teamId2)
 
     remove_team(teamId2);
     if (!team2->getSize()) return StatusType::SUCCESS; //if team2 is empty do nothing.
-    //TODO: WE HAVE TO MOVE IDGENERATOR TO TEAM! each team separately manages ids instead of globally. starts at 1 and caps at team's size.
+
     //After that we don't need to make new players and it simplifies.
-    //TODO: just did that, but I don't think it should cap at team's since, because if we add 3 players {1,2,3}
-    // and remove player 2 and then add another player we ge this {1,3,3} which contains 3 twice. which could complicate things. correct me if I'm wrong.
-    //TODO: you can't remove player 2 because he's not the last one that was added. You always remove the player with id = size.
+
 
     try {
         teamsByStrength->remove(teamId1,team1->getStrength());
@@ -252,7 +247,7 @@ output_t<int> olympics_t::play_tournament(int lowPower, int highPower)
     const double epsilon = 1e-6;
     if (std::fabs(logResult - roundedResult) > epsilon) return output_t<int>(StatusType::FAILURE);
 
-    //TODO: should work even with 2 teams but maybe it's still better to just call play match in that scenario for simplicity.
+
     //log(i) times loop
 
     while (numOfParticipants >= 2){

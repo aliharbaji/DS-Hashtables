@@ -18,7 +18,7 @@ const int DEFAULT_CAPACITY = 101;
 template <class T>
 class Hashtable {
 private:
-    //TODO: need to reconsider this I think. It's better to have an array of pointers to the trees instead of holding the tree objects in the array itself.
+
     shared_ptr<Tree<T>>* table; // table of trees. Unique pointer to an array of unique pointer to trees.
     int size;
     int capacity;
@@ -40,7 +40,7 @@ private:
         int old_capacity = capacity;
         capacity = new_capacity; // changing the rehash function
 
-        // TODO: add try-catch block around returnSortedArrayOfElements
+
         int index = 0;
         for (int i = 0; i < old_capacity; i++) {
             if (table[i]->getSize() == 0) continue;
@@ -63,15 +63,10 @@ private:
             delete[] temp;
         }
 
-        // TODO: delete later
-        if (index != size) {
-            cerr << "index: " << index << " size: " << size << endl;
-            throw std::runtime_error("index is not equal to size");
-        }
 
-        for(int i = 0; i < old_capacity; i++){
-            table[i].reset();
-        }
+//        for(int i = 0; i < old_capacity; i++){
+//            table[i].reset();
+//        }
 
 //        table = std::move(newTable);
         delete[] table;
@@ -91,7 +86,7 @@ private:
         int old_capacity = capacity;
         capacity = new_capacity; // changing the rehash function
 
-        // TODO: add try-catch block around returnSortedArrayOfElements
+
         int index = 0;
         for (int i = 0; i < old_capacity; i++) {
             if (table[i]->getSize() == 0) continue;
@@ -114,15 +109,11 @@ private:
             delete[] temp;
         }
 
-        // TODO: delete later
-        if (index != size) {
-            cerr << "index: " << index << " size: " << size << endl;
-            throw std::runtime_error("index is not equal to size");
-        }
 
-        for(int i = 0; i < old_capacity; i++){
-            table[i].reset();
-        }
+
+//        for(int i = 0; i < old_capacity; i++){
+//            table[i].reset();
+//        }
 //        table = std::move(newTable);
         delete[] table;
         table = newTable;
@@ -164,7 +155,7 @@ public:
         int index = hash(key);
         // make a T item with key and add to index
 
-        // might throw bad_alloc, so we need to catch it TODO: check if this is necessary
+        // might throw bad_alloc, so we need to catch it
         shared_ptr<T> item_ptr = make_shared<T>(key);
         // maybe add an if statement here to check if the item is already in the tree???
         if (table[index]->insert(item_ptr)) {
@@ -185,7 +176,7 @@ public:
         int index = hash(item_ptr->getID());
         // make a T item with key and add to index
 
-        // might throw bad_alloc, so we need to catch it TODO: check if this is necessary
+
         // maybe add an if statement here to check if the item is already in the tree???
         if (table[index]->insert(item_ptr)) {
             size++;

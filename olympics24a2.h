@@ -33,20 +33,8 @@ private:
 
 public:
 
-    // TODO: delete later:
-    void printTeam(int teamId){
-        auto team = teams->find(teamId);
-        if(!team) return;
-        team->printTeam();
-    }
-    // TODO: delete later
-    void printTeams(){
-        for(int i = 0; i < teams->getCapacity(); i++){
-            cout << "Teams at index " << i << ": ";
-            cout << *(*teams)[i] << endl;
 
-        }
-    }
+
 
     void printTeamTree(){
         teamsByStrength->printTree();

@@ -135,7 +135,7 @@ int test2() {
     cout << endl;
     cout << endl;
 
-    // TODO: Omar, check if this test is working after you've done your changes
+
     cout << "********************After Omar finishes his changes to SNode, this should work properly************************" << endl;
     cout << "This test is failing... (look at the last few lines when removing team 420 from the olympics, "
             "the new highest ranked team should be updated and should definitely should have an ID that is not 420)" << endl;
