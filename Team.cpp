@@ -126,7 +126,7 @@ shared_ptr<Player>* Team::returnedSortedArrayOfElementsByID(){
 void Team::uniteWith(shared_ptr<Team> team2){
     int team1Size = numberOfPlayers;
     int team2Size = team2->getSize();
-    int newSize = team2Size + team1Size;
+//    int newSize = team2Size + team1Size;
 
     auto team2Arr = team2->returnedSortedArrayOfElementsByID();
     auto team1Arr = returnedSortedArrayOfElementsByID();
@@ -136,11 +136,11 @@ void Team::uniteWith(shared_ptr<Team> team2){
     auto mergedStrArr = new shared_ptr<Player>[team1Size + team2Size];
 
 
-    for (unsigned long long i = 0; i < team1Size; i++){
+    for (int i = 0; i < team1Size; i++){
         mergedArr[i] = team1Arr[i];
     }
 
-    for (unsigned long long i = 0; i < team2Size; i++){
+    for (int i = 0; i < team2Size; i++){
         team2Arr[i]->id = team1Size + i + 1;
         mergedArr[team1Size + i] = team2Arr[i];
     }

@@ -20,7 +20,7 @@ class Team : public Item {
 
     shared_ptr<Tree<Player>> players;
     shared_ptr<PSTree<Player>> playersByStrength;
-    unsigned long long numberOfPlayers;
+    int numberOfPlayers;
     int numOfWins;
     shared_ptr<Player> strengthPlayer; // this is the player with the median strength
 

@@ -10,10 +10,10 @@
 
 class Player {
     friend class Team;
+    int id;
     int strength;
-    unsigned long long id;
 public:
-    explicit Player(unsigned long long id, int strength)
+    explicit Player(int id, int strength)
             : id(id), strength(strength){}
 
     Player(const Player&) = default;
@@ -27,7 +27,7 @@ public:
         return strength;
     }
 
-    unsigned long long getID() const{
+    int getID() const{
         return id;
     }
 
