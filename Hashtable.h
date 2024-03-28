@@ -19,7 +19,7 @@ template <class T>
 class Hashtable {
 private:
     //TODO: need to reconsider this I think. It's better to have an array of pointers to the trees instead of holding the tree objects in the array itself.
-    unique_ptr<shared_ptr<Tree<T>>[]> table; // table of trees. Unique pointer to an array of unique pointer to trees.
+    shared_ptr<Tree<T>>* table; // table of trees. Unique pointer to an array of unique pointer to trees.
     int size;
     int capacity;
     float load_factor; // maybe it is a good idea to increment this field when removing an element and counting
@@ -30,7 +30,8 @@ private:
 
     void resizeUp() {
         int new_capacity = 2 * capacity + 1;
-        unique_ptr<shared_ptr<Tree<T>>[]> newTable(new shared_ptr<Tree<T>>[new_capacity]());
+//        unique_ptr<shared_ptr<Tree<T>>[]> newTable(new shared_ptr<Tree<T>>[new_capacity]());
+        auto newTable = new shared_ptr<Tree<T>>[new_capacity];
 
         for (int i = 0; i < new_capacity; i++) {
             newTable[i] = make_shared<Tree<T>>();
@@ -49,7 +50,8 @@ private:
                 temp = table[i]->returnSortedArrayOfElements();
             }catch (std::bad_alloc& e){
                 // free the memory allocated for the newTable
-                newTable.reset();
+//                newTable.reset();
+                delete[] newTable;
                 throw;
             }
 
@@ -67,14 +69,20 @@ private:
             throw std::runtime_error("index is not equal to size");
         }
 
-        table = std::move(newTable);
+        for(int i = 0; i < old_capacity; i++){
+            table[i].reset();
+        }
+
+//        table = std::move(newTable);
+        delete[] table;
+        table = newTable;
     }
 
 
 
     void resizeDown() {
         int new_capacity = std::max(DEFAULT_CAPACITY, capacity / 2);
-        unique_ptr<shared_ptr<Tree<T>>[]> newTable(new shared_ptr<Tree<T>>[new_capacity]());
+        auto newTable = new shared_ptr<Tree<T>>[new_capacity];
 
         for (int i = 0; i < new_capacity; i++) {
             newTable[i] = make_shared<Tree<T>>();
@@ -93,7 +101,8 @@ private:
                 temp = table[i]->returnSortedArrayOfElements();
             }catch (std::bad_alloc& e){
                 // free the memory allocated for the newTable
-                newTable.reset();
+//                newTable.reset();
+                delete[] newTable;
                 throw;
             }
 
@@ -111,19 +120,28 @@ private:
             throw std::runtime_error("index is not equal to size");
         }
 
-        table = std::move(newTable);
+        for(int i = 0; i < old_capacity; i++){
+            table[i].reset();
+        }
+//        table = std::move(newTable);
+        delete[] table;
+        table = newTable;
     }
 
 public:
     Hashtable(): size(0), capacity(DEFAULT_CAPACITY), load_factor(0.0f), total_elements_added(0) {
-        table = make_unique<shared_ptr<Tree<T>>[]>(DEFAULT_CAPACITY);
+//        table = make_unique<shared_ptr<Tree<T>>[]>(DEFAULT_CAPACITY);
+        table = new shared_ptr<Tree<T>>[capacity];
         for (int i = 0; i < DEFAULT_CAPACITY; ++i) {
             table[i] = make_shared<Tree<T>>();
         }
     }
 
 
-    ~Hashtable() = default;
+    ~Hashtable() {
+        if(table == nullptr) return;
+        delete[] table;
+    }
 
 
     const shared_ptr<Tree<T>>& operator[](int index) const{
