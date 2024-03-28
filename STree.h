@@ -530,41 +530,51 @@ public:
     }
 
     //adds wins equal to wins amount to the teams with strengths in the range [i,j] inclusive. Similar to vaccines question.
-    void auxAddWins(int highPower, int wins){
-        auxAddWinsRecursive(root, highPower, wins);
-
+    void auxAddWins(int highPower, int highId, int wins){
+        auxAddWinsRecursive(root, highPower, highPower, wins, false, 0);
     }
 
 
-    int auxAddWinsRecursive(shared_ptr<SNode<T>> node, int highPower, int wins, bool rightStreak = false, int extraSum = 0){
+    int auxAddWinsRecursive(shared_ptr<SNode<T>> node, int highPower, int highId, int wins, bool rightStreak, int extraSum){
         if (!node) return 0;
 
         int maxRank = 0;
         int currRank = 0;
         int subTreeMaxRank = 0;
         int otherSubTreeMaxRank = 0;
+        bool isLeft = false;
+        bool isRight = false;
 
-        if (highPower > node->getStrength()){
+        if (highPower < node->getStrength() ||
+            (highPower == node->getStrength() && highId > node->getID())) {
+            isLeft = true;
+        }
 
+        else if (highPower > node->getStrength() ||
+                 (highPower == node->getStrength() && highId < node->getID())) {
+            isRight = true;
+        }
+
+        if (isRight){
             if (!rightStreak) node->extra += wins;
 
             extraSum += node->extra;
             if (node->left) otherSubTreeMaxRank = node->left->maxRank;
             node->data->numOfWins = extraSum;
             currRank = (node->data->getSize()) ? (node->getStrength() + node->data->numOfWins) : 0;
-            subTreeMaxRank = auxAddWinsRecursive(node->right, highPower, wins, true, extraSum);
+            subTreeMaxRank = auxAddWinsRecursive(node->right, highPower, highId, wins, true, extraSum);
             maxRank = max(currRank, max(subTreeMaxRank, otherSubTreeMaxRank));
             node->maxRank = maxRank;
             return maxRank;
 
-        } else if (highPower < node->getStrength()){
+        } else if (isLeft){
             if (rightStreak) node->extra -= wins;
 
             extraSum += node->extra;
             if (node->right) otherSubTreeMaxRank = node->right->maxRank;
             node->data->numOfWins = extraSum;
             currRank = (node->data->getSize()) ? (node->getStrength() + node->data->numOfWins) : 0;
-            subTreeMaxRank = auxAddWinsRecursive(node->left, highPower, wins, false, extraSum);
+            subTreeMaxRank = auxAddWinsRecursive(node->left, highPower, highId, wins, false, extraSum);
             maxRank = max(currRank, max(subTreeMaxRank, otherSubTreeMaxRank));
             node->maxRank = maxRank;
             return maxRank;
@@ -577,12 +587,10 @@ public:
             if (node->left) otherSubTreeMaxRank = node->left->maxRank;
             node->data->numOfWins = extraSum;
             currRank = (node->data->getSize()) ? (node->getStrength() + node->data->numOfWins) : 0;
-            if (node->right && node->right->getStrength() == highPower){
-                subTreeMaxRank = auxAddWinsRecursive(node->right, highPower, wins, true, extraSum);
-            }else{
-                if (node->right){ node->right->extra -= wins;
-                    subTreeMaxRank = node->right->maxRank;
-                }
+
+            if (node->right){
+                node->right->extra -= wins;
+                subTreeMaxRank = node->right->maxRank;
             }
             maxRank = max(currRank, max(subTreeMaxRank, otherSubTreeMaxRank));
             node->maxRank = maxRank;
@@ -593,9 +601,9 @@ public:
 
 
     }
-    void addWins(int lowPower, int highPower, int wins){
-        auxAddWins(highPower, wins);
-        auxAddWins(lowPower-1, -wins);
+    void addWins(int lowPower, int lowId, int highPower, int highId, int wins){
+        auxAddWins(highPower, highId, wins);
+        auxAddWins(lowPower, lowId+1, -wins);
     }
 
 

@@ -253,9 +253,11 @@ output_t<int> olympics_t::play_tournament(int lowPower, int highPower)
 
     //TODO: should work even with 2 teams but maybe it's still better to just call play match in that scenario for simplicity.
     //log(i) times loop
+
     while (numOfParticipants >= 2){
-        auto lowestRankWinner = teamsByStrength->getKthSmallest(lowerTeamRank + numOfParticipants/2);
-        teamsByStrength->addWins(lowestRankWinner->getStrength(), highPower, 1);// log(n)
+        lowerTeamRank += (numOfParticipants/2);
+        auto lowestRankWinner = teamsByStrength->getKthSmallest(lowerTeamRank);
+        teamsByStrength->addWins(lowestRankWinner->getStrength(), lowestRankWinner->getID(), highPower, upperTeam->getID(), 1);// log(n)
         numOfParticipants /= 2;
     }
     //log(i) * log(n) overall
