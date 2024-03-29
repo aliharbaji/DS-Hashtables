@@ -559,7 +559,10 @@ public:
             if (!rightStreak) node->extra += wins;
 
             extraSum += node->extra;
-            if (node->left) otherSubTreeMaxRank = node->left->maxRank + wins;
+
+            if (node->left && !rightStreak) otherSubTreeMaxRank = node->left->maxRank + wins;
+            else if (node->left) otherSubTreeMaxRank = node->left->maxRank;
+
             node->data->numOfWins = extraSum;
             currRank = (node->data->getSize()) ? (node->getStrength() + node->data->numOfWins) : 0;
             subTreeMaxRank = auxAddWinsRecursive(node->right, highPower, highId, wins, true, extraSum);
@@ -584,7 +587,9 @@ public:
 
             extraSum += node->extra;
 
-            if (node->left) otherSubTreeMaxRank = node->left->maxRank + wins;
+            if (node->left && !rightStreak) otherSubTreeMaxRank = node->left->maxRank + wins;
+            else if (node->left) otherSubTreeMaxRank = node->left->maxRank;
+
             node->data->numOfWins = extraSum;
             currRank = (node->data->getSize()) ? (node->getStrength() + node->data->numOfWins) : 0;
 
