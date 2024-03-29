@@ -562,7 +562,9 @@ public:
             extraSum += node->extra;
             winDiff = extraSum - node->data->numOfWins;
             node->data->numOfWins = extraSum;
-            if (node->left) otherSubTreeMaxRank = node->left->maxRank + winDiff;
+            if (node->left){ otherSubTreeMaxRank = node->left->maxRank + winDiff;
+                node->left->maxRank += winDiff;
+            }
             currRank = (node->data->getSize()) ? (node->getStrength() + node->data->numOfWins) : 0;
             subTreeMaxRank = auxAddWinsRecursive(node->right, highPower, highId, wins, true, extraSum);
             maxRank = max(currRank, max(subTreeMaxRank, otherSubTreeMaxRank));
@@ -576,7 +578,9 @@ public:
             winDiff = extraSum - node->data->numOfWins;
             node->data->numOfWins = extraSum;
 
-            if (node->right) otherSubTreeMaxRank = node->right->maxRank + winDiff;
+            if (node->right){ otherSubTreeMaxRank = node->right->maxRank + winDiff;
+                node->right->maxRank += winDiff;
+            }
             currRank = (node->data->getSize()) ? (node->getStrength() + node->data->numOfWins) : 0;
             subTreeMaxRank = auxAddWinsRecursive(node->left, highPower, highId, wins, false, extraSum);
             maxRank = max(currRank, max(subTreeMaxRank, otherSubTreeMaxRank));
@@ -589,7 +593,9 @@ public:
             extraSum += node->extra;
             winDiff = extraSum - node->data->numOfWins;
             node->data->numOfWins = extraSum;
-            if (node->left) otherSubTreeMaxRank = node->left->maxRank + winDiff;
+            if (node->left){ otherSubTreeMaxRank = node->left->maxRank + winDiff;
+                node->left->maxRank+=winDiff;
+            }
 
             currRank = (node->data->getSize()) ? (node->getStrength() + node->data->numOfWins) : 0;
 
