@@ -262,8 +262,8 @@ private:
         leftChild->height = 1 + maxComp(getHeight(leftChild->left), getHeight(leftChild->right));
         node->size = 1 + getSize(node->left) + getSize(node->right);
         leftChild->size = 1 + getSize(leftChild->left) + getSize(leftChild->right);
-        node->maxRank = maxComp(nodeRank, maxComp(getMaxRank(node->left, node->data->numOfWins), getMaxRank(node->right, node->data->numOfWins)));
-        leftChild->maxRank = maxComp(leftChildRank, maxComp(getMaxRank(leftChild->left, leftChild->data->numOfWins), getMaxRank(leftChild->right, leftChild->data->numOfWins)));
+        node->maxRank = maxComp(nodeRank, maxComp(getMaxRankInsert(node->left), getMaxRankInsert(node->right)));
+        leftChild->maxRank = maxComp(leftChildRank, maxComp(getMaxRankInsert(leftChild->left), getMaxRankInsert(leftChild->right)));
 
 
         if (subTree != nullptr){
@@ -296,8 +296,8 @@ private:
         rightChild->height = 1 + maxComp(getHeight(rightChild->left), getHeight(rightChild->right));
         node->size = 1 + getSize(node->left) + getSize(node->right);
         rightChild->size = 1 + getSize(rightChild->left) + getSize(rightChild->right);
-        node->maxRank = maxComp(nodeRank, maxComp(getMaxRank(node->left, node->data->numOfWins), getMaxRank(node->right, node->data->numOfWins)));
-        rightChild->maxRank = maxComp(rightChildRank, maxComp(getMaxRank(rightChild->left, rightChild->data->numOfWins), getMaxRank(rightChild->right,rightChild->data->numOfWins)));
+        node->maxRank = maxComp(nodeRank, maxComp(getMaxRankInsert(node->left), getMaxRankInsert(node->right)));
+        rightChild->maxRank = maxComp(rightChildRank, maxComp(getMaxRankInsert(rightChild->left), getMaxRankInsert(rightChild->right)));
 
         if (subTree != nullptr){
             subTree->parent = node;
@@ -599,7 +599,7 @@ public:
 
             if (node->right){
                 node->right->extra -= wins;
-                subTreeMaxRank = node->right->maxRank;
+                subTreeMaxRank = getMaxRank(node->right, extraSum);
             }
             maxRank = max(currRank, max(subTreeMaxRank, otherSubTreeMaxRank));
             node->maxRank = maxRank;
@@ -768,6 +768,9 @@ public:
         return findLowestIdWithStrengthAux(root, strength);
     }
 
+    int getMaxRankInsert(shared_ptr<SNode<T>> node) const {
+        return node ? node->maxRank : 0;
+    }
 
 
 };
