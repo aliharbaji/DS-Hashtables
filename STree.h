@@ -549,7 +549,7 @@ public:
         int otherSubTreeMaxRank = 0;
         bool isLeft = false;
         bool isRight = false;
-        int winDiff = 0;
+//        int winDiff;
 
         if (highPower < node->getStrength() ||
             (highPower == node->getStrength() && highId > node->getID())) {
@@ -565,7 +565,7 @@ public:
             if (!rightStreak) node->extra += wins;
 
             extraSum += node->extra;
-            winDiff = extraSum - node->data->numOfWins;
+//            winDiff = extraSum - node->data->numOfWins;
             node->data->numOfWins = extraSum;
             otherSubTreeMaxRank = getMaxRank(node->left, extraSum);
             currRank = (node->data->getSize()) ? (node->getStrength() + node->data->numOfWins) : 0;
@@ -578,7 +578,7 @@ public:
             if (rightStreak) node->extra -= wins;
 
             extraSum += node->extra;
-            winDiff = extraSum - node->data->numOfWins;
+//            winDiff = extraSum - node->data->numOfWins;
             node->data->numOfWins = extraSum;
             otherSubTreeMaxRank = getMaxRank(node->right, extraSum);
             currRank = (node->data->getSize()) ? (node->getStrength() + node->data->numOfWins) : 0;
@@ -591,7 +591,7 @@ public:
             if (!rightStreak) node->extra += wins;
 
             extraSum += node->extra;
-            winDiff = extraSum - node->data->numOfWins;
+//            winDiff = extraSum - node->data->numOfWins;
             node->data->numOfWins = extraSum;
             otherSubTreeMaxRank = getMaxRank(node->left, extraSum);
 
