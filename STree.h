@@ -102,7 +102,7 @@ private:
         node->height = 1 + maxComp(getHeight(node->left), getHeight(node->right));
         node->size = 1 + getSize(node->left) + getSize(node->right);
         int currRank = (node->data->getSize()) ? (node->getStrength() + node->data->numOfWins) : 0;
-        node->maxRank = maxComp(currRank, maxComp(getMaxRank(node->left), getMaxRank(node->right)));
+        node->maxRank = maxComp(currRank, maxComp(getMaxRank(node->left, extraSum), getMaxRank(node->right, extraSum)));
 
         int balance = getBalance(node);
 
@@ -209,7 +209,7 @@ private:
         int currRank = (node->data->getSize()) ? (node->getStrength() + node->data->numOfWins) : 0;
         node->height = 1 + maxComp(getHeight(node->right), getHeight(node->left));
         node->size = 1 + getSize(node->left) + getSize(node->right);
-        node->maxRank = maxComp(currRank, maxComp(getMaxRank(node->left), getMaxRank(node->right)));
+        node->maxRank = maxComp(currRank, maxComp(getMaxRank(node->left,extraSum), getMaxRank(node->right,extraSum)));
 
 
         int balance = getBalance(node);
@@ -262,8 +262,8 @@ private:
         leftChild->height = 1 + maxComp(getHeight(leftChild->left), getHeight(leftChild->right));
         node->size = 1 + getSize(node->left) + getSize(node->right);
         leftChild->size = 1 + getSize(leftChild->left) + getSize(leftChild->right);
-        node->maxRank = maxComp(nodeRank, maxComp(getMaxRank(node->left), getMaxRank(node->right)));
-        leftChild->maxRank = maxComp(leftChildRank, maxComp(getMaxRank(leftChild->left), getMaxRank(leftChild->right)));
+        node->maxRank = maxComp(nodeRank, maxComp(getMaxRank(node->left, node->data->numOfWins), getMaxRank(node->right, node->data->numOfWins)));
+        leftChild->maxRank = maxComp(leftChildRank, maxComp(getMaxRank(leftChild->left, leftChild->data->numOfWins), getMaxRank(leftChild->right, leftChild->data->numOfWins)));
 
 
         if (subTree != nullptr){
@@ -296,8 +296,8 @@ private:
         rightChild->height = 1 + maxComp(getHeight(rightChild->left), getHeight(rightChild->right));
         node->size = 1 + getSize(node->left) + getSize(node->right);
         rightChild->size = 1 + getSize(rightChild->left) + getSize(rightChild->right);
-        node->maxRank = maxComp(nodeRank, maxComp(getMaxRank(node->left), getMaxRank(node->right)));
-        rightChild->maxRank = maxComp(rightChildRank, maxComp(getMaxRank(rightChild->left), getMaxRank(rightChild->right)));
+        node->maxRank = maxComp(nodeRank, maxComp(getMaxRank(node->left, node->data->numOfWins), getMaxRank(node->right, node->data->numOfWins)));
+        rightChild->maxRank = maxComp(rightChildRank, maxComp(getMaxRank(rightChild->left, rightChild->data->numOfWins), getMaxRank(rightChild->right,rightChild->data->numOfWins)));
 
         if (subTree != nullptr){
             subTree->parent = node;
@@ -470,8 +470,13 @@ public:
         return node ? node->size : 0; // Return 0 if node is nullptr, otherwise node's size
     }
 
-    int getMaxRank(shared_ptr<SNode<T>> node) const {
-        return node ? node->maxRank : 0;
+    int getMaxRank(shared_ptr<SNode<T>> node, int extraSum)  {
+        if (!node) return 0;
+        extraSum += node->extra;
+        int winDiff = extraSum - node->data->numOfWins;
+        node->data->numOfWins = extraSum;
+        node->maxRank += winDiff;
+        return node->maxRank;
     }
 
     int getSize() const{
@@ -562,9 +567,7 @@ public:
             extraSum += node->extra;
             winDiff = extraSum - node->data->numOfWins;
             node->data->numOfWins = extraSum;
-            if (node->left){ otherSubTreeMaxRank = node->left->maxRank + winDiff;
-                node->left->maxRank += winDiff;
-            }
+            otherSubTreeMaxRank = getMaxRank(node->left, extraSum);
             currRank = (node->data->getSize()) ? (node->getStrength() + node->data->numOfWins) : 0;
             subTreeMaxRank = auxAddWinsRecursive(node->right, highPower, highId, wins, true, extraSum);
             maxRank = max(currRank, max(subTreeMaxRank, otherSubTreeMaxRank));
@@ -577,10 +580,7 @@ public:
             extraSum += node->extra;
             winDiff = extraSum - node->data->numOfWins;
             node->data->numOfWins = extraSum;
-
-            if (node->right){ otherSubTreeMaxRank = node->right->maxRank + winDiff;
-                node->right->maxRank += winDiff;
-            }
+            otherSubTreeMaxRank = getMaxRank(node->right, extraSum);
             currRank = (node->data->getSize()) ? (node->getStrength() + node->data->numOfWins) : 0;
             subTreeMaxRank = auxAddWinsRecursive(node->left, highPower, highId, wins, false, extraSum);
             maxRank = max(currRank, max(subTreeMaxRank, otherSubTreeMaxRank));
@@ -593,9 +593,7 @@ public:
             extraSum += node->extra;
             winDiff = extraSum - node->data->numOfWins;
             node->data->numOfWins = extraSum;
-            if (node->left){ otherSubTreeMaxRank = node->left->maxRank + winDiff;
-                node->left->maxRank+=winDiff;
-            }
+            otherSubTreeMaxRank = getMaxRank(node->left, extraSum);
 
             currRank = (node->data->getSize()) ? (node->getStrength() + node->data->numOfWins) : 0;
 
