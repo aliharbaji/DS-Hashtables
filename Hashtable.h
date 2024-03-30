@@ -222,7 +222,7 @@ public:
 
     void rehash(){
 
-        if(load_factor > 0.75) {
+        if(load_factor > 0.5) {
             resizeUp();
         } else if(load_factor < 0.25){
             if(capacity == DEFAULT_CAPACITY) return;
