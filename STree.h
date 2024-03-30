@@ -549,7 +549,7 @@ public:
         int otherSubTreeMaxRank = 0;
         bool isLeft = false;
         bool isRight = false;
-        int winDiff = 0;
+//        int winDiff = 0;
 
         if (highPower < node->getStrength() ||
             (highPower == node->getStrength() && highId > node->getID())) {
