@@ -578,7 +578,7 @@ public:
             if (rightStreak) node->extra -= wins;
 
             extraSum += node->extra;
-            winDiff = extraSum - node->data->numOfWins;
+//            winDiff = extraSum - node->data->numOfWins;
             node->data->numOfWins = extraSum;
             otherSubTreeMaxRank = getMaxRank(node->right, extraSum);
             currRank = (node->data->getSize()) ? (node->getStrength() + node->data->numOfWins) : 0;
